@@ -17,7 +17,9 @@
 </head>
 <body class="layout-dashboard">
 
-    <!-- ── Sidebar ────────────────────────────────────────────────── -->
+    
+<!-- ── Sidebar ────────────────────────────────────────────────── -->
+ <!-- ── Sidebar ────────────────────────────────────────────────── -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <span>Bartek</span>
