@@ -1,0 +1,107 @@
+<?php
+/**
+ * public/index.php
+ * Front Controller de Bartek.
+ * Punto de entrada único de la aplicación.
+ * Carga la configuración, inicia sesión y enruta las solicitudes
+ * al controlador y método correspondiente.
+ *
+ * @package Bartek
+ */
+
+declare(strict_types=1);
+
+// ── Carga de configuración ────────────────────────────────────────────────────
+require_once dirname(__DIR__) . '/config/app.php';
+require_once dirname(__DIR__) . '/config/database.php';
+require_once dirname(__DIR__) . '/config/sesion.php';
+require_once dirname(__DIR__) . '/config/setting.php';
+
+// ── Composer Autoload ───────────────────────────────────────────────────────────
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+// ── Clases base (deben cargarse primero) ──────────────────────────────────────
+require_once dirname(__DIR__) . '/app/models/BaseModel.php';
+require_once dirname(__DIR__) . '/app/controllers/BaseController.php';
+
+// ── Carga de Modelos ──────────────────────────────────────────────────────────
+require_once dirname(__DIR__) . '/app/models/UsuarioModel.php';
+require_once dirname(__DIR__) . '/app/models/EmpleadoModel.php';
+require_once dirname(__DIR__) . '/app/models/InventarioModel.php';
+require_once dirname(__DIR__) . '/app/models/VentaModel.php';
+require_once dirname(__DIR__) . '/app/models/HorarioModel.php';
+require_once dirname(__DIR__) . '/app/models/MenuModel.php';
+require_once dirname(__DIR__) . '/app/models/NotificacionModel.php';
+require_once dirname(__DIR__) . '/app/models/ContactoModel.php';
+
+// ── Carga de Controladores ────────────────────────────────────────────────────
+require_once dirname(__DIR__) . '/app/controllers/AuthController.php';
+require_once dirname(__DIR__) . '/app/controllers/DashboardController.php';
+require_once dirname(__DIR__) . '/app/controllers/EmpleadoController.php';
+require_once dirname(__DIR__) . '/app/controllers/InventarioController.php';
+require_once dirname(__DIR__) . '/app/controllers/VentaController.php';
+require_once dirname(__DIR__) . '/app/controllers/HorarioController.php';
+require_once dirname(__DIR__) . '/app/controllers/MenuController.php';
+require_once dirname(__DIR__) . '/app/controllers/ContactoController.php';
+require_once dirname(__DIR__) . '/app/controllers/PerfilController.php';
+require_once dirname(__DIR__) . '/app/controllers/ReporteController.php';
+
+// ── Inicio de sesión segura ───────────────────────────────────────────────────
+iniciarSesion();
+
+// ── Enrutamiento ──────────────────────────────────────────────────────────────
+/**
+ * Se extrae la ruta de la URL eliminando el prefijo BASE_URL.
+ * Ejemplo: /bartek/public/empleados/crear → /empleados/crear
+ */
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$uri = str_replace(BASE_URL, '', $uri);
+$uri = trim($uri, '/');
+
+// Separar ruta en segmentos: [controlador, accion, parametro]
+$segmentos  = explode('/', $uri);
+$controlador = $segmentos[0] ?? '';
+$accion      = $segmentos[1] ?? 'index';
+$parametro   = $segmentos[2] ?? null;
+
+// ── Tabla de enrutamiento ─────────────────────────────────────────────────────
+// Mapea segmento → controlador y método correspondiente
+$rutas = [
+    ''              => ['AuthController',       'index'],
+    'login'         => ['AuthController',       'login'],
+    'registro'      => ['AuthController',       'registro'],
+    'logout'        => ['AuthController',       'logout'],
+    'dashboard'     => ['DashboardController',  'index'],
+    'empleados'     => ['EmpleadoController',   $accion],
+    'inventario'    => ['InventarioController', $accion],
+    'ventas'        => ['VentaController',      $accion],
+    'horarios'      => ['HorarioController',    $accion],
+    'menu'          => ['MenuController',       $accion],
+    'contacto'      => ['ContactoController',   $accion],
+    'nosotros'      => ['AuthController',       'nosotros'],
+    'servicios'     => ['AuthController',       'servicios'],
+    'perfil'        => ['PerfilController',     $accion],
+    'reportes'      => ['ReporteController',    $accion],
+];
+
+if (array_key_exists($controlador, $rutas)) {
+    [$clase, $metodo] = $rutas[$controlador];
+
+    // Verificar que la clase y el método existen
+    if (class_exists($clase)) {
+        $instancia = new $clase();
+        if (method_exists($instancia, $metodo)) {
+            $instancia->$metodo($parametro);
+        } else {
+            http_response_code(404);
+            $instancia->paginaNoEncontrada();
+        }
+    } else {
+        http_response_code(500);
+        echo 'Error interno: controlador no encontrado.';
+    }
+} else {
+    http_response_code(404);
+    $ctrl = new AuthController();
+    $ctrl->paginaNoEncontrada();
+}

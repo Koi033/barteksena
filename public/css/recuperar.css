@@ -1,0 +1,247 @@
+/* estilos para la vista de recuperar contraseña
+   Mantiene coherencia con `auth.css` (paleta y tipografía)
+*/
+
+.recuperar-card {
+    max-width: 520px;
+    margin: 0 auto;
+    background-color: #1a1c1e;
+    border-radius: 16px;
+    padding: 2.2rem 1.8rem;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.45);
+}
+
+.reset-card {
+    max-width: 560px;
+    margin: 0 auto;
+    background-color: #1a1c1e;
+    border-radius: 16px;
+    padding: 2.4rem 2rem;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.45);
+}
+
+.reset-card .icon-wrap {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem auto;
+    background: linear-gradient(135deg, #E67E22, #d35400);
+    font-size: 26px;
+}
+
+.reset-card h1 {
+    text-align: center;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 0.4rem;
+    font-size: 1.75rem;
+}
+
+.reset-card .subtitle,
+.reset-card .recuperar-subtitle {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.95rem;
+    margin-bottom: 1.3rem;
+    line-height: 1.5;
+}
+
+.reset-card .field {
+    margin-bottom: 1.2rem;
+    position: relative;
+}
+
+.reset-card label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+}
+
+.reset-card .input-wrap {
+    position: relative;
+}
+
+.reset-card input[type="password"],
+.reset-card input[type="text"] {
+    width: 100%;
+    padding: 0.95rem 3.5rem 0.95rem 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    color: #eee;
+    font-size: 0.95rem;
+}
+
+.reset-card input:focus {
+    outline: none;
+    box-shadow: 0 6px 18px rgba(230,126,34,0.12);
+    border-color: #E67E22;
+}
+
+.reset-card input::placeholder {
+    color: #777;
+}
+
+.reset-card .toggle-pass {
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    font-size: 1rem;
+    padding: 0;
+}
+
+.reset-card .toggle-pass:hover {
+    color: #fff;
+}
+
+.reset-card .strength-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+}
+
+.reset-card .strength-bar span {
+    flex: 1;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.1);
+    transition: background 0.3s;
+}
+
+.reset-card .strength-label {
+    font-size: 0.82rem;
+    color: #aaa;
+    margin-top: 0.5rem;
+}
+
+.reset-card .requirements {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 1rem 1rem;
+    margin-bottom: 1.4rem;
+    font-size: 0.88rem;
+}
+
+.reset-card .requirements p {
+    color: #bbb;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.reset-card .req-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #aaa;
+    margin-bottom: 0.35rem;
+    transition: color 0.2s;
+}
+
+.reset-card .req-item.ok {
+    color: #2ecc71;
+}
+
+.reset-card .req-item::before {
+    content: '○';
+    font-size: 0.8rem;
+}
+
+.reset-card .req-item.ok::before {
+    content: '●';
+}
+
+.reset-card .btn-form {
+    margin-top: 0.5rem;
+}
+
+.reset-card .back-link {
+    margin-top: 1.4rem;
+}
+
+.reset-card .back-link span {
+    color: #E67E22;
+    font-weight: 700;
+}
+
+.recuperar-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem auto;
+    background: linear-gradient(135deg, #E67E22, #d35400);
+    font-size: 28px;
+}
+
+.recuperar-card h1 {
+    text-align: center;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 0.4rem;
+}
+
+.recuperar-subtitle {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.4;
+}
+
+.recuperar-subtitle .highlight {
+    color: #fff;
+    font-weight: 700;
+}
+
+.campo-grupo input[type="email"] {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    color: #eee;
+    font-size: 0.95rem;
+}
+
+.campo-grupo input[type="email"]:focus {
+    outline: none;
+    box-shadow: 0 6px 18px rgba(230,126,34,0.08);
+    border-color: #E67E22;
+}
+
+.btn-form {
+    background-color: #E67E22;
+    border-radius: 22px;
+    padding: 0.9rem;
+    font-weight: 700;
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: #aaa;
+}
+
+.back-link span { color: #E67E22; font-weight: 700; }
+
+.flash { margin-bottom: 1rem; }
+
+@media (max-width:640px) {
+    .recuperar-card { padding: 1.6rem; }
+}

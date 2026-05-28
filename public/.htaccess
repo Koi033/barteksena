@@ -1,0 +1,11 @@
+# public/.htaccess
+# Permite servir los assets estáticos (CSS, JS, imágenes) directamente.
+# Esta carpeta NO tiene PHP, solo archivos estáticos.
+
+Options -Indexes
+
+# Permitir acceso a todos los archivos de esta carpeta
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>

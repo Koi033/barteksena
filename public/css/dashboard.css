@@ -1,0 +1,900 @@
+/* ============================================================
+   css/dashboard.css — Bartek · Estilos del Panel Interno
+   Sidebar + main content + todos los componentes del dashboard
+   ============================================================ */
+
+/* ── Layout general del dashboard ───────────────────────────────── */
+.layout-dashboard {
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────── */
+.sidebar {
+    width: 220px;
+    background-color: #1a1c1e;
+    display: flex;
+    flex-direction: column;
+    padding: 1.2rem 1rem;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.35);
+    min-height: 100vh;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    transition: width 0.3s ease;
+    flex-shrink: 0;
+}
+
+/* ── Marca del sidebar ───────────────────────────────────────────── */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+.sidebar-brand span {
+    color: #E67E22;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.sidebar-toggle-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.2rem;
+    border-radius: 4px;
+    transition: color 0.2s;
+}
+
+.sidebar-toggle-btn:hover { color: #E67E22; }
+
+/* ── Menú lateral ────────────────────────────────────────────────── */
+.sidebar-menu {
+    list-style: none;
+    flex: 1;
+}
+
+.sidebar-menu li {
+    margin-bottom: 0.4rem;
+}
+
+.sidebar-menu a {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background-color: #2C2C2C;
+    color: #bbb;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-menu a:hover {
+    background-color: #333;
+    color: #fff;
+    border-color: #E67E22;
+    text-decoration: none;
+}
+
+.sidebar-menu a.active {
+    background-color: #0066ff;
+    color: #fff;
+    border-color: #0066ff;
+}
+
+/* ── Footer del sidebar (usuario + logout) ───────────────────────── */
+.sidebar-footer {
+    border-top: 1px solid #333;
+    padding-top: 1rem;
+    margin-top: auto;
+}
+
+.user-info {
+    margin-bottom: 0.7rem;
+}
+
+.user-name {
+    display: block;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-role {
+    display: block;
+    color: #E67E22;
+    font-size: 0.78rem;
+    text-transform: capitalize;
+}
+
+.btn-logout {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background-color: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.25s;
+    text-align: center;
+}
+
+.btn-logout:hover {
+    background-color: #e74c3c;
+}
+
+/* ── Contenido principal ─────────────────────────────────────────── */
+.main-content {
+    flex: 1;
+    padding: 2rem 2.5rem;
+    overflow-y: auto;
+    min-width: 0; /* Previene desbordamiento en flex */
+}
+
+/* ── Encabezado de página ────────────────────────────────────────── */
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    color: #E67E22;
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+}
+
+.page-subtitle {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section-header h2 {
+    color: #E67E22;
+    font-size: 1.2rem;
+}
+
+/* ── Botones del panel ───────────────────────────────────────────── */
+.btn-primary,
+.btn-secondary,
+.btn-filter,
+.btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem 1.3rem;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background-color: #0066ff;
+    color: #fff;
+}
+.btn-primary:hover {
+    background-color: #0051cc;
+    box-shadow: 0 5px 15px rgba(0, 102, 255, 0.3);
+    text-decoration: none;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #555;
+    color: #fff;
+}
+.btn-secondary:hover {
+    background-color: #666;
+    text-decoration: none;
+    color: #fff;
+}
+
+.btn-filter {
+    background-color: transparent;
+    border: 1px solid #aaa;
+    color: #aaa;
+}
+.btn-filter:hover {
+    background-color: #E67E22;
+    border-color: #E67E22;
+    color: #fff;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* ── Barra de búsqueda y filtros ─────────────────────────────────── */
+.controls-section {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-bar {
+    flex: 1;
+    min-width: 180px;
+    padding: 0.65rem 1rem;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background-color: #1a1c1e;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.88rem;
+}
+
+.search-bar::placeholder { color: #666; }
+
+.search-bar:focus {
+    outline: none;
+    border-color: #E67E22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.15);
+}
+
+.filter-dropdown {
+    padding: 0.65rem 1rem;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background-color: #1a1c1e;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+}
+
+.filter-dropdown:focus {
+    outline: none;
+    border-color: #E67E22;
+}
+
+/* ── Tarjetas resumen ────────────────────────────────────────────── */
+.sales-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 1.8rem;
+}
+
+.summary-card {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.3rem 1.5rem;
+    border-left: 4px solid #E67E22;
+}
+
+.summary-card.summary-alert {
+    border-left-color: #e74c3c;
+}
+
+.summary-card h3 {
+    color: #aaa;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 0.5rem;
+}
+
+.summary-card .value {
+    color: #fff;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+}
+
+.summary-card .subtitle {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+/* ── Alerta de stock bajo ────────────────────────────────────────── */
+.stock-alert-box {
+    background: #3a1a1a;
+    border: 1px solid #e74c3c;
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #f87171;
+    font-size: 0.88rem;
+}
+
+.stock-alert-box h2 {
+    color: #f87171;
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+}
+
+.stock-alert-list {
+    list-style: disc;
+    padding-left: 1.5rem;
+}
+
+.stock-alert-list li {
+    margin-bottom: 0.3rem;
+}
+
+.alert-badge {
+    display: inline-block;
+    background: #4a1a1a;
+    border: 1px solid #e74c3c;
+    color: #f87171;
+    font-size: 0.78rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    margin: 0.2rem;
+}
+
+/* ── Sección de pedidos/notificaciones ───────────────────────────── */
+.recent-orders {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.8rem;
+}
+
+.recent-orders h2 {
+    color: #E67E22;
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+}
+
+/* ── Tablas ──────────────────────────────────────────────────────── */
+.table-section {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.2rem;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+}
+
+.bartek-datatable,
+.inventory-table,
+.transactions-table,
+.employees-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.bartek-datatable thead,
+.inventory-table thead,
+.transactions-table thead,
+.employees-table thead {
+    background-color: #252728;
+}
+
+.bartek-datatable th,
+.inventory-table th,
+.transactions-table th,
+.employees-table th {
+    color: #999;
+    padding: 0.9rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #333;
+    white-space: nowrap;
+}
+
+.bartek-datatable td,
+.inventory-table td,
+.transactions-table td,
+.employees-table td {
+    color: #ccc;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #2f3133;
+    font-size: 0.88rem;
+    vertical-align: middle;
+}
+
+.bartek-datatable tbody tr:hover,
+.inventory-table tbody tr:hover,
+.transactions-table tbody tr:hover,
+.employees-table tbody tr:hover {
+    background-color: #252728;
+}
+
+/* Clases especiales de celda */
+.id-cell,
+.employee-name { color: #fff; font-weight: 700; }
+.transaction-id { color: #E67E22; font-weight: 700; }
+.email-cell { color: #7fb3ff; }
+.price-cell { color: #E67E22; font-weight: 700; }
+.stock-low    { color: #e74c3c; font-weight: 700; }
+.stock-medium { color: #f39c12; font-weight: 700; }
+.stock-ok     { color: #28a745; font-weight: 700; }
+
+.category-badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background-color: #333;
+    color: #ccc;
+}
+
+/* ── Badges de estado ────────────────────────────────────────────── */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.status-completed { background: #28a745; color: #fff; }
+.status-pending   { background: #f39c12; color: #fff; }
+.status-cancelled { background: #e74c3c; color: #fff; }
+
+/* ── Botones de acción en tablas ─────────────────────────────────── */
+.actions-cell {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2C2C2C;
+    transition: all 0.25s ease;
+    padding: 0;
+}
+
+.edit-btn   { color: #0066ff; }
+.edit-btn:hover   { background-color: #0066ff; color: #fff; }
+.delete-btn { color: #dc3545; }
+.delete-btn:hover { background-color: #dc3545; color: #fff; }
+
+/* ── Paginación ──────────────────────────────────────────────────── */
+.pagination-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.2rem;
+    color: #aaa;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.pagination-info { font-size: 0.82rem; }
+
+.pagination-controls {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    padding: 0.45rem 0.8rem;
+    border: 1px solid #555;
+    border-radius: 6px;
+    background-color: #2C2C2C;
+    color: #ccc;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.82rem;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.pagination-btn:hover {
+    background-color: #E67E22;
+    border-color: #E67E22;
+    color: #fff;
+    text-decoration: none;
+}
+
+.pagination-btn.active {
+    background-color: #0066ff;
+    border-color: #0066ff;
+    color: #fff;
+}
+
+/* ── Grid de contenido ───────────────────────────────────────────── */
+.content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.8rem;
+    margin-bottom: 1.8rem;
+}
+
+/* ── Top productos ───────────────────────────────────────────────── */
+.top-products,
+.transactions {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.top-products h2,
+.transactions h2 {
+    color: #E67E22;
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid #2f3133;
+    color: #ccc;
+    font-size: 0.88rem;
+}
+
+.product-item:last-child { border-bottom: none; }
+.product-name    { color: #fff; font-weight: 600; }
+.product-quantity { color: #E67E22; font-weight: 600; }
+
+/* ── Formulario interno (crear/editar) ───────────────────────────── */
+.form-card {
+    background-color: #1a1c1e;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 700px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    color: #aaa;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 0.4rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* ── Sección formulario (horarios, etc.) ─────────────────────────── */
+.form-section {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.form-section h2 {
+    color: #E67E22;
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+}
+
+.btn-submit {
+    width: 100%;
+    background-color: #0066ff;
+    color: #fff;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    margin-top: 0.5rem;
+}
+
+.btn-submit:hover {
+    background-color: #0051cc;
+    box-shadow: 0 5px 15px rgba(0, 102, 255, 0.3);
+}
+
+/* ── Horarios pendientes ─────────────────────────────────────────── */
+.calendar-section {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.calendar-section h2 { color: #E67E22; font-size: 1.1rem; margin-bottom: 1rem; }
+
+.pending-schedules {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.5rem;
+    grid-column: 1 / -1;
+}
+
+.pending-schedules h2 { color: #E67E22; font-size: 1.1rem; margin-bottom: 1rem; }
+
+.schedule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #252728;
+    border-radius: 8px;
+    border-left: 4px solid #E67E22;
+    margin-bottom: 0.8rem;
+    gap: 1rem;
+}
+
+.schedule-employee { color: #fff; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+.schedule-time     { color: #aaa; font-size: 0.82rem; }
+
+.schedule-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-shrink: 0;
+}
+
+.btn-action {
+    padding: 0.4rem 0.9rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: all 0.25s;
+}
+
+.btn-approve { background-color: #28a745; color: #fff; }
+.btn-approve:hover { background-color: #218838; }
+.btn-reject  { background-color: #dc3545; color: #fff; }
+.btn-reject:hover  { background-color: #c82333; }
+
+/* ── Tabs ────────────────────────────────────────────────────────── */
+.tabs-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    border-bottom: 2px solid #333;
+    flex-wrap: wrap;
+}
+
+.tab-button {
+    padding: 0.75rem 1.2rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #aaa;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: -2px;
+    transition: all 0.25s;
+}
+
+.tab-button:hover { color: #E67E22; }
+.tab-button.active { color: #E67E22; border-bottom-color: #E67E22; }
+
+/* ── Categorías (menú) ───────────────────────────────────────────── */
+.categories-list { display: flex; flex-direction: column; gap: 1rem; }
+
+.category-card {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid #E67E22;
+    transition: all 0.25s;
+    gap: 1rem;
+}
+
+.category-card:hover {
+    box-shadow: 0 5px 16px rgba(230, 126, 34, 0.2);
+    transform: translateX(4px);
+}
+
+.category-name        { color: #fff; font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.category-description { color: #aaa; font-size: 0.82rem; margin-bottom: 0.3rem; }
+.category-count       { color: #666; font-size: 0.78rem; }
+
+.category-actions {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.view-products-btn {
+    background-color: #0066ff;
+    color: #fff;
+    padding: 0.45rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: all 0.25s;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.view-products-btn:hover {
+    background-color: #0051cc;
+    text-decoration: none;
+    color: #fff;
+}
+
+/* ── Modal ───────────────────────────────────────────────────────── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-box {
+    background: #1a1c1e;
+    border-radius: 14px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+    animation: modalEntra 0.2s ease;
+}
+
+@keyframes modalEntra {
+    from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-box h2 { color: #E67E22; margin-bottom: 1.5rem; }
+
+.time-inputs { display: flex; gap: 0.6rem; }
+.time-inputs input { flex: 1; }
+
+/* ── Responsive dashboard ────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    .pending-schedules { grid-column: 1; }
+}
+
+@media (max-width: 768px) {
+    .layout-dashboard { flex-direction: column; }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+        height: auto;
+        position: static;
+        padding: 1rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+
+    .sidebar-brand { margin-bottom: 0; border: none; padding: 0; }
+
+    .sidebar nav { width: 100%; }
+
+    .sidebar-menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .sidebar-menu li { flex: 1; min-width: 110px; }
+
+    .sidebar-menu a {
+        font-size: 0.78rem;
+        padding: 0.5rem 0.6rem;
+        text-align: center;
+    }
+
+    .sidebar-footer {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #333;
+        padding-top: 0.6rem;
+        margin-top: 0.5rem;
+    }
+
+    .btn-logout { width: auto; padding: 0.45rem 0.9rem; }
+
+    .main-content { padding: 1rem 1.2rem; }
+
+    .action-buttons,
+    .form-actions { flex-direction: column; }
+
+    .btn-primary,
+    .btn-secondary { width: 100%; justify-content: center; }
+
+    .controls-section { flex-direction: column; }
+    .search-bar, .filter-dropdown { width: 100%; }
+
+    .sales-summary { grid-template-columns: 1fr 1fr; }
+
+    .content-grid { grid-template-columns: 1fr; }
+
+    .category-card  { flex-direction: column; align-items: flex-start; }
+    .category-actions { width: 100%; }
+
+    .schedule-item  { flex-direction: column; align-items: flex-start; }
+    .schedule-actions { width: 100%; }
+    .btn-action { flex: 1; text-align: center; }
+
+    .pagination-section { flex-direction: column; }
+
+    .form-card  { padding: 1.2rem; }
+    .form-grid  { grid-template-columns: 1fr; }
+
+    .actions-cell { flex-direction: row; flex-wrap: wrap; }
+}
+
+@media (max-width: 480px) {
+    .sales-summary { grid-template-columns: 1fr; }
+    .page-title { font-size: 1.4rem; }
+}

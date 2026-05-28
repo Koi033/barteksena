@@ -1,0 +1,124 @@
+/* ============================================================
+   css/datatables-custom.css — Bartek · Tema personalizado DataTables
+   Sobreescribe estilos por defecto para concordar con la paleta del proyecto
+   ============================================================ */
+
+/* ── Contenedor DataTables ───────────────────────────────────────── */
+.dataTables_wrapper {
+    color: #ccc;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.88rem;
+}
+
+/* ── Barra superior: length + filter ─────────────────────────────── */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 1rem;
+    color: #aaa;
+}
+
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    background-color: #2C2C2C;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 6px;
+    padding: 0.4rem 0.7rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    outline: none;
+    border-color: #E67E22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.15);
+}
+
+/* ── Barra inferior: info + paginación ───────────────────────────── */
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 1rem;
+    color: #aaa;
+}
+
+/* ── Botones de paginación DataTables ────────────────────────────── */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid #555 !important;
+    border-radius: 6px !important;
+    background-color: #2C2C2C !important;
+    color: #ccc !important;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.82rem;
+    margin: 0 2px;
+    transition: all 0.2s;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #E67E22 !important;
+    border-color: #E67E22 !important;
+    color: #fff !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background-color: #0066ff !important;
+    border-color: #0066ff !important;
+    color: #fff !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+    color: #555 !important;
+    cursor: not-allowed;
+    border-color: #333 !important;
+    background-color: #1a1c1e !important;
+}
+
+/* ── Cabecera ordenable ──────────────────────────────────────────── */
+table.dataTable thead th.sorting,
+table.dataTable thead th.sorting_asc,
+table.dataTable thead th.sorting_desc {
+    cursor: pointer;
+    color: #999;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+table.dataTable thead th.sorting:hover {
+    color: #E67E22;
+}
+
+table.dataTable thead th.sorting_asc::after  { content: ' ▲'; color: #E67E22; }
+table.dataTable thead th.sorting_desc::after { content: ' ▼'; color: #E67E22; }
+
+/* ── Fila seleccionada ───────────────────────────────────────────── */
+table.dataTable tbody tr.selected {
+    background-color: #1a2a4a !important;
+}
+
+/* ── Sin resultados ──────────────────────────────────────────────── */
+.dataTables_wrapper .dataTables_empty {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+}
+
+/* ── Responsive: envolver tabla en scroll horizontal ─────────────── */
+.dataTables_scrollBody {
+    overflow-x: auto !important;
+}
+
+@media (max-width: 600px) {
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        float: none;
+        text-align: left;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        text-align: center;
+    }
+}
