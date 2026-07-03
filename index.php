@@ -62,7 +62,8 @@ require_once BASE_PATH . '/app/controllers/PasswordController.php';
 iniciarSesion();
 
 // ── Enrutamiento ──────────────────────────────────────────────────────────────
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+$uri = parse_url($requestUri, PHP_URL_PATH) ?: '';
 $uri = str_replace(BASE_URL, '', $uri);
 $uri = trim($uri, '/');
 
