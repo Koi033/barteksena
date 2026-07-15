@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-05-2026 a las 21:44:03
+-- Tiempo de generación: 15-07-2026 a las 04:48:40
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -124,7 +124,7 @@ CREATE TABLE `empleados` (
   `puesto` varchar(80) NOT NULL,
   `departamento` varchar(80) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `telefono` varchar(20) DEFAULT NULL,
+  `telefono` varchar(10) DEFAULT NULL,
   `activo` tinyint(1) NOT NULL DEFAULT 1,
   `creado_en` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -240,7 +240,7 @@ CREATE TABLE `usuarios` (
   `nombre` varchar(40) NOT NULL,
   `apellido` varchar(40) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `telefono` varchar(20) DEFAULT NULL,
+  `telefono` varchar(10) DEFAULT NULL,
   `usuario` varchar(60) NOT NULL,
   `contrasena` varchar(255) NOT NULL,
   `rol` enum('dueno','empleado') NOT NULL DEFAULT 'empleado',
@@ -262,7 +262,8 @@ INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `email`, `telefono`, `usuari
 (11, 'diego', 'arevalo', 'digo@gmail.com', '5437656876', 'diegobb', '$2y$12$3pJIBWyAZYqFf7gL/AThgun901oF65NYFiXGy435vbMyZi/7z29Iu', 'dueno', 1, '2026-05-21 15:59:29', NULL, NULL, 0),
 (12, 'alan', 'brito', 'lan@ejemplo.com', '1234565487', 'alanbrito', '$2y$12$ekKiwfyQKzmGHHvoed6dCeqznQ9n056anlnp5r3NngG1wFdbFk36O', 'dueno', 1, '2026-05-21 16:10:33', NULL, NULL, 0),
 (13, 'asdsadasd', 'sdasdasd', 'asdasdq@asda.com', '', 'asdasd', '$2y$12$EmzO9lmbj0Jcegk3m5iA9.LkK/RKntXLHjHn3Xcz552wHNe2k49DK', 'dueno', 1, '2026-05-21 16:12:25', NULL, NULL, 0),
-(14, 'ALAN', 'BRICEÑO', 'alanbetancourtbriceno101@gmail.com', '32343432', 'alita', '$2y$12$V92/.zIz8PvxWR4MBF.I9u/O1mYqjUXHEa5yEutGtI4mD/FYO.x5S', 'dueno', 1, '2026-05-22 16:45:43', '2dec6e4e0636a2111d4819911c6ffc8df5ea8b21a63525c677de7c53c0598cc6', 1779824244, 1);
+(14, 'ALAN', 'BRICEÑO', 'alanbetancourtbriceno101@gmail.com', '32343432', 'alita', '$2y$12$V92/.zIz8PvxWR4MBF.I9u/O1mYqjUXHEa5yEutGtI4mD/FYO.x5S', 'dueno', 1, '2026-05-22 16:45:43', '2dec6e4e0636a2111d4819911c6ffc8df5ea8b21a63525c677de7c53c0598cc6', 1779824244, 1),
+(15, 'julio', 'santana', 'juliosantanamb@gmail.com', '3112348287', 'julio bb', '$2y$12$6uXthWf897f4qfUcMQidwuVAEQOiniVjt9OgwsYkEZAC2FPm06mTa', 'dueno', 1, '2026-05-27 18:21:15', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -273,7 +274,7 @@ INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `email`, `telefono`, `usuari
 CREATE TABLE `ventas` (
   `id` int(10) UNSIGNED NOT NULL,
   `empleado_id` int(10) UNSIGNED DEFAULT NULL,
-  `mesa` varchar(30) DEFAULT NULL,
+  `mesa` varchar(2) DEFAULT NULL,
   `total` decimal(10,2) NOT NULL DEFAULT 0.00,
   `estado` enum('abierto','cerrado','cancelado') NOT NULL DEFAULT 'abierto',
   `creado_en` datetime NOT NULL DEFAULT current_timestamp(),
@@ -397,7 +398,7 @@ ALTER TABLE `notificaciones`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`

@@ -67,14 +67,14 @@
                         <a href="<?= BASE_URL ?>/empleados/editar/<?= (int)$emp['id'] ?>"
                            class="action-btn edit-btn" title="Editar"><i class="fas fa-edit" aria-hidden="true"></i></a>
 
-                        <!-- Eliminar (formulario POST con CSRF) -->
+                        <!-- Inhabilitar (formulario POST con CSRF) -->
                         <form method="POST" action="<?= BASE_URL ?>/empleados/eliminar"
                               style="display:inline"
-                              onsubmit="return confirm('¿Eliminar a <?= htmlspecialchars(addslashes($emp['nombre_completo']), ENT_QUOTES, 'UTF-8') ?>?')">
+                              onsubmit="return confirm('¿Inhabilitar a <?= htmlspecialchars(addslashes($emp['nombre_completo']), ENT_QUOTES, 'UTF-8') ?>?')">
                             <input type="hidden" name="csrf_token"
                                    value="<?= htmlspecialchars(generarTokenCSRF('eliminar_emp'), ENT_QUOTES, 'UTF-8') ?>">
                             <input type="hidden" name="id" value="<?= (int)$emp['id'] ?>">
-                            <button type="submit" class="action-btn delete-btn" title="Eliminar"><i class="fas fa-trash" aria-hidden="true"></i></button>
+                            <button type="submit" class="action-btn delete-btn" title="Inhabilitar"><i class="fas fa-trash" aria-hidden="true"></i></button>
                         </form>
                     </td>
                 </tr>

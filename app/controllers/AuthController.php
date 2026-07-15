@@ -203,7 +203,7 @@ class AuthController extends BaseController
         if (!$email)          $errores[] = 'El correo electrónico no es válido.';
         if (empty($usuario))  $errores[] = 'El usuario es obligatorio.';
         
-        // ── NUEVA VALIDACIÓN DE CONTRASEÑA ROBUSTA ──────────────────────────
+        // ──VALIDACIÓN DE CONTRASEÑA ──────────────────────────
         if (strlen($pass) < 8) {
             $errores[] = 'La contraseña debe tener mínimo 8 caracteres.';
         }
@@ -240,7 +240,7 @@ class AuthController extends BaseController
             return;
         }
 
-        // Hash seguro de contraseña (ya usas BCRYPT correctamente aquí)
+        // Hash seguro de contraseña 
         $hash = password_hash($pass, PASSWORD_BCRYPT, ['cost' => BCRYPT_COST]);
 
         $id = $this->usuarioModel->crear([

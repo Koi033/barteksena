@@ -170,7 +170,7 @@ class EmpleadoController extends BaseController
     }
 
     /**
-     * Realiza borrado lógico de un empleado.
+     * Inhabilita de forma lógica a un empleado.
      * POST /empleados/eliminar
      *
      * @return void
@@ -192,7 +192,7 @@ class EmpleadoController extends BaseController
         $id = $this->entero('id', 'post');
         $filas = $this->modelo->eliminar($id);
         flashMensaje($filas > 0 ? 'success' : 'error',
-                     $filas > 0 ? 'Empleado eliminado.' : 'No se pudo eliminar.');
+                     $filas > 0 ? 'Empleado inhabilitado.' : 'No se pudo inhabilitar.');
         $this->redirigir('/empleados');
     }
 

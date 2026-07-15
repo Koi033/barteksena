@@ -142,7 +142,7 @@ class EmpleadoModel extends BaseModel
     }
 
     /**
-     * Realiza borrado lógico del empleado (activo = 0).
+     * Inhabilita el empleado de forma lógica (activo = 0).
      * Nunca se eliminan físicamente los registros para conservar historial.
      *
      * @param  int $id ID del empleado
