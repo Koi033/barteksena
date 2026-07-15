@@ -32,7 +32,7 @@
 
 <!-- Tabla con DataTables -->
 <div class="table-section">
-    <table class="bartek-datatable" id="tablaEmpleados">
+    <table class="bartek-datatable dt-buttons" id="tablaEmpleados">
         <thead>
             <tr>
                 <th>Nombre Completo</th>

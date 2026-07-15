@@ -53,11 +53,10 @@
     <?= $contenido ?>
 
     <footer class="footer-public">
-        <p>© 2026 Bartek · Grupo 2 SENA ADSO Ficha 3171693</p>
+        <p>© 2026 Bartek</p>
         <div class="redes">
-            <a href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a>
-            <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
-            <a href="https://www.whatsapp.com/" target="_blank" rel="noopener">WhatsApp</a>
+            <a href="mailto:bartekappnr@gmail.com" target="_blank" rel="noopener">Gmail</a>
+          
         </div>
     </footer>
 
