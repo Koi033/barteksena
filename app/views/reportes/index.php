@@ -61,3 +61,8 @@
     <p style="color:#888; font-size:0.88rem;">
         <i class="fas fa-info-circle" aria-hidden="true"></i> Los archivos CSV incluyen BOM UTF-8 para compatibilidad con Microsoft Excel y LibreOffice Calc.
 </div>
+
+
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2026/06/25/20/20260625200158-LXETZX3T.js" defer></script>
+    
