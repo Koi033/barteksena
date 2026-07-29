@@ -54,10 +54,7 @@
 
     <footer class="footer-public">
         <p>© 2026 Bartek</p>
-        <div class="redes">
-            <a href="mailto:bartekappnr@gmail.com" target="_blank" rel="noopener">Gmail</a>
-          
-        </div>
+    
     </footer>
 
     <script src="<?= BASE_URL ?>/public/js/main.js"></script>

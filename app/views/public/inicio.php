@@ -2,9 +2,15 @@
 <section class="catalogo">
     <div class="contenedor-mixto">
         <div class="info-texto">
+            <span class="hero-label">Gestiona tu bar </span>
             <h2>Bartek</h2>
-            <p>La plataforma de gestión inteligente para bares modernos.</p>
-            <a href="<?= BASE_URL ?>/registro" class="btn-info">Empezar Gratis</a>
+            <p>La plataforma de gestión inteligente para bares modernos. Controla inventario, horarios y ventas desde un solo panel.</p>
+
+            <div class="hero-actions">
+                <a href="<?= BASE_URL ?>/registro" class="btn-info">Empezar Gratis</a>
+                <a href="<?= BASE_URL ?>/contacto" class="btn-form btn-secondary">Contáctanos</a>
+            </div>
+
         </div>
 
         <div class="carrusel-ventana">
@@ -17,8 +23,22 @@
             <button class="flecha siguiente" onclick="moverDerecha()"  aria-label="Siguiente">&#10095;</button>
         </div>
     </div>
-    
+
+    <div class="beneficios">
+        <a class="beneficio-item" href="#" aria-label="Reservas">
+            <h3>Reservas</h3>
+            <p>Gestiona reservaciones y disponibilidad de mesas con confirmaciones automáticas para el cliente.</p>
+        </a>
+        <a class="beneficio-item" href="#" aria-label="Menú digital">
+            <h3>Menú digital</h3>
+            <p>Publica y actualiza tu carta con precios, descripciones y ofertas especiales desde un solo lugar.</p>
+        </a>
+        <a class="beneficio-item" href="#" aria-label="Agenda de personal">
+            <h3>Agenda de personal</h3>
+            <p>Organiza turnos, horarios y asistencia del equipo desde una sola plataforma.</p>
+        </a>
+    </div>
+
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/05/14/18/20260514181755-US80LTJD.js" defer></script>
-    
+    <script src="https://files.bpcontent.cloud/2026/05/14/18/20260514181755-US80LTJD.js" defer></script>
 </section>

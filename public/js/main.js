@@ -37,6 +37,17 @@ function actualizarPosicion() {
     track.style.transform = `translateX(${indice * -100}%)`;
 }
 
+function iniciarCarruselAutomatico() {
+    const track = document.getElementById('track');
+    if (!track) return;
+    setInterval(() => {
+        if (document.hidden) return;
+        moverDerecha();
+    }, 6000);
+}
+
+window.addEventListener('load', iniciarCarruselAutomatico);
+
 /* ── Slideshow de fondo (nosotros / servicios) ───────────────────── */
 (function initSlideshow() {
     const slideshow = document.getElementById('background-slideshow');
