@@ -19,9 +19,9 @@
 </head>
 <body class="layout-dashboard">
 
-    
+    <?php $rolUsuario = $_SESSION['usuario_rol'] ?? ''; ?>
+
 <!-- ── Sidebar ────────────────────────────────────────────────── -->
- <!-- ── Sidebar ────────────────────────────────────────────────── -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <span>Bartek</span>
@@ -30,48 +30,71 @@
 
         <nav>
             <ul class="sidebar-menu">
+                <!-- Dashboard / Control de Mesas -->
                 <li>
                     <a href="<?= BASE_URL ?>/dashboard"
                        class="<?= str_contains($_SERVER['REQUEST_URI'], '/dashboard') ? 'active' : '' ?>">
-                       <i class="fas fa-bell" aria-hidden="true"></i> Notificaciones
+                       <?php if ($rolUsuario === 'empleado'): ?>
+                           <i class="fas fa-chair" aria-hidden="true"></i> Control de Mesas
+                       <?php else: ?>
+                           <i class="fas fa-bell" aria-hidden="true"></i> Notificaciones
+                       <?php endif; ?>
                     </a>
                 </li>
-                <li>
-                    <a href="<?= BASE_URL ?>/empleados"
-                       class="<?= str_contains($_SERVER['REQUEST_URI'], '/empleados') ? 'active' : '' ?>">
-                       <i class="fas fa-users" aria-hidden="true"></i> Empleados
-                    </a>
-                </li>
+
+                <!-- Empleados (Solo Dueño) -->
+                <?php if ($rolUsuario === 'dueno'): ?>
+                    <li>
+                        <a href="<?= BASE_URL ?>/empleados"
+                           class="<?= str_contains($_SERVER['REQUEST_URI'], '/empleados') ? 'active' : '' ?>">
+                           <i class="fas fa-users" aria-hidden="true"></i> Empleados
+                        </a>
+                    </li>
+                <?php endif; ?>
+
+                <!-- Inventario (Permitido para ambos) -->
                 <li>
                     <a href="<?= BASE_URL ?>/inventario"
                        class="<?= str_contains($_SERVER['REQUEST_URI'], '/inventario') ? 'active' : '' ?>">
                        <i class="fas fa-boxes" aria-hidden="true"></i> Inventario
                     </a>
                 </li>
+
+                <!-- Ventas (Permitido para ambos) -->
                 <li>
                     <a href="<?= BASE_URL ?>/ventas"
                        class="<?= str_contains($_SERVER['REQUEST_URI'], '/ventas') ? 'active' : '' ?>">
                        <i class="fas fa-cash-register" aria-hidden="true"></i> Ventas
                     </a>
                 </li>
+
+                <!-- Menú Interactivo (Permitido para ambos) -->
                 <li>
                     <a href="<?= BASE_URL ?>/menu"
                        class="<?= str_contains($_SERVER['REQUEST_URI'], '/menu') ? 'active' : '' ?>">
                        <i class="fas fa-cocktail" aria-hidden="true"></i> Menú Interactivo
                     </a>
                 </li>
+
+                <!-- Horarios (Permitido para ambos) -->
                 <li>
                     <a href="<?= BASE_URL ?>/horarios"
                        class="<?= str_contains($_SERVER['REQUEST_URI'], '/horarios') ? 'active' : '' ?>">
                        <i class="fas fa-clock" aria-hidden="true"></i> Horarios
                     </a>
                 </li>
-                <li>
-                    <a href="<?= BASE_URL ?>/reportes"
-                       class="<?= str_contains($_SERVER['REQUEST_URI'], '/reportes') ? 'active' : '' ?>">
-                       <i class="fas fa-chart-bar" aria-hidden="true"></i> Reportes
-                    </a>
-                </li>
+
+                <!-- Reportes (Solo Dueño) -->
+                <?php if ($rolUsuario === 'dueno'): ?>
+                    <li>
+                        <a href="<?= BASE_URL ?>/reportes"
+                           class="<?= str_contains($_SERVER['REQUEST_URI'], '/reportes') ? 'active' : '' ?>">
+                           <i class="fas fa-chart-bar" aria-hidden="true"></i> Reportes
+                        </a>
+                    </li>
+                <?php endif; ?>
+
+                <!-- Mi Perfil (Permitido para ambos) -->
                 <li>
                     <a href="<?= BASE_URL ?>/perfil"
                        class="<?= str_contains($_SERVER['REQUEST_URI'], '/perfil') ? 'active' : '' ?>">
@@ -86,7 +109,7 @@
                 <a href="<?= BASE_URL ?>/perfil" class="user-name" style="text-decoration:none; color:#fff;">
                     <?= htmlspecialchars($_SESSION['usuario_nombre'] ?? '', ENT_QUOTES, 'UTF-8') ?>
                 </a>
-                <span class="user-role"><?= htmlspecialchars($_SESSION['usuario_rol'] ?? '', ENT_QUOTES, 'UTF-8') ?></span>
+                <span class="user-role"><?= htmlspecialchars($rolUsuario, ENT_QUOTES, 'UTF-8') ?></span>
             </div>
             <!-- Logout con confirmación y POST para evitar CSRF por GET -->
             <form method="POST" action="<?= BASE_URL ?>/logout"

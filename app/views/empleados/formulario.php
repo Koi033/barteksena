@@ -55,6 +55,31 @@
                        maxlength="20"
                        value="<?= htmlspecialchars($empleado['telefono'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
             </div>
+
+            <!-- ── CAMPOS DE ACCESO (SOLO CREACIÓN) ── -->
+            <?php if (!$empleado): ?>
+                <div class="form-group" style="grid-column: 1 / -1; margin-top: 15px; border-top: 1px solid #eaeaea; padding-top: 15px;">
+                    <h4 style="margin: 0 0 5px 0; color: #333;">
+                        <i class="fas fa-key" aria-hidden="true"></i> Credenciales de Acceso
+                    </h4>
+                    <small style="color: #666;">Se creará automáticamente una cuenta con rol de "empleado".</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="fUsuario">Nombre de Usuario *</label>
+                    <input type="text" id="fUsuario" name="usuario"
+                           maxlength="60" required autocomplete="off"
+                           placeholder="Ej: jperez">
+                </div>
+
+                <div class="form-group">
+                    <label for="fContrasena">Contraseña Temporal *</label>
+                    <input type="password" id="fContrasena" name="contrasena"
+                           required minlength="8" autocomplete="new-password"
+                           placeholder="Mínimo 8 caracteres">
+                </div>
+            <?php endif; ?>
+            <!-- ──────────────────────────────────────── -->
         </div>
 
         <div class="form-actions">
