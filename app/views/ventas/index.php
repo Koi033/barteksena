@@ -7,9 +7,7 @@
 
 <!-- Abrir nueva venta -->
 <div class="action-buttons">
-    <button class="btn-primary" onclick="document.getElementById('modalNuevaVenta').style.display='flex'">
-        <i class="fas fa-plus" aria-hidden="true"></i> Abrir Nueva Mesa / Venta
-    </button>
+ 
     <button class="btn-secondary" onclick="window.print()"><i class="fas fa-print" aria-hidden="true"></i> Generar Reporte</button>
 </div>
 
@@ -133,27 +131,4 @@
     </div>
 </div>
 
-<!-- Modal: Nueva Venta -->
-<div id="modalNuevaVenta" class="modal-overlay" style="display:none">
-    <div class="modal-box">
-        <h2><i class="fas fa-shopping-cart" aria-hidden="true"></i> Abrir Nueva Venta</h2>
-        <form method="POST" action="<?= BASE_URL ?>/ventas/guardar">
-            <input type="hidden" name="csrf_token"
-                   value="<?= htmlspecialchars($tokenCSRF, ENT_QUOTES, 'UTF-8') ?>">
 
-            <div class="form-group">
-                <label for="mvMesa">Mesa o Cliente</label>
-                <input type="text" id="mvMesa" name="mesa"
-                       placeholder="Ej: Mesa 5 / Cliente A" maxlength="30" required>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn-primary">Abrir Venta</button>
-                <button type="button" class="btn-secondary"
-                        onclick="document.getElementById('modalNuevaVenta').style.display='none'">
-                    Cancelar
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
