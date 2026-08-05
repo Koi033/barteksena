@@ -164,4 +164,61 @@ class EmpleadoModel extends BaseModel
         $sql = 'SELECT DISTINCT departamento FROM empleados WHERE activo = 1 ORDER BY departamento ASC';
         return $this->consultarTodos($sql);
     }
+    /**
+     * Crea un usuario y un empleado vinculado mediante una transacción.
+     *
+     * @param  array $datosEmpleado Datos del empleado
+     * @param  array $datosUsuario  Datos para el inicio de sesión
+     * @return int                  ID del empleado generado (0 en error)
+     */
+    public function crearConCuenta(array $datosEmpleado, array $datosUsuario): int
+    {
+        try {
+            // Iniciar transacción
+            $this->db->beginTransaction();
+
+            // 1. Crear el usuario (sistema de acceso)
+            $sqlUser = 'INSERT INTO usuarios (nombre, apellido, email, telefono, usuario, contrasena, rol)
+                        VALUES (:nombre, :apellido, :email, :telefono, :usuario, :contrasena, :rol)';
+            $stmtUser = $this->db->prepare($sqlUser);
+            $stmtUser->execute([
+                ':nombre'     => $datosUsuario['nombre'],
+                ':apellido'   => $datosUsuario['apellido'],
+                ':email'      => $datosUsuario['email'],
+                ':telefono'   => $datosUsuario['telefono'],
+                ':usuario'    => $datosUsuario['usuario'],
+                ':contrasena' => $datosUsuario['contrasena'],
+                ':rol'        => 'empleado', // Rol forzado
+            ]);
+            
+            // Obtener el ID del usuario recién creado
+            $usuarioId = (int) $this->db->lastInsertId();
+
+            // 2. Crear el empleado vinculado al usuario
+            $sqlEmp = 'INSERT INTO empleados (usuario_id, nombre_completo, puesto, departamento, email, telefono)
+                       VALUES (:usuario_id, :nombre, :puesto, :departamento, :email, :telefono)';
+            $stmtEmp = $this->db->prepare($sqlEmp);
+            $stmtEmp->execute([
+                ':usuario_id'   => $usuarioId,
+                ':nombre'       => $datosEmpleado['nombre_completo'],
+                ':puesto'       => $datosEmpleado['puesto'],
+                ':departamento' => $datosEmpleado['departamento'],
+                ':email'        => $datosEmpleado['email'],
+                ':telefono'     => $datosEmpleado['telefono'] ?? null,
+            ]);
+
+            $empleadoId = (int) $this->db->lastInsertId();
+
+            // Confirmar transacción
+            $this->db->commit();
+            
+            return $empleadoId;
+
+        } catch (PDOException $e) {
+            // Revertir todo si hay un error (ej. usuario duplicado)
+            $this->db->rollBack();
+            error_log('[Bartek][EmpleadoModel] crearConCuenta: ' . $e->getMessage());
+            return 0;
+        }
+    }
 }

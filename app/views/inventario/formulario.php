@@ -31,13 +31,21 @@
                 </select>
             </div>
 
-            <?php if (!$bebida): ?>
-            <div class="form-group">
-                <label for="fCodigo">Código *</label>
-                <input type="text" id="fCodigo" name="codigo"
-                       maxlength="20" required
-                       placeholder="Ej: BEB006">
-            </div>
+<?php if (!$bebida): ?>
+                <div class="form-group">
+                    <label for="fCodigo">Código *</label>
+                    <input type="text" id="fCodigo" name="codigo"
+                           maxlength="20" required
+                           placeholder="Ej: BEB006">
+                </div>
+            <?php else: ?>
+                <!-- Muestra el código como lectura pero manda el valor por POST -->
+                <div class="form-group">
+                    <label for="fCodigo">Código</label>
+                    <input type="text" id="fCodigo" name="codigo"
+                           value="<?= htmlspecialchars($bebida['codigo'], ENT_QUOTES, 'UTF-8') ?>"
+                           readonly style="background-color: #000000; cursor: not-allowed;">
+                </div>
             <?php endif; ?>
 
             <div class="form-group">

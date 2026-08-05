@@ -73,7 +73,7 @@ class EmpleadoController extends BaseController
      *
      * @return void
      */
-    public function guardar(): void
+public function guardar(): void
     {
         requerirAutenticacion();
 
@@ -87,8 +87,18 @@ class EmpleadoController extends BaseController
             return;
         }
 
-        $datos = $this->extraerDatosFormulario();
-        $errores = $this->validarDatos($datos);
+        // Extraer datos del empleado
+        $datosEmpleado = $this->extraerDatosFormulario();
+        
+        // Extraer credenciales para la cuenta de usuario
+        $usuarioRaw = $this->post('usuario', 60);
+        $passRaw    = $_POST['contrasena'] ?? '';
+
+        $errores = $this->validarDatos($datosEmpleado);
+
+        // Validaciones adicionales para la cuenta
+        if (empty($usuarioRaw)) $errores[] = 'El nombre de usuario es obligatorio para el acceso.';
+        if (strlen($passRaw) < 8) $errores[] = 'La contraseña debe tener mínimo 8 caracteres.';
 
         if (!empty($errores)) {
             foreach ($errores as $e) flashMensaje('error', $e);
@@ -96,12 +106,28 @@ class EmpleadoController extends BaseController
             return;
         }
 
-        $id = $this->modelo->crear($datos);
+        // Preparar datos del usuario (dividir nombre completo para la tabla usuarios)
+        $partesNombre = explode(' ', $datosEmpleado['nombre_completo'], 2);
+        
+        $datosUsuario = [
+            'nombre'     => $partesNombre[0],
+            'apellido'   => $partesNombre[1] ?? '',
+            'email'      => $datosEmpleado['email'],
+            'telefono'   => $datosEmpleado['telefono'],
+            'usuario'    => $usuarioRaw,
+            // Aplicar hash seguro como se hace en el AuthController
+            'contrasena' => password_hash($passRaw, PASSWORD_BCRYPT, ['cost' => 12]), 
+        ];
+
+        // Usar el nuevo método transaccional
+        $id = $this->modelo->crearConCuenta($datosEmpleado, $datosUsuario);
+        
         if ($id > 0) {
-            flashMensaje('success', 'Empleado agregado exitosamente.');
+            flashMensaje('success', 'Empleado y cuenta de acceso creados exitosamente.');
         } else {
-            flashMensaje('error', 'Error al guardar el empleado.');
+            flashMensaje('error', 'Error al crear el empleado. Es posible que el nombre de usuario o correo ya existan.');
         }
+        
         $this->redirigir('/empleados');
     }
 

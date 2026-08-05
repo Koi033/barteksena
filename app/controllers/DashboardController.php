@@ -2,7 +2,7 @@
 /**
  * app/controllers/DashboardController.php
  * Controlador del panel principal (dashboard) del sistema.
- * Muestra notificaciones, alertas de stock y resumen de actividad.
+ * Enruta la vista dependiendo del rol (Dueño o Empleado).
  *
  * @package Bartek\Controllers
  */
@@ -22,8 +22,7 @@ class DashboardController extends BaseController
     }
 
     /**
-     * Muestra el panel principal con notificaciones y métricas del bar.
-     * Requiere autenticación.
+     * Punto de entrada principal. Enruta según el rol del usuario.
      *
      * @return void
      */
@@ -31,6 +30,42 @@ class DashboardController extends BaseController
     {
         requerirAutenticacion();
 
+        $rol = $_SESSION['usuario_rol'] ?? '';
+
+        if ($rol === 'empleado') {
+            $this->dashboardEmpleado();
+        } else {
+            // Por defecto, renderiza la vista administrativa (dueño)
+            $this->dashboardDueno();
+        }
+    }
+
+    /**
+     * Prepara y muestra el dashboard específico para los empleados (Mesas).
+     *
+     * @return void
+     */
+    private function dashboardEmpleado(): void
+    {
+        // Obtiene un arreglo con los números de mesa ocupadas (ej: ['1', '4'])
+        $mesasOcupadas = $this->ventaModel->obtenerMesasOcupadas();
+        
+        $this->render('empleados/dashboard_mesas', [
+            'titulo'        => 'Control de Mesas - Bartek',
+            'mesasOcupadas' => $mesasOcupadas,
+            'totalMesas'    => 12, // Puedes cambiar este número según la capacidad de tu bar
+            'flash'         => obtenerFlash(),
+        ]);
+    }
+
+    /**
+     * Muestra el panel principal con notificaciones y métricas del bar (Dueño).
+     * (Este es tu código original del index)
+     *
+     * @return void
+     */
+    private function dashboardDueno(): void
+    {
         $pagina        = max(1, $this->entero('pagina', 'get', 1));
         $notificaciones = $this->notifModel->obtenerTodas($pagina);
         $totalNotif    = $this->notifModel->contarTotal();

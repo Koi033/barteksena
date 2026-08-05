@@ -90,4 +90,17 @@ class VentaModel extends BaseModel
                 LIMIT 5';
         return $this->consultarTodos($sql);
     }
+    /**
+     * Obtiene los números de mesa que tienen una venta abierta.
+     * 
+     * @return array Arreglo con los números de las mesas ocupadas (ej. ['1', '5'])
+     */
+    public function obtenerMesasOcupadas(): array
+    {
+        $sql = "SELECT DISTINCT mesa FROM ventas WHERE estado = 'abierto'";
+        $resultados = $this->consultarTodos($sql);
+        
+        // Extraemos solo los valores de la columna 'mesa' en un arreglo simple
+        return array_column($resultados, 'mesa');
+    }
 }

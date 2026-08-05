@@ -58,6 +58,38 @@
     max-height: 90vh;
 }
 
+/* Scrollbar específico para el panel del formulario (más visible en tema oscuro) */
+.form-content {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(160,160,160,0.45) transparent;
+}
+
+.form-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.form-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.form-content::-webkit-scrollbar-thumb {
+    background-color: rgba(120,120,120,0.45);
+    border-radius: 8px;
+}
+
+.form-content::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(230,126,34,0.9);
+}
+
+/* Ajustes para que la tarjeta encaje mejor en pantallas medianas */
+.login-image {
+    min-width: 320px;
+}
+
+.login-card {
+    max-width: 1000px;
+}
+
 .form-content h1 {
     text-align: center;
     color: #E67E22;

@@ -1,4 +1,5 @@
-<?php /* app/views/empleados/index.php - Lista de empleados con DataTable */ ?>
+<?php/* app/views/empleados/index.php - Lista de empleados con DataTable */?>
+<?php  $tokenEliminar = generarTokenCSRF('eliminar_emp');?>
 
 <div class="page-header">
     <h1 class="page-title"><i class="fas fa-users" aria-hidden="true"></i> Gestión de Empleados</h1>
@@ -32,7 +33,7 @@
 
 <!-- Tabla con DataTables -->
 <div class="table-section">
-    <table class="bartek-datatable" id="tablaEmpleados">
+    <table class="bartek-datatable dt-buttons" id="tablaEmpleados">
         <thead>
             <tr>
                 <th>Nombre Completo</th>
@@ -72,7 +73,7 @@
                               style="display:inline"
                               onsubmit="return confirm('¿Eliminar a <?= htmlspecialchars(addslashes($emp['nombre_completo']), ENT_QUOTES, 'UTF-8') ?>?')">
                             <input type="hidden" name="csrf_token"
-                                   value="<?= htmlspecialchars(generarTokenCSRF('eliminar_emp'), ENT_QUOTES, 'UTF-8') ?>">
+                                  value="<?= htmlspecialchars($tokenEliminar, ENT_QUOTES, 'UTF-8') ?>">
                             <input type="hidden" name="id" value="<?= (int)$emp['id'] ?>">
                             <button type="submit" class="action-btn delete-btn" title="Eliminar"><i class="fas fa-trash" aria-hidden="true"></i></button>
                         </form>

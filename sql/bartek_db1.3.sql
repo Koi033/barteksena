@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-05-2026 a las 21:44:03
+-- Tiempo de generación: 02-08-2026 a las 20:54:56
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -44,42 +44,7 @@ INSERT INTO `categorias_menu` (`id`, `nombre`, `descripcion`, `activa`, `creado_
 (2, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:21:53'),
 (3, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:21:53'),
 (4, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:21:53'),
-(5, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:21:53'),
-(6, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:35:09'),
-(7, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:35:09'),
-(8, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:35:09'),
-(9, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:35:09'),
-(10, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:35:09'),
-(11, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:35:54'),
-(12, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:35:54'),
-(13, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:35:54'),
-(14, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:35:54'),
-(15, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:35:54'),
-(16, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:38:17'),
-(17, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:38:17'),
-(18, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:38:17'),
-(19, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:38:17'),
-(20, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:38:17'),
-(21, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:41:18'),
-(22, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:41:18'),
-(23, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:41:18'),
-(24, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:41:18'),
-(25, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:41:18'),
-(26, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:41:42'),
-(27, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:41:42'),
-(28, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:41:42'),
-(29, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:41:42'),
-(30, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:41:42'),
-(31, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:44:50'),
-(32, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:44:50'),
-(33, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:44:50'),
-(34, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:44:50'),
-(35, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:44:50'),
-(36, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:50:44'),
-(37, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:50:44'),
-(38, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:50:44'),
-(39, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:50:44'),
-(40, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:50:44');
+(5, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:21:53');
 
 -- --------------------------------------------------------
 
@@ -89,7 +54,8 @@ INSERT INTO `categorias_menu` (`id`, `nombre`, `descripcion`, `activa`, `creado_
 
 CREATE TABLE `contacto_mensajes` (
   `id` int(10) UNSIGNED NOT NULL,
-  `nombre` varchar(100) NOT NULL,
+  `nombre` varchar(20) NOT NULL,
+  `apellido` varchar(20) NOT NULL,
   `correo` varchar(150) NOT NULL,
   `mensaje` text NOT NULL,
   `leido` tinyint(1) NOT NULL DEFAULT 0,
@@ -124,10 +90,17 @@ CREATE TABLE `empleados` (
   `puesto` varchar(80) NOT NULL,
   `departamento` varchar(80) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `telefono` varchar(20) DEFAULT NULL,
+  `telefono` varchar(10) DEFAULT NULL,
   `activo` tinyint(1) NOT NULL DEFAULT 1,
   `creado_en` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `empleados`
+--
+
+INSERT INTO `empleados` (`id`, `usuario_id`, `nombre_completo`, `puesto`, `departamento`, `email`, `telefono`, `activo`, `creado_en`) VALUES
+(1, NULL, 'asdada', 'adsdas', 'sadsd', 'juliosantanamb@gmail.com', 'adsa', 0, '2026-07-14 21:58:12');
 
 -- --------------------------------------------------------
 
@@ -169,12 +142,11 @@ CREATE TABLE `inventario` (
 --
 
 INSERT INTO `inventario` (`id`, `categoria_id`, `codigo`, `nombre`, `stock_actual`, `stock_minimo`, `precio_unitario`, `activo`, `actualizado_en`, `creado_en`) VALUES
-(1, 4, 'BEB001', 'Whisky Escocés', 15, 5, 16.00, 1, '2026-05-03 14:21:53', '2026-05-03 14:21:53'),
+(1, 3, 'BEB001', 'Whisky Escocés', 15, 5, 16.00, 1, '2026-08-02 13:54:29', '2026-05-03 14:21:53'),
 (2, 1, 'BEB002', 'Cerveza Artesanal IPA', 8, 5, 7.50, 1, '2026-05-03 14:21:53', '2026-05-03 14:21:53'),
 (3, 2, 'BEB003', 'Vino Tinto Malbec', 3, 5, 12.00, 1, '2026-05-03 14:21:53', '2026-05-03 14:21:53'),
 (4, 4, 'BEB004', 'Ron Añejo', 25, 5, 10.00, 1, '2026-05-03 14:21:53', '2026-05-03 14:21:53'),
-(5, 4, 'BEB005', 'Vodka Premium', 6, 5, 4.00, 1, '2026-05-03 14:21:53', '2026-05-03 14:21:53'),
-(41, 12, '456645', 'tula', 10, 15, 1000000.00, 1, '2026-05-03 18:39:52', '2026-05-03 18:39:52');
+(5, 4, 'BEB005', 'Vodka Premium', 6, 5, 4.00, 1, '2026-05-03 14:21:53', '2026-05-03 14:21:53');
 
 -- --------------------------------------------------------
 
@@ -240,7 +212,7 @@ CREATE TABLE `usuarios` (
   `nombre` varchar(40) NOT NULL,
   `apellido` varchar(40) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `telefono` varchar(20) DEFAULT NULL,
+  `telefono` varchar(10) DEFAULT NULL,
   `usuario` varchar(60) NOT NULL,
   `contrasena` varchar(255) NOT NULL,
   `rol` enum('dueno','empleado') NOT NULL DEFAULT 'empleado',
@@ -262,7 +234,8 @@ INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `email`, `telefono`, `usuari
 (11, 'diego', 'arevalo', 'digo@gmail.com', '5437656876', 'diegobb', '$2y$12$3pJIBWyAZYqFf7gL/AThgun901oF65NYFiXGy435vbMyZi/7z29Iu', 'dueno', 1, '2026-05-21 15:59:29', NULL, NULL, 0),
 (12, 'alan', 'brito', 'lan@ejemplo.com', '1234565487', 'alanbrito', '$2y$12$ekKiwfyQKzmGHHvoed6dCeqznQ9n056anlnp5r3NngG1wFdbFk36O', 'dueno', 1, '2026-05-21 16:10:33', NULL, NULL, 0),
 (13, 'asdsadasd', 'sdasdasd', 'asdasdq@asda.com', '', 'asdasd', '$2y$12$EmzO9lmbj0Jcegk3m5iA9.LkK/RKntXLHjHn3Xcz552wHNe2k49DK', 'dueno', 1, '2026-05-21 16:12:25', NULL, NULL, 0),
-(14, 'ALAN', 'BRICEÑO', 'alanbetancourtbriceno101@gmail.com', '32343432', 'alita', '$2y$12$V92/.zIz8PvxWR4MBF.I9u/O1mYqjUXHEa5yEutGtI4mD/FYO.x5S', 'dueno', 1, '2026-05-22 16:45:43', '2dec6e4e0636a2111d4819911c6ffc8df5ea8b21a63525c677de7c53c0598cc6', 1779824244, 1);
+(14, 'ALAN', 'BRICEÑO', 'alanbetancourtbriceno101@gmail.com', '32343432', 'alita', '$2y$12$V92/.zIz8PvxWR4MBF.I9u/O1mYqjUXHEa5yEutGtI4mD/FYO.x5S', 'dueno', 1, '2026-05-22 16:45:43', '2dec6e4e0636a2111d4819911c6ffc8df5ea8b21a63525c677de7c53c0598cc6', 1779824244, 1),
+(15, 'julio', 'santana', 'juliosantanamb@gmail.com', '3112348287', 'juliobb', '$2y$12$CxkwIgacXuG00k1JD7wOj.57XLvxIF9jlSg4EfjcMWKeClrBA9hXy', 'dueno', 1, '2026-05-27 18:21:15', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -273,7 +246,7 @@ INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `email`, `telefono`, `usuari
 CREATE TABLE `ventas` (
   `id` int(10) UNSIGNED NOT NULL,
   `empleado_id` int(10) UNSIGNED DEFAULT NULL,
-  `mesa` varchar(30) DEFAULT NULL,
+  `mesa` varchar(2) DEFAULT NULL,
   `total` decimal(10,2) NOT NULL DEFAULT 0.00,
   `estado` enum('abierto','cerrado','cancelado') NOT NULL DEFAULT 'abierto',
   `creado_en` datetime NOT NULL DEFAULT current_timestamp(),
@@ -288,7 +261,8 @@ CREATE TABLE `ventas` (
 -- Indices de la tabla `categorias_menu`
 --
 ALTER TABLE `categorias_menu`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `idx_nombre_unico` (`nombre`);
 
 --
 -- Indices de la tabla `contacto_mensajes`
@@ -373,7 +347,7 @@ ALTER TABLE `detalle_ventas`
 -- AUTO_INCREMENT de la tabla `empleados`
 --
 ALTER TABLE `empleados`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `horarios`
@@ -397,7 +371,7 @@ ALTER TABLE `notificaciones`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`

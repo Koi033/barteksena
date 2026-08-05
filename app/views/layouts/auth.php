@@ -29,5 +29,6 @@
     <?= $contenido ?>
 
     <script src="<?= BASE_URL ?>/public/js/main.js"></script>
+    <script src="<?= BASE_URL ?>/public/js/validaciones-auth.js"></script>
 </body>
 </html>
