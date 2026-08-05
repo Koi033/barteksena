@@ -103,4 +103,84 @@ class VentaModel extends BaseModel
         // Extraemos solo los valores de la columna 'mesa' en un arreglo simple
         return array_column($resultados, 'mesa');
     }
+    /**
+     * Obtiene una venta abierta por su número de mesa.
+     * 
+     * @param string|int $mesa
+     * @return array|false
+     */
+    public function obtenerVentaAbiertaPorMesa($mesa)
+    {
+        $sql = "SELECT * FROM ventas WHERE mesa = :mesa AND estado = 'abierto' LIMIT 1";
+        return $this->consultarUno($sql, [':mesa' => $mesa]);
+    }
+
+    /**
+     * Obtiene los detalles (productos) de una venta específica.
+     * 
+     * @param int $ventaId
+     * @return array
+     */
+    public function obtenerDetallesVenta(int $ventaId): array
+    {
+        $sql = "SELECT dv.*, inv.nombre 
+                FROM detalle_ventas dv
+                INNER JOIN inventario inv ON inv.id = dv.inventario_id
+                WHERE dv.venta_id = :venta_id";
+        return $this->consultarTodos($sql, [':venta_id' => $ventaId]);
+    }
+
+    /**
+     * Actualiza o reemplaza los detalles de la venta y recalcula el total general.
+     * 
+     * @param int $ventaId
+     * @param array $productos Array asociativo [inventario_id => ['cantidad' => X]]
+     * @return void
+     */
+    public function actualizarDetallesVenta(int $ventaId, array $productos): void
+    {
+        // 1. Eliminar los detalles anteriores de esta venta para volver a sincronizar
+        $sqlDelete = "DELETE FROM detalle_ventas WHERE venta_id = :venta_id";
+        $this->ejecutar($sqlDelete, [':venta_id' => $ventaId]);
+
+        $totalGeneral = 0.00;
+
+        // 2. Insertar los nuevos productos enviados desde la vista
+        foreach ($productos as $inventarioId => $info) {
+            $cantidad = (int)($info['cantidad'] ?? 1);
+            if ($cantidad <= 0) continue;
+
+            // Obtener precio unitario actual del inventario
+            $sqlPrecio = "SELECT precio_unitario FROM inventario WHERE id = :id";
+            $invItem = $this->consultarUno($sqlPrecio, [':id' => $inventarioId]);
+
+            if ($invItem) {
+                $precioUnitario = (float)$invItem['precio_unitario'];
+                $subtotal = $cantidad * $precioUnitario;
+                $totalGeneral += $subtotal;
+
+                // Insertar el detalle
+                $sqlInsert = "INSERT INTO detalle_ventas (venta_id, inventario_id, cantidad, precio_unitario, subtotal) 
+                              VALUES (:venta_id, :inventario_id, :cantidad, :precio_unitario, :subtotal)";
+                $this->ejecutar($sqlInsert, [
+                    ':venta_id'        => $ventaId,
+                    ':inventario_id'   => $inventarioId,
+                    ':cantidad'        => $cantidad,
+                    ':precio_unitario' => $precioUnitario,
+                    '/:subtotal'       => $subtotal // Nota: asegúrate de usar ':subtotal' sin barra inclinada
+                ]);
+            }
+        }
+
+// Insertar el detalle (Asegúrate de que el parámetro sea ':subtotal' sin barras)
+                $sqlInsert = "INSERT INTO detalle_ventas (venta_id, inventario_id, cantidad, precio_unitario, subtotal) 
+                              VALUES (:venta_id, :inventario_id, :cantidad, :precio_unitario, :subtotal)";
+                $this->ejecutar($sqlInsert, [
+                    ':venta_id'        => $ventaId,
+                    ':inventario_id'   => $inventarioId,
+                    ':cantidad'        => $cantidad,
+                    ':precio_unitario' => $precioUnitario,
+                    ':subtotal'        => $subtotal 
+                ]);
+    }
 }

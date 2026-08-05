@@ -232,7 +232,7 @@ public function guardar(): void
         return [
             'nombre_completo' => $this->post('nombre_completo', 150),
             'puesto'          => $this->post('puesto', 80),
-            'departamento'    => $this->post('departamento', 80),
+            'departamento'    => $this->post('departamento', 80) ?: 'General',
             'email'           => filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL) ?: '',
             'telefono'        => $this->post('telefono', 20),
         ];

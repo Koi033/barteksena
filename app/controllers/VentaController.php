@@ -92,4 +92,109 @@ class VentaController extends BaseController
         flashMensaje('success', 'Venta cerrada exitosamente.');
         $this->redirigir('/ventas');
     }
+    /**
+     * Muestra la vista de detalle de una mesa específica con el inventario y cuenta actual.
+     * GET /ventas/mesa/{numero}
+     *
+     * @param string|int $numeroMesa
+     * @return void
+     */
+    public function mesaDetalle($numeroMesa): void
+    {
+        requerirAutenticacion();
+        
+        // 1. Buscar si la mesa ya tiene una venta abierta
+        $venta = $this->modelo->obtenerVentaAbiertaPorMesa($numeroMesa);
+        $detallesVenta = [];
+
+        if ($venta) {
+            // Si existe, obtener los productos que ya se le han agregado a la cuenta
+            $detallesVenta = $this->modelo->obtenerDetallesVenta($venta['id']);
+        }
+
+        // 2. Obtener todo el inventario activo para mostrarlo en la tabla de la izquierda
+        require_once BASE_PATH . '/app/models/InventarioModel.php';
+        $inventarioModel = new InventarioModel();
+        $inventario = $inventarioModel->obtenerActivos(); // Asegúrate de tener este método en tu modelo de inventario
+
+        // 3. Renderizar la vista de detalle
+        $this->render('empleados/mesa_detalle', [
+            'titulo'        => 'Mesa ' . $numeroMesa . ' - Bartek',
+            'numeroMesa'    => $numeroMesa,
+            'venta'         => $venta,
+            'detallesVenta' => $detallesVenta,
+            'inventario'    => $inventario,
+            'tokenCSRF'     => generarTokenCSRF('venta'),
+            'flash'         => obtenerFlash(),
+        ]);
+    }
+
+    /**
+     * Guarda o actualiza los productos agregados a una mesa.
+     * POST /ventas/guardar-detalle
+     *
+     * @return void
+     */
+    public function guardarDetalle(): void
+    {
+        requerirAutenticacion();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirigir('/ventas/mesas');
+            return;
+        }
+
+        $mesa = $this->post('mesa', 2);
+        $ventaId = $this->entero('venta_id', 'post');
+        $productos = $_POST['productos'] ?? []; // Array con [inventario_id => ['cantidad' => X]]
+
+        // Si no existe una venta abierta para esta mesa, la creamos primero
+        if (!$ventaId) {
+            // Obtenemos el ID del empleado logueado si aplica
+            $empleadoId = $_SESSION['empleado_id'] ?? null; 
+            
+            $ventaId = $this->modelo->crear([
+                'mesa'        => $mesa,
+                'empleado_id' => $empleadoId,
+                'estado'      => 'abierto'
+            ]);
+        }
+
+        if ($ventaId) {
+            // Sincronizar o guardar los ítems en detalle_ventas y recalcular el total
+            $this->modelo->actualizarDetallesVenta($ventaId, $productos);
+            flashMensaje('success', 'Cuenta de la mesa actualizada correctamente.');
+        } else {
+            flashMensaje('error', 'No se pudo abrir o actualizar la venta.');
+        }
+
+        $this->redirigir('/ventas/mesa/' . $mesa);
+    }
+    public function mesa($numeroMesa): void
+    {
+        requerirAutenticacion();
+        
+        // 1. Buscar si la mesa ya tiene una venta abierta
+        $venta = $this->modelo->obtenerVentaAbiertaPorMesa($numeroMesa);
+        $detallesVenta = [];
+
+        if ($venta) {
+            $detallesVenta = $this->modelo->obtenerDetallesVenta($venta['id']);
+        }
+
+        // 2. Obtener todo el inventario activo
+        require_once BASE_PATH . '/app/models/InventarioModel.php';
+        $inventarioModel = new InventarioModel();
+        $inventario = $inventarioModel->obtenerTodos();
+
+        // 3. Renderizar la vista
+        $this->render('empleados/mesa_detalle', [
+            'titulo'        => 'Mesa ' . $numeroMesa . ' - Bartek',
+            'numeroMesa'    => $numeroMesa,
+            'venta'         => $venta,
+            'detallesVenta' => $detallesVenta,
+            'inventario'    => $inventario,
+            'tokenCSRF'     => generarTokenCSRF('venta'),
+            'flash'         => obtenerFlash(),
+        ]);
+    }
 }

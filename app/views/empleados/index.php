@@ -17,16 +17,6 @@
            placeholder="Buscar por nombre, puesto o email..."
            value="<?= htmlspecialchars($busqueda, ENT_QUOTES, 'UTF-8') ?>">
 
-    <select name="departamento" class="filter-dropdown">
-        <option value="">Todos los departamentos</option>
-        <?php foreach ($departamentos as $d): ?>
-            <option value="<?= htmlspecialchars($d['departamento'], ENT_QUOTES, 'UTF-8') ?>"
-                <?= $deptoFiltro === $d['departamento'] ? 'selected' : '' ?>>
-                <?= htmlspecialchars($d['departamento'], ENT_QUOTES, 'UTF-8') ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-
     <button type="submit" class="btn-filter"><i class="fas fa-search" aria-hidden="true"></i> Buscar</button>
     <a href="<?= BASE_URL ?>/empleados" class="btn-secondary"><i class="fas fa-times" aria-hidden="true"></i> Limpiar</a>
 </form>
@@ -38,7 +28,6 @@
             <tr>
                 <th>Nombre Completo</th>
                 <th>Puesto</th>
-                <th>Departamento</th>
                 <th>Email</th>
                 <th>Teléfono</th>
                 <th>Acciones</th>
@@ -58,8 +47,7 @@
                         <?= htmlspecialchars($emp['nombre_completo'], ENT_QUOTES, 'UTF-8') ?>
                     </td>
                     <td><?= htmlspecialchars($emp['puesto'],         ENT_QUOTES, 'UTF-8') ?></td>
-                    <td><?= htmlspecialchars($emp['departamento'],   ENT_QUOTES, 'UTF-8') ?></td>
-                    <td class="email-cell">
+                    <td>
                         <?= htmlspecialchars($emp['email'],          ENT_QUOTES, 'UTF-8') ?>
                     </td>
                     <td><?= htmlspecialchars($emp['telefono'] ?? '—', ENT_QUOTES, 'UTF-8') ?></td>

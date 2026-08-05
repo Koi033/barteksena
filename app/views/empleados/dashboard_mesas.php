@@ -61,10 +61,11 @@
             $claseEstado = $estaOcupada ? 'mesa-ocupada' : 'mesa-libre';
             $textoEstado = $estaOcupada ? 'Ocupada' : 'Libre';
             
-            // Si está ocupada, podríamos redirigir a ver la cuenta, si está libre a abrir una nueva
+            // Enlace que redirige a la vista de detalle/productos de la mesa al hacer clic
             $enlaceMesa = BASE_URL . '/ventas/mesa/' . $mesaNumero;
         ?>
         
+        <!-- Al hacer clic en esta tarjeta (<a>), el navegador abrirá la vista de la mesa -->
         <a href="<?= $enlaceMesa ?>" class="mesa-card <?= $claseEstado ?>">
             <div class="mesa-numero">Mesa <?= $mesaNumero ?></div>
             <div class="estado-badge"><?= $textoEstado ?></div>
