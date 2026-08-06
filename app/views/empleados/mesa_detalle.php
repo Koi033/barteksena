@@ -1,19 +1,21 @@
 <?php /* app/views/empleados/mesa_detalle.php */ ?>
 
+<link rel="stylesheet" href="<?= BASE_URL ?>/public/css/mesa-detalle.css">
+
 <div class="page-header">
     <h1 class="page-title"><i class="fas fa-cash-register" aria-hidden="true"></i> Mesa <?= htmlspecialchars($numeroMesa, ENT_QUOTES, 'UTF-8') ?></h1>
     <a href="<?= BASE_URL ?>/ventas/mesas" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver a Mesas</a>
 </div>
 
-<div class="mesa-container" style="display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap;">
-    
+<div class="mesa-container">
+
     <!-- Columna Izquierda: Productos del Inventario (AQUÍ ESTÁN LOS BOTONES) -->
-    <div class="inventario-panel" style="flex: 1; min-width: 300px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); color: #333;">
+    <div class="inventario-panel">
         <h3>Productos Disponibles</h3>
-        <input type="text" id="buscarProducto" placeholder="Buscar producto..." class="form-control" style="margin-bottom: 15px; width: 100%; padding: 8px;">
-        
-        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-            <table class="table" style="width: 100%; text-align: left;">
+        <input type="text" id="buscarProducto" placeholder="Buscar producto...">
+
+        <div class="table-responsive">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Producto</th>
@@ -25,23 +27,29 @@
                 <tbody>
                     <?php if (!empty($inventario)): ?>
                         <?php foreach ($inventario as $item): ?>
-                            <tr>
+                            <?php $agotado = (int)$item['stock_actual'] <= 0; ?>
+                            <tr<?= $agotado ? ' class="fila-agotada"' : '' ?>>
                                 <td><?= htmlspecialchars($item['nombre'], ENT_QUOTES, 'UTF-8') ?></td>
                                 <td>$<?= number_format($item['precio_unitario'], 2) ?></td>
                                 <td><?= $item['stock_actual'] ?></td>
                                 <td>
-                                    <button type="button" class="btn btn-success btn-sm add-item" 
-                                            data-id="<?= $item['id'] ?>" 
-                                            data-nombre="<?= htmlspecialchars($item['nombre'], ENT_QUOTES, 'UTF-8') ?>" 
-                                            data-precio="<?= $item['precio_unitario'] ?>">
-                                        <i class="fas fa-plus"></i> Agregar
-                                    </button>
+                                    <?php if ($agotado): ?>
+                                        <span class="badge-agotado"><i class="fas fa-ban"></i> Agotado</span>
+                                    <?php else: ?>
+                                        <button type="button" class="btn btn-success btn-sm add-item"
+                                                data-id="<?= $item['id'] ?>"
+                                                data-nombre="<?= htmlspecialchars($item['nombre'], ENT_QUOTES, 'UTF-8') ?>"
+                                                data-precio="<?= $item['precio_unitario'] ?>"
+                                                data-stock="<?= (int)$item['stock_actual'] ?>">
+                                            <i class="fas fa-plus"></i> Agregar
+                                        </button>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="4" style="text-align: center;">No hay productos en el inventario.</td>
+                            <td colspan="4">No hay productos en el inventario.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -50,15 +58,15 @@
     </div>
 
     <!-- Columna Derecha: Cuenta Actual de la Mesa -->
-    <div class="cuenta-panel" style="flex: 1; min-width: 300px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); color: #333;">
+    <div class="cuenta-panel">
         <h3>Cuenta de la Mesa</h3>
         <form action="<?= BASE_URL ?>/ventas/guardar-detalle" method="POST">
             <input type="hidden" name="csrf_token" value="<?= $tokenCSRF ?>">
             <input type="hidden" name="mesa" value="<?= $numeroMesa ?>">
             <input type="hidden" name="venta_id" value="<?= $venta['id'] ?? '' ?>">
-            
-            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                <table class="table" id="tablaCuenta" style="width: 100%; text-align: left;">
+
+            <div class="table-responsive">
+                <table class="table" id="tablaCuenta">
                     <thead>
                         <tr>
                             <th>Producto</th>
@@ -70,9 +78,10 @@
                     <tbody>
                         <?php if (!empty($detallesVenta)): ?>
                             <?php foreach ($detallesVenta as $det): ?>
+                                <?php $maxDisponible = (int)$det['stock_actual'] + (int)$det['cantidad']; ?>
                                 <tr>
                                     <td><?= htmlspecialchars($det['nombre'], ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td><input type="number" name="productos[<?= $det['inventario_id'] ?>][cantidad]" value="<?= $det['cantidad'] ?>" min="1" class="form-control input-cant" style="width: 60px;" data-precio="<?= $det['precio_unitario'] ?>"></td>
+                                    <td><input type="number" name="productos[<?= $det['inventario_id'] ?>][cantidad]" value="<?= $det['cantidad'] ?>" min="1" max="<?= $maxDisponible ?>" class="input-cant" data-precio="<?= $det['precio_unitario'] ?>" data-max="<?= $maxDisponible ?>"></td>
                                     <td class="subtotal-item">$<?= number_format($det['subtotal'], 2) ?></td>
                                     <td><button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash"></i></button></td>
                                 </tr>
@@ -83,12 +92,12 @@
             </div>
 
             <hr>
-            <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: bold; margin-bottom: 20px;">
+            <div class="total-cuenta">
                 <span>Total:</span>
                 <span id="granTotal">$0.00</span>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 10px;">Guardar / Cobrar Cuenta</button>
+            <button type="submit" class="btn btn-guardar-cuenta">Guardar / Cobrar Cuenta</button>
         </form>
     </div>
 </div>
@@ -101,9 +110,10 @@
             const id = btn.dataset.id;
             const nombre = btn.dataset.nombre;
             const precio = parseFloat(btn.dataset.precio);
+            const stockDisponible = parseInt(btn.dataset.stock, 10) || 0;
 
             const tbody = document.querySelector('#tablaCuenta tbody');
-            
+
             let existingRow = Array.from(tbody.querySelectorAll('tr')).find(row => {
                 const input = row.querySelector('.input-cant');
                 return input && input.name.includes(`[${id}]`);
@@ -111,13 +121,26 @@
 
             if (existingRow) {
                 const input = existingRow.querySelector('.input-cant');
-                input.value = parseInt(input.value) + 1;
+                const max = parseInt(input.dataset.max, 10) || stockDisponible;
+                const nuevaCantidad = parseInt(input.value, 10) + 1;
+
+                if (nuevaCantidad > max) {
+                    alert(`No hay suficiente stock de "${nombre}". Disponible: ${max}.`);
+                    return;
+                }
+
+                input.value = nuevaCantidad;
                 actualizarSubtotal(existingRow, precio);
             } else {
+                if (stockDisponible <= 0) {
+                    alert(`"${nombre}" no tiene stock disponible.`);
+                    return;
+                }
+
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
                     <td>${nombre}</td>
-                    <td><input type="number" name="productos[${id}][cantidad]" value="1" min="1" class="form-control input-cant" style="width: 60px;" data-precio="${precio}"></td>
+                    <td><input type="number" name="productos[${id}][cantidad]" value="1" min="1" max="${stockDisponible}" class="input-cant" data-precio="${precio}" data-max="${stockDisponible}"></td>
                     <td class="subtotal-item">$${precio.toFixed(2)}</td>
                     <td><button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash"></i></button></td>
                 `;
@@ -134,8 +157,15 @@
 
     document.addEventListener('input', function(e) {
         if (e.target.classList.contains('input-cant')) {
-            const row = e.target.closest('tr');
-            const precio = parseFloat(e.target.dataset.precio);
+            const input = e.target;
+            const row = input.closest('tr');
+            const precio = parseFloat(input.dataset.precio);
+            const max = parseInt(input.dataset.max, 10);
+
+            if (max && parseInt(input.value, 10) > max) {
+                input.value = max;
+            }
+
             actualizarSubtotal(row, precio);
             calcularTotalGeneral();
         }

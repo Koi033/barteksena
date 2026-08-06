@@ -48,3 +48,4 @@ if (APP_ENV === 'development') {
     ini_set('display_errors', 0);
     error_reporting(0);
 }
+define('TOTAL_MESAS', 10); // Cambia este número según la cantidad real de mesas del bar

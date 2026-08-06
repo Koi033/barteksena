@@ -90,6 +90,7 @@ class VentaModel extends BaseModel
                 LIMIT 5';
         return $this->consultarTodos($sql);
     }
+
     /**
      * Obtiene los números de mesa que tienen una venta abierta.
      * 
@@ -100,9 +101,9 @@ class VentaModel extends BaseModel
         $sql = "SELECT DISTINCT mesa FROM ventas WHERE estado = 'abierto'";
         $resultados = $this->consultarTodos($sql);
         
-        // Extraemos solo los valores de la columna 'mesa' en un arreglo simple
         return array_column($resultados, 'mesa');
     }
+
     /**
      * Obtiene una venta abierta por su número de mesa.
      * 
@@ -123,7 +124,7 @@ class VentaModel extends BaseModel
      */
     public function obtenerDetallesVenta(int $ventaId): array
     {
-        $sql = "SELECT dv.*, inv.nombre 
+        $sql = "SELECT dv.*, inv.nombre, inv.stock_actual
                 FROM detalle_ventas dv
                 INNER JOIN inventario inv ON inv.id = dv.inventario_id
                 WHERE dv.venta_id = :venta_id";
@@ -131,7 +132,8 @@ class VentaModel extends BaseModel
     }
 
     /**
-     * Actualiza o reemplaza los detalles de la venta y recalcula el total general.
+     * Actualiza o reemplaza los detalles de la venta, recalcula el total general
+     * y descuenta las cantidades correspondientes del inventario.
      * 
      * @param int $ventaId
      * @param array $productos Array asociativo [inventario_id => ['cantidad' => X]]
@@ -139,48 +141,80 @@ class VentaModel extends BaseModel
      */
     public function actualizarDetallesVenta(int $ventaId, array $productos): void
     {
-        // 1. Eliminar los detalles anteriores de esta venta para volver a sincronizar
-        $sqlDelete = "DELETE FROM detalle_ventas WHERE venta_id = :venta_id";
-        $this->ejecutar($sqlDelete, [':venta_id' => $ventaId]);
+        $this->db->beginTransaction();
 
-        $totalGeneral = 0.00;
-
-        // 2. Insertar los nuevos productos enviados desde la vista
-        foreach ($productos as $inventarioId => $info) {
-            $cantidad = (int)($info['cantidad'] ?? 1);
-            if ($cantidad <= 0) continue;
-
-            // Obtener precio unitario actual del inventario
-            $sqlPrecio = "SELECT precio_unitario FROM inventario WHERE id = :id";
-            $invItem = $this->consultarUno($sqlPrecio, [':id' => $inventarioId]);
-
-            if ($invItem) {
-                $precioUnitario = (float)$invItem['precio_unitario'];
-                $subtotal = $cantidad * $precioUnitario;
-                $totalGeneral += $subtotal;
-
-                // Insertar el detalle
-                $sqlInsert = "INSERT INTO detalle_ventas (venta_id, inventario_id, cantidad, precio_unitario, subtotal) 
-                              VALUES (:venta_id, :inventario_id, :cantidad, :precio_unitario, :subtotal)";
-                $this->ejecutar($sqlInsert, [
-                    ':venta_id'        => $ventaId,
-                    ':inventario_id'   => $inventarioId,
-                    ':cantidad'        => $cantidad,
-                    ':precio_unitario' => $precioUnitario,
-                    '/:subtotal'       => $subtotal // Nota: asegúrate de usar ':subtotal' sin barra inclinada
+        try {
+            // 1. Obtener los detalles anteriores para devolver el stock al inventario antes de recalcular
+            $detallesAnteriores = $this->obtenerDetallesVenta($ventaId);
+            foreach ($detallesAnteriores as $det) {
+                $sqlDevolverStock = "UPDATE inventario SET stock_actual = stock_actual + :cantidad WHERE id = :id";
+                $this->ejecutar($sqlDevolverStock, [
+                    ':cantidad' => $det['cantidad'],
+                    ':id'       => $det['inventario_id']
                 ]);
             }
-        }
 
-// Insertar el detalle (Asegúrate de que el parámetro sea ':subtotal' sin barras)
-                $sqlInsert = "INSERT INTO detalle_ventas (venta_id, inventario_id, cantidad, precio_unitario, subtotal) 
-                              VALUES (:venta_id, :inventario_id, :cantidad, :precio_unitario, :subtotal)";
-                $this->ejecutar($sqlInsert, [
-                    ':venta_id'        => $ventaId,
-                    ':inventario_id'   => $inventarioId,
-                    ':cantidad'        => $cantidad,
-                    ':precio_unitario' => $precioUnitario,
-                    ':subtotal'        => $subtotal 
-                ]);
+            // 2. Eliminar los detalles anteriores de esta venta
+            $sqlDelete = "DELETE FROM detalle_ventas WHERE venta_id = :venta_id";
+            $this->ejecutar($sqlDelete, [':venta_id' => $ventaId]);
+
+            $totalGeneral = 0.00;
+
+            // 3. Insertar los nuevos productos y descontar el stock actual
+            foreach ($productos as $inventarioId => $info) {
+                $cantidad = (int)($info['cantidad'] ?? 1);
+                if ($cantidad <= 0) continue;
+
+                // Obtener precio unitario y stock actual del inventario
+                $sqlInventario = "SELECT nombre, precio_unitario, stock_actual FROM inventario WHERE id = :id FOR UPDATE";
+                $invItem = $this->consultarUno($sqlInventario, [':id' => $inventarioId]);
+
+                if ($invItem) {
+                    if ($cantidad > (int)$invItem['stock_actual']) {
+                        throw new \Exception(
+                            'Stock insuficiente para "' . $invItem['nombre'] . '". ' .
+                            'Disponible: ' . (int)$invItem['stock_actual'] . ', solicitado: ' . $cantidad
+                        );
+                    }
+
+                    $precioUnitario = (float)$invItem['precio_unitario'];
+                    $subtotal = $cantidad * $precioUnitario;
+                    $totalGeneral += $subtotal;
+
+                    // Insertar el detalle de la venta
+                    $sqlInsert = "INSERT INTO detalle_ventas (venta_id, inventario_id, cantidad, precio_unitario, subtotal) 
+                                  VALUES (:venta_id, :inventario_id, :cantidad, :precio_unitario, :subtotal)";
+                    $this->ejecutar($sqlInsert, [
+                        ':venta_id'        => $ventaId,
+                        ':inventario_id'   => $inventarioId,
+                        ':cantidad'        => $cantidad,
+                        ':precio_unitario' => $precioUnitario,
+                        ':subtotal'        => $subtotal 
+                    ]);
+
+                    // Descontar del inventario
+                    $sqlDescontar = "UPDATE inventario SET stock_actual = stock_actual - :cantidad WHERE id = :id";
+                    $this->ejecutar($sqlDescontar, [
+                        ':cantidad' => $cantidad,
+                        ':id'       => $inventarioId
+                    ]);
+                }
+            }
+
+            // 4. Actualizar el total general en la tabla ventas
+            $sqlUpdateVenta = "UPDATE ventas SET total = :total WHERE id = :id";
+            $this->ejecutar($sqlUpdateVenta, [
+                ':total' => $totalGeneral,
+                ':id'    => $ventaId
+            ]);
+
+            // Confirmar transacción
+            $this->db->commit();
+
+        } catch (\Exception $e) {
+            // Revertir cambios en caso de error
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 }

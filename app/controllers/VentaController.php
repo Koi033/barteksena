@@ -93,6 +93,33 @@ class VentaController extends BaseController
         $this->redirigir('/ventas');
     }
     /**
+     * Lista todas las mesas del bar, indicando cuáles están ocupadas.
+     * GET /ventas/mesas
+     *
+     * @return void
+     */
+    public function mesas(): void
+    {
+        requerirAutenticacion();
+
+        $mesasOcupadas = $this->modelo->obtenerMesasOcupadas(); // ej. ['1', '5']
+
+        $mesas = [];
+        for ($i = 1; $i <= TOTAL_MESAS; $i++) {
+            $mesas[] = [
+                'numero'  => $i,
+                'ocupada' => in_array((string)$i, $mesasOcupadas, true),
+            ];
+        }
+
+        $this->render('empleados/dashboard_mesas', [
+            'titulo'        => 'Mesas - Bartek',
+            'totalMesas'    => TOTAL_MESAS,
+            'mesasOcupadas' => $mesasOcupadas,
+        ]);
+    }
+
+    /**
      * Muestra la vista de detalle de una mesa específica con el inventario y cuenta actual.
      * GET /ventas/mesa/{numero}
      *
@@ -160,9 +187,14 @@ class VentaController extends BaseController
         }
 
         if ($ventaId) {
-            // Sincronizar o guardar los ítems en detalle_ventas y recalcular el total
-            $this->modelo->actualizarDetallesVenta($ventaId, $productos);
-            flashMensaje('success', 'Cuenta de la mesa actualizada correctamente.');
+            try {
+                // Sincronizar o guardar los ítems en detalle_ventas y recalcular el total
+                $this->modelo->actualizarDetallesVenta($ventaId, $productos);
+                flashMensaje('success', 'Cuenta de la mesa actualizada correctamente.');
+            } catch (\Exception $e) {
+                // Ej: stock insuficiente para alguno de los productos solicitados
+                flashMensaje('error', $e->getMessage());
+            }
         } else {
             flashMensaje('error', 'No se pudo abrir o actualizar la venta.');
         }
