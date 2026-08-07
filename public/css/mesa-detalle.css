@@ -1,0 +1,225 @@
+/* ============================================================
+   css/mesa-detalle.css — Bartek · Detalle de Mesa
+   Vista: app/views/empleados/mesa_detalle.php
+   ============================================================ */
+
+.mesa-container {
+    display: flex;
+    gap: 24px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.inventario-panel,
+.cuenta-panel {
+    flex: 1;
+    min-width: 320px;
+    background: #1a1c1e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 24px;
+    color: #ECEFF1;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
+}
+
+.inventario-panel h3,
+.cuenta-panel h3 {
+    color: #E67E22;
+    font-size: 1.15rem;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Buscador de productos ───────────────────────────────────────── */
+#buscarProducto {
+    margin-bottom: 15px;
+    width: 100%;
+    padding: 10px 14px;
+    background: #121315;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #ECEFF1;
+    font-size: 0.92rem;
+}
+
+#buscarProducto::placeholder {
+    color: #8a8d92;
+}
+
+#buscarProducto:focus {
+    outline: none;
+    border-color: #E67E22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.18);
+}
+
+/* ── Tablas (inventario y cuenta) ────────────────────────────────── */
+.table-responsive {
+    overflow-y: auto;
+}
+
+.inventario-panel .table-responsive { max-height: 400px; }
+.cuenta-panel .table-responsive { max-height: 300px; }
+
+.mesa-container .table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.mesa-container .table th {
+    color: #9aa0a6;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mesa-container .table td {
+    padding: 10px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+
+.mesa-container .table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.mesa-container .table td[colspan] {
+    text-align: center;
+    color: #8a8d92;
+}
+
+/* ── Fila / badge de producto agotado ────────────────────────────── */
+.fila-agotada { opacity: 0.5; }
+
+.badge-agotado {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(231, 76, 60, 0.16);
+    color: #ff8b7d;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* ── Input de cantidad ───────────────────────────────────────────── */
+.input-cant {
+    width: 60px;
+    padding: 6px 8px;
+    background: #121315;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #ECEFF1;
+    text-align: center;
+}
+
+.input-cant:focus {
+    outline: none;
+    border-color: #E67E22;
+}
+
+/* ── Botones ──────────────────────────────────────────────────────── */
+.mesa-container .btn {
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.mesa-container .btn-sm {
+    padding: 6px 12px;
+    font-size: 0.82rem;
+}
+
+.add-item {
+    background: rgba(230, 126, 34, 0.16);
+    color: #ffb066;
+}
+.add-item:hover {
+    background: #E67E22;
+    color: #fff;
+}
+
+.remove-row {
+    background: rgba(231, 76, 60, 0.14);
+    color: #ff8b7d;
+}
+.remove-row:hover {
+    background: #e74c3c;
+    color: #fff;
+}
+
+/* ── Total y botón de guardar ────────────────────────────────────── */
+.cuenta-panel hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin: 16px 0;
+}
+
+.total-cuenta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.total-cuenta span#granTotal {
+    color: #E67E22;
+}
+
+.btn-guardar-cuenta {
+    width: 100%;
+    padding: 14px;
+    background: #E67E22;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 999px;
+}
+
+.btn-guardar-cuenta:hover {
+    background: #d35400;
+    box-shadow: 0 10px 24px rgba(230, 126, 34, 0.32);
+    transform: translateY(-1px);
+}
+
+/* ── Botón "Volver a Mesas" (header) ─────────────────────────────── */
+.page-header .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ECEFF1;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.page-header .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.14);
+    text-decoration: none;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .mesa-container {
+        flex-direction: column;
+    }
+    .inventario-panel,
+    .cuenta-panel {
+        min-width: 100%;
+    }
+}

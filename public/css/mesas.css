@@ -1,0 +1,72 @@
+/* ============================================================
+   css/mesas.css — Bartek · Control de Mesas
+   Vista: app/views/empleados/dashboard_mesas.php
+   ============================================================ */
+
+.page-header-mesas .page-title {
+    color: #E67E22;
+}
+.page-header-mesas p {
+    color: #d3d3d3;
+}
+
+.mesas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.mesa-card {
+    background: #1a1c1e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 4px solid #E67E22;
+    border-radius: 12px;
+    padding: 28px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #ECEFF1;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 140px;
+    height: auto;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.mesa-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+    text-decoration: none;
+}
+
+.mesa-numero {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+.estado-badge {
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Mesa Libre */
+.mesa-libre { border-left-color: #E67E22; }
+.mesa-libre .estado-badge { background: rgba(230, 126, 34, 0.18); color: #ffb066; }
+
+/* Mesa Ocupada */
+.mesa-ocupada { border-left-color: #e74c3c; }
+.mesa-ocupada .estado-badge { background: rgba(231, 76, 60, 0.18); color: #ff8b7d; }

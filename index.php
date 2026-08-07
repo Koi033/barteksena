@@ -70,6 +70,9 @@ $uri = trim($uri, '/');
 $segmentos   = explode('/', $uri);
 $controlador = $segmentos[0] ?? '';
 $accion      = $segmentos[1] ?? 'index';
+if (strpos($accion, '-') !== false) {
+    $accion = lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $accion))));
+}
 $parametro   = $segmentos[2] ?? null;
 
 $rutas = [
