@@ -104,7 +104,6 @@
                                 <input type="hidden" name="csrf_token"
                                        value="<?= htmlspecialchars($tokenCSRF, ENT_QUOTES, 'UTF-8') ?>">
                                 <input type="hidden" name="id" value="<?= (int)$v['id'] ?>">
-                                <button type="submit" class="action-btn edit-btn" title="Cerrar venta">✔</button>
                             </form>
                             <?php endif; ?>
                         </td>
