@@ -8,18 +8,23 @@
  */
 
 require_once BASE_PATH . '/app/controllers/BaseController.php';
+require_once BASE_PATH . '/app/models/EmpleadoModel.php';
 
 class AuthController extends BaseController
 {
     /** @var UsuarioModel Modelo de usuarios */
     private UsuarioModel $usuarioModel;
 
+    /** @var EmpleadoModel Modelo de empleados */
+    private EmpleadoModel $empleadoModel;
+
     /**
      * Constructor: instancia el modelo de usuarios.
      */
     public function __construct()
     {
-        $this->usuarioModel = new UsuarioModel();
+        $this->usuarioModel  = new UsuarioModel();
+        $this->empleadoModel = new EmpleadoModel();
     }
 
     // ── Página principal pública ──────────────────────────────────────────────
@@ -139,6 +144,17 @@ class AuthController extends BaseController
         $_SESSION['usuario_nombre'] = $user['nombre'];
         $_SESSION['usuario_rol']    = $user['rol'];
         $_SESSION['usuario_login']  = $user['usuario'];
+
+        // 8. Buscar el empleado vinculado a esta cuenta (si existe) para
+        //    poder registrar quién realiza cada venta.
+        $empleado = $this->empleadoModel->buscarPorUsuarioId((int) $user['id']);
+        if ($empleado) {
+            $_SESSION['empleado_id']     = (int) $empleado['id'];
+            $_SESSION['empleado_nombre'] = $empleado['nombre_completo'];
+        } else {
+            $_SESSION['empleado_id']     = null;
+            $_SESSION['empleado_nombre'] = null;
+        }
 
         $this->redirigir('/dashboard');
     }

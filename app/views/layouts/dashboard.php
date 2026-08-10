@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/style.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/dashboard.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/datatables-custom.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/ventas.css">
 </head>
 
 <body class="layout-dashboard">

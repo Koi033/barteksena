@@ -26,7 +26,7 @@
 </div>
 
 <!-- Grid: Top bebidas + Tabla transacciones -->
-<div class="content-grid">
+<div class="content-grid content-grid-full">
     <!-- Top bebidas -->
     <div class="top-products">
         <h2><i class="fas fa-cocktail" aria-hidden="true"></i> Bebidas Más Vendidas</h2>
@@ -93,6 +93,10 @@
                             </span>
                         </td>
                         <td class="actions-cell">
+                            <button type="button" class="action-btn view-btn" title="Ver detalle"
+                                    onclick="verDetalleVenta(<?= (int)$v['id'] ?>)">
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                            </button>
                             <?php if ($v['estado'] === 'abierto'): ?>
                             <form method="POST" action="<?= BASE_URL ?>/ventas/cerrar"
                                   style="display:inline"
@@ -131,4 +135,85 @@
     </div>
 </div>
 
+<!-- Modal: Detalle de venta -->
+<div class="modal-overlay" id="modalDetalleVenta" style="display:none;">
+    <div class="modal-box modal-detalle">
+        <div class="modal-detalle-header">
+            <h3><i class="fas fa-receipt" aria-hidden="true"></i> Detalle de la Venta <span id="modalVentaId"></span></h3>
+            <button type="button" class="modal-close" onclick="cerrarModalDetalle()" aria-label="Cerrar">&times;</button>
+        </div>
+        <table class="modal-detalle-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unit.</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody id="modalDetalleBody">
+                <tr><td colspan="4" class="text-center text-muted">Cargando...</td></tr>
+            </tbody>
+        </table>
+        <div class="modal-detalle-total">Total: <strong>$<span id="modalTotalVenta">0.00</span></strong></div>
+    </div>
+</div>
+
+<script>
+const VENTAS_BASE_URL = '<?= BASE_URL ?>';
+
+function abrirModalDetalle() {
+    document.getElementById('modalDetalleVenta').style.display = 'flex';
+}
+
+function cerrarModalDetalle() {
+    document.getElementById('modalDetalleVenta').style.display = 'none';
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str ?? '';
+    return div.innerHTML;
+}
+
+async function verDetalleVenta(id) {
+    document.getElementById('modalVentaId').textContent = '#BAR' + String(id).padStart(3, '0');
+    const tbody = document.getElementById('modalDetalleBody');
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Cargando...</td></tr>';
+    document.getElementById('modalTotalVenta').textContent = '0.00';
+    abrirModalDetalle();
+
+    try {
+        const resp = await fetch(`${VENTAS_BASE_URL}/ventas/detalle/${id}`);
+        const data = await resp.json();
+
+        if (!data.success || !Array.isArray(data.detalles) || data.detalles.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Sin productos registrados.</td></tr>';
+            return;
+        }
+
+        let total = 0;
+        tbody.innerHTML = data.detalles.map(d => {
+            const cantidad = parseInt(d.cantidad, 10) || 0;
+            const precio = parseFloat(d.precio_unitario) || 0;
+            const subtotal = parseFloat(d.subtotal) || 0;
+            total += subtotal;
+            return `<tr>
+                <td>${escapeHtml(d.nombre)}</td>
+                <td>${cantidad}</td>
+                <td>$${precio.toFixed(2)}</td>
+                <td>$${subtotal.toFixed(2)}</td>
+            </tr>`;
+        }).join('');
+
+        document.getElementById('modalTotalVenta').textContent = total.toFixed(2);
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Error al cargar el detalle.</td></tr>';
+    }
+}
+
+document.getElementById('modalDetalleVenta').addEventListener('click', function (e) {
+    if (e.target === this) cerrarModalDetalle();
+});
+</script>
 

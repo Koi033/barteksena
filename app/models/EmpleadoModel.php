@@ -85,6 +85,23 @@ class EmpleadoModel extends BaseModel
     }
 
     /**
+     * Busca un empleado por el ID de su cuenta de usuario vinculada.
+     * Útil al iniciar sesión, para saber qué empleado corresponde
+     * al usuario autenticado (y así registrar quién hizo cada venta).
+     *
+     * @param  int         $usuarioId ID del usuario (usuarios.id)
+     * @return array|false            Datos del empleado o false si no existe
+     */
+    public function buscarPorUsuarioId(int $usuarioId): array|false
+    {
+        $sql = 'SELECT id, nombre_completo, puesto, departamento
+                FROM empleados
+                WHERE usuario_id = :usuario_id AND activo = 1
+                LIMIT 1';
+        return $this->consultarUno($sql, [':usuario_id' => $usuarioId]);
+    }
+
+    /**
      * Busca un empleado por su ID.
      *
      * @param  int         $id ID del empleado
