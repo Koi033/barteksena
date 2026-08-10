@@ -39,6 +39,8 @@
         </a>
     </div>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-    <script src="https://files.bpcontent.cloud/2026/05/14/18/20260514181755-US80LTJD.js" defer></script>
+  
+    <script src="https://cdn.botpress.cloud/webchat/v3.7/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2026/05/14/18/20260514181755-US80LTJD.js" defer></script>
+    
 </section>

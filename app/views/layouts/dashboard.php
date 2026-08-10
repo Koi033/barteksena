@@ -61,6 +61,14 @@
                         <i class="fas fa-boxes" aria-hidden="true"></i> Inventario
                     </a>
                 </li>
+                <!-- Reservas (solo empleado) -->
+                <li>
+                 <a href="<?= BASE_URL ?>/reservas"
+                        class="<?= str_contains($_SERVER['REQUEST_URI'], '/reservas') ? 'active' : '' ?>">
+                        <i class="fas fa-calendar-alt" aria-hidden="true"></i> Reservas
+                </a>
+                
+                </li>
 
                 <!-- Ventas (Permitido para ambos) -->
                 <li>

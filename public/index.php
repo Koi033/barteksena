@@ -28,6 +28,7 @@ require_once dirname(__DIR__) . '/app/controllers/BaseController.php';
 require_once dirname(__DIR__) . '/app/models/UsuarioModel.php';
 require_once dirname(__DIR__) . '/app/models/EmpleadoModel.php';
 require_once dirname(__DIR__) . '/app/models/InventarioModel.php';
+require_once dirname(__DIR__) . '/app/models/ReservaModel.php';
 require_once dirname(__DIR__) . '/app/models/VentaModel.php';
 require_once dirname(__DIR__) . '/app/models/HorarioModel.php';
 require_once dirname(__DIR__) . '/app/models/MenuModel.php';
@@ -40,6 +41,7 @@ require_once dirname(__DIR__) . '/app/controllers/DashboardController.php';
 require_once dirname(__DIR__) . '/app/controllers/EmpleadoController.php';
 require_once dirname(__DIR__) . '/app/controllers/InventarioController.php';
 require_once dirname(__DIR__) . '/app/controllers/VentaController.php';
+require_once dirname(__DIR__) . '/app/controllers/ReservaController.php';
 require_once dirname(__DIR__) . '/app/controllers/HorarioController.php';
 require_once dirname(__DIR__) . '/app/controllers/MenuController.php';
 require_once dirname(__DIR__) . '/app/controllers/ContactoController.php';
@@ -82,6 +84,7 @@ $rutas = [
     'servicios'     => ['AuthController',       'servicios'],
     'perfil'        => ['PerfilController',     $accion],
     'reportes'      => ['ReporteController',    $accion],
+    'reservas'      => ['ReservaController',    $accion],
 ];
 
 if (array_key_exists($controlador, $rutas)) {

@@ -39,6 +39,7 @@ require_once BASE_PATH . '/app/controllers/BaseController.php';
 require_once BASE_PATH . '/app/models/UsuarioModel.php';
 require_once BASE_PATH . '/app/models/EmpleadoModel.php';
 require_once BASE_PATH . '/app/models/InventarioModel.php';
+require_once BASE_PATH . '/app/models/ReservaModel.php';
 require_once BASE_PATH . '/app/models/VentaModel.php';
 require_once BASE_PATH . '/app/models/HorarioModel.php';
 require_once BASE_PATH . '/app/models/MenuModel.php';
@@ -51,6 +52,7 @@ require_once BASE_PATH . '/app/controllers/DashboardController.php';
 require_once BASE_PATH . '/app/controllers/EmpleadoController.php';
 require_once BASE_PATH . '/app/controllers/InventarioController.php';
 require_once BASE_PATH . '/app/controllers/VentaController.php';
+require_once BASE_PATH . '/app/controllers/ReservaController.php';
 require_once BASE_PATH . '/app/controllers/HorarioController.php';
 require_once BASE_PATH . '/app/controllers/MenuController.php';
 require_once BASE_PATH . '/app/controllers/ContactoController.php';
@@ -88,10 +90,11 @@ $rutas = [
     'ventas'     => ['VentaController',      $accion],
     'horarios'   => ['HorarioController',    $accion],
     'menu'       => ['MenuController',       $accion],
+    'reservas'   => ['ReservaController',    $accion],
     'reportes'   => ['ReporteController',    $accion],
-    'perfil'       => ['PerfilController',    $accion],
-    'recuperar'    => ['PasswordController',  'recuperar'],
-    'restablecer'  => ['PasswordController',  'restablecer'],
+    'perfil'     => ['PerfilController',     $accion],
+    'recuperar'  => ['PasswordController',  'recuperar'],
+    'restablecer'=> ['PasswordController',  'restablecer'],
 ];
 
 if (array_key_exists($controlador, $rutas)) {
