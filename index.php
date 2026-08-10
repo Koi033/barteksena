@@ -45,6 +45,8 @@ require_once BASE_PATH . '/app/models/MenuModel.php';
 require_once BASE_PATH . '/app/models/NotificacionModel.php';
 require_once BASE_PATH . '/app/models/ContactoModel.php';
 
+
+
 // ── Controladores ─────────────────────────────────────────────────────────────
 require_once BASE_PATH . '/app/controllers/AuthController.php';
 require_once BASE_PATH . '/app/controllers/DashboardController.php';
@@ -60,6 +62,8 @@ require_once BASE_PATH . '/app/controllers/PasswordController.php';
 
 // ── Sesión ────────────────────────────────────────────────────────────────────
 iniciarSesion();
+
+
 
 // ── Enrutamiento ──────────────────────────────────────────────────────────────
 $requestUri = $_SERVER['REQUEST_URI'] ?? '';
@@ -89,6 +93,7 @@ $rutas = [
     'ventas'     => ['VentaController',      $accion],
     'horarios'   => ['HorarioController',    $accion],
     'menu'       => ['MenuController',       $accion],
+    'menu-publico' => ['MenuController'],
     'reportes'   => ['ReporteController',    $accion],
     'perfil'       => ['PerfilController',    $accion],
     'recuperar'    => ['PasswordController',  'recuperar'],

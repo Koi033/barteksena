@@ -33,6 +33,20 @@ class MenuController extends BaseController
         ]);
     }
 
+    
+    
+    public function publico(): void
+    {
+        // Sin requerirAutenticacion aquí para que sea totalmente libre
+        $categorias = $this->modelo->obtenerCategorias();
+        $licores = $this->modelo->obtenerLicoresDisponibles();
+
+        $this->render('menu/publico', [
+            'titulo'     => 'Carta Digital - Bartek',
+            'categorias' => $categorias,
+            'licores'    => $licores,
+        ], false);
+    }
     /**
      * Crea una nueva categoría de menú.
      * POST /menu/guardar

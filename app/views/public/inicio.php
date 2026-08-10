@@ -25,19 +25,24 @@
     </div>
 
     <div class="beneficios">
-        <a class="beneficio-item" href="#" aria-label="Reservas">
-            <h3>Reservas</h3>
-            <p>Gestiona reservaciones y disponibilidad de mesas con confirmaciones automáticas para el cliente.</p>
-        </a>
-        <a class="beneficio-item" href="#" aria-label="Menú digital">
-            <h3>Menú digital</h3>
-            <p>Publica y actualiza tu carta con precios, descripciones y ofertas especiales desde un solo lugar.</p>
-        </a>
-        <a class="beneficio-item" href="#" aria-label="Agenda de personal">
-            <h3>Agenda de personal</h3>
-            <p>Organiza turnos, horarios y asistencia del equipo desde una sola plataforma.</p>
-        </a>
-    </div>
+    <!-- Tarjeta de Reservas sin el # -->
+    <a class="beneficio-item" href="javascript:void(0);" aria-label="Reservas">
+        <h3>Reservas</h3>
+        <p>Gestiona reservaciones y disponibilidad de mesas con confirmaciones automáticas para el cliente.</p>
+    </a>
+    
+    <!-- Tu tarjeta de Menú digital que ya abre la carta perfecta -->
+    <a class="beneficio-item" href="/bartek/public/publico.php" target="_blank" aria-label="Menú digital">
+        <h3>Menú digital</h3>
+        <p>Publica y actualiza tu carta con precios, descripciones y ofertas especiales desde un solo lugar.</p>
+    </a>
+
+    <!-- Tarjeta de Agenda de personal sin el # -->
+    <a class="beneficio-item" href="javascript:void(0);" aria-label="Agenda de personal">
+        <h3>Agenda de personal</h3>
+        <p>Organiza turnos, horarios y asistencia del equipo desde una sola plataforma.</p>
+    </a>
+</div>
 
     <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2026/05/14/18/20260514181755-US80LTJD.js" defer></script>

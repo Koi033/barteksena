@@ -7,6 +7,7 @@
  * @package Bartek\Controllers
  */
 require_once BASE_PATH . '/app/controllers/BaseController.php';
+require_once BASE_PATH . '/config/sesion.php';
 
 class EmpleadoController extends BaseController
 {

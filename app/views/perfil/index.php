@@ -1,8 +1,10 @@
 <?php /* app/views/perfil/index.php — Formulario de perfil del usuario autenticado */ ?>
 
 <?php 
-  // Ruta de la imagen actual o vacía si no existe
-  $fotoPerfil = !empty($usuario['foto']) ? BASE_URL . '/uploads/' . $usuario['foto'] : '';
+  // Leemos la foto con prioridad desde la sesión, o de la base de datos
+  $nombreFoto = $_SESSION['usuario_foto'] ?? ($usuario['foto'] ?? '');
+  $tieneFoto  = !empty($nombreFoto);
+  $fotoPerfil = $tieneFoto ? rtrim(BASE_URL, '/') . '/public/uploads/' . $nombreFoto : '';
 ?>
 
 <style>
@@ -282,24 +284,23 @@
         <div class="profile-header">
             <div class="header-info-group">
                 
-                <!-- CIRCULO INTERACTIVO CON ILUSTRACIÓN VECTORIAL ELEGANTE -->
+                <!-- CIRCULO INTERACTIVO CON ILUSTRACIÓN VECTORIAL / FOTO -->
                 <label for="inputFotoPerfil" class="avatar-upload-label" title="Haz clic para subir tu foto">
                     
-                    <?php if (!empty($fotoPerfil)): ?>
-                        <img id="imgPreview" src="<?= $fotoPerfil ?>" class="avatar-preview-img" alt="Foto de Perfil">
-                        <svg id="defaultAvatarIcon" class="avatar-svg-default" style="display:none;" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="38" r="22" stroke="#FF7B00" stroke-width="4.5" fill="rgba(255,123,0,0.1)"/>
-                            <path d="M15 88C15 68 31 56 50 56C69 56 85 68 85 88" stroke="#FF7B00" stroke-width="4.5" stroke-linecap="round" fill="none"/>
-                            <circle cx="50" cy="38" r="8" fill="#FF7B00"/>
-                        </svg>
-                    <?php else: ?>
-                        <img id="imgPreview" src="" class="avatar-preview-img" style="display:none;" alt="Foto de Perfil">
-                        <svg id="defaultAvatarIcon" class="avatar-svg-default" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="38" r="22" stroke="#FF7B00" stroke-width="4.5" fill="rgba(255,123,0,0.1)"/>
-                            <path d="M15 88C15 68 31 56 50 56C69 56 85 68 85 88" stroke="#FF7B00" stroke-width="4.5" stroke-linecap="round" fill="none"/>
-                            <circle cx="50" cy="38" r="8" fill="#FF7B00"/>
-                        </svg>
-                    <?php endif; ?>
+                    <img id="imgPreview" 
+                         src="<?= $fotoPerfil ?>" 
+                         class="avatar-preview-img" 
+                         style="<?= $tieneFoto ? 'display: block;' : 'display: none;' ?>" 
+                         alt="Foto de Perfil">
+
+                    <svg id="defaultAvatarIcon" 
+                         class="avatar-svg-default" 
+                         style="<?= $tieneFoto ? 'display: none;' : 'display: block;' ?>" 
+                         viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="38" r="22" stroke="#FF7B00" stroke-width="4.5" fill="rgba(255,123,0,0.1)"/>
+                        <path d="M15 88C15 68 31 56 50 56C69 56 85 68 85 88" stroke="#FF7B00" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+                        <circle cx="50" cy="38" r="8" fill="#FF7B00"/>
+                    </svg>
 
                     <div class="avatar-camera-overlay">
                         <i class="fas fa-camera"></i>

@@ -33,6 +33,7 @@ require_once dirname(__DIR__) . '/app/models/HorarioModel.php';
 require_once dirname(__DIR__) . '/app/models/MenuModel.php';
 require_once dirname(__DIR__) . '/app/models/NotificacionModel.php';
 require_once dirname(__DIR__) . '/app/models/ContactoModel.php';
+require_once dirname(__DIR__) . '/app/models/PuntosModel.php';
 
 // ── Carga de Controladores ────────────────────────────────────────────────────
 require_once dirname(__DIR__) . '/app/controllers/AuthController.php';
@@ -44,6 +45,7 @@ require_once dirname(__DIR__) . '/app/controllers/HorarioController.php';
 require_once dirname(__DIR__) . '/app/controllers/MenuController.php';
 require_once dirname(__DIR__) . '/app/controllers/ContactoController.php';
 require_once dirname(__DIR__) . '/app/controllers/PerfilController.php';
+require_once dirname(__DIR__) . '/app/controllers/PuntosController.php';
 require_once dirname(__DIR__) . '/app/controllers/ReporteController.php';
 
 // ── Inicio de sesión segura ───────────────────────────────────────────────────
@@ -64,30 +66,72 @@ $controlador = $segmentos[0] ?? '';
 $accion      = $segmentos[1] ?? 'index';
 $parametro   = $segmentos[2] ?? null;
 
+// Obtener la ruta limpia completa (por ejemplo: puntos/guardar)
+$rutaCompleta = trim($uri, '/');
+
 // ── Tabla de enrutamiento ─────────────────────────────────────────────────────
-// Mapea segmento → controlador y método correspondiente
 $rutas = [
-    ''              => ['AuthController',       'index'],
-    'login'         => ['AuthController',       'login'],
-    'registro'      => ['AuthController',       'registro'],
-    'logout'        => ['AuthController',       'logout'],
-    'dashboard'     => ['DashboardController',  'index'],
-    'empleados'     => ['EmpleadoController',   $accion],
-    'inventario'    => ['InventarioController', $accion],
-    'ventas'        => ['VentaController',      $accion],
-    'horarios'      => ['HorarioController',    $accion],
-    'menu'          => ['MenuController',       $accion],
-    'contacto'      => ['ContactoController',   $accion],
-    'nosotros'      => ['AuthController',       'nosotros'],
-    'servicios'     => ['AuthController',       'servicios'],
-    'perfil'        => ['PerfilController',     $accion],
-    'reportes'      => ['ReporteController',    $accion],
-];
+    ''                 => ['AuthController', 'index'],
+    'login'            => ['AuthController', 'login'],
+    'registro'         => ['AuthController', 'registro'],
+    'logout'           => ['AuthController', 'logout'],
+    'dashboard'        => ['DashboardController', 'index'],
+    'empleados'        => ['EmpleadoController', $accion ?? 'index'],
+    'inventario'       => ['InventarioController', $accion ?? 'index'],
+    'ventas'           => ['VentaController', $accion ?? 'index'],
+    'horarios'         => ['HorarioController', $accion ?? 'index'],
+    'menu'             => ['MenuController', $accion ?? 'index'],
+    'contacto'         => ['ContactoController', $accion ?? 'index'],
+    'nosotros'         => ['AuthController', 'nosotros'],
+    'servicios'        => ['AuthController', 'servicios'],
+    'perfil'           => ['PerfilController', $accion ?? 'index'],
+    'reportes'         => ['ReporteController', $accion ?? 'index'],
+    'puntos'           => ['PuntosController', 'index'],
+    'puntos/guardar'   => ['PuntosController', 'guardar'],
+    'puntos/buscar'    => ['PuntosController', 'buscarCliente'],
+    'puntos/listado'   => ['PuntosController', 'listado'],
+    'puntos/actualizar'=> ['PuntosController', 'actualizar'],
+    'puntos/eliminar' => ['PuntosController', 'eliminar'],
+    'puntos/editar'    => ['PuntosController', 'editar'],
+    ];
 
-if (array_key_exists($controlador, $rutas)) {
-    [$clase, $metodo] = $rutas[$controlador];
+// ── Ejecución de la ruta encontrada ───────────────────────────────────────────
+$clase = null;
+$metodo = null;
 
-    // Verificar que la clase y el método existen
+if (array_key_exists($rutaCompleta, $rutas)) {
+    [$clase, $metodo] = $rutas[$rutaCompleta];
+} elseif ($controlador === 'ventas' && $accion === 'mesa' && $parametro !== null) {
+    $clase = 'VentaController';
+    $metodo = 'mesa';
+} elseif ($controlador === 'puntos' && $accion === 'editar' && $parametro !== null) {
+    //  NUEVA CONDICIÓN: Permite que /puntos/editar/{id} viaje con su parámetro numérico
+    $clase = 'PuntosController';
+    $metodo = 'editar';
+//Permite eliminar puntos 
+    $clase = 'PuntosController';
+    $metodo = 'eliminar';
+
+} else {
+    $rutasControladores = [
+        'empleados'  => 'EmpleadoController',
+        'inventario' => 'InventarioController',
+        'ventas'     => 'VentaController',
+        'horarios'   => 'HorarioController',
+        'menu'       => 'MenuController',
+        'contacto'   => 'ContactoController',
+        'perfil'     => 'PerfilController',
+        'reportes'   => 'ReporteController'
+    ];
+
+    if (array_key_exists($controlador, $rutasControladores)) {
+        $clase = $rutasControladores[$controlador];
+        $metodo = $accion;
+    }
+}
+
+//Pagina no encontrda
+if ($clase && $metodo) {
     if (class_exists($clase)) {
         $instancia = new $clase();
         if (method_exists($instancia, $metodo)) {
@@ -98,7 +142,7 @@ if (array_key_exists($controlador, $rutas)) {
         }
     } else {
         http_response_code(500);
-        echo 'Error interno: controlador no encontrado.';
+        echo "Error interno: la clase $clase no fue encontrada.";
     }
 } else {
     http_response_code(404);
