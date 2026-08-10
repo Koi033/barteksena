@@ -80,6 +80,31 @@ class HorarioModel extends BaseModel
         return $this->ejecutar('DELETE FROM horarios WHERE id = :id', [':id' => $id]);
     }
 
+    /**
+     * Horarios de un empleado específico dentro de un mes y año.
+     * Usada por la vista de solo lectura del empleado.
+     *
+     * @param  int $empleadoId
+     * @param  int $mes  1-12
+     * @param  int $anio
+     * @return array
+     */
+    public function obtenerPorEmpleadoYMes(int $empleadoId, int $mes, int $anio): array
+    {
+        $sql = 'SELECT id, fecha, hora_inicio, hora_fin, estado
+                FROM horarios
+                WHERE empleado_id = :emp
+                  AND MONTH(fecha) = :mes
+                  AND YEAR(fecha)  = :anio
+                ORDER BY fecha ASC, hora_inicio ASC';
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':emp',  $empleadoId, PDO::PARAM_INT);
+        $stmt->bindValue(':mes',  $mes,        PDO::PARAM_INT);
+        $stmt->bindValue(':anio', $anio,       PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     /** Total de horarios para paginación. */
     public function contarTotal(): int
     {

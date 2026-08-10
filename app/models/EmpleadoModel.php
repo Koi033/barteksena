@@ -165,6 +165,19 @@ class EmpleadoModel extends BaseModel
         return $this->consultarTodos($sql);
     }
     /**
+     * Busca el empleado vinculado a un usuario del sistema (login).
+     * Usada para resolver el empleado_id a partir de $_SESSION['usuario_id'].
+     *
+     * @param  int         $usuarioId ID del usuario logueado
+     * @return array|false            Datos del empleado o false si no existe
+     */
+    public function buscarPorUsuarioId(int $usuarioId): array|false
+    {
+        $sql = 'SELECT * FROM empleados WHERE usuario_id = :usuario_id AND activo = 1 LIMIT 1';
+        return $this->consultarUno($sql, [':usuario_id' => $usuarioId]);
+    }
+
+    /**
      * Crea un usuario y un empleado vinculado mediante una transacción.
      *
      * @param  array $datosEmpleado Datos del empleado
