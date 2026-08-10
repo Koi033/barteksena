@@ -1,4 +1,4 @@
-<?php/* app/views/empleados/index.php - Lista de empleados con DataTable */?>
+<?/* app/views/empleados/index.php - Lista de empleados con DataTable */?>
 <?php  $tokenEliminar = generarTokenCSRF('eliminar_emp');?>
 
 <div class="page-header">

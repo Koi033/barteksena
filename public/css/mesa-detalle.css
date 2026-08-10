@@ -127,7 +127,6 @@
 /* ── Botones ──────────────────────────────────────────────────────── */
 .mesa-container .btn {
     border: none;
-    border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
@@ -136,6 +135,7 @@
 .mesa-container .btn-sm {
     padding: 6px 12px;
     font-size: 0.82rem;
+    border-radius: 8px;
 }
 
 .add-item {
@@ -178,8 +178,6 @@
 }
 
 .btn-guardar-cuenta {
-    width: 100%;
-    padding: 14px;
     background: #E67E22;
     color: #fff;
     font-size: 1rem;
@@ -190,6 +188,35 @@
 .btn-guardar-cuenta:hover {
     background: #d35400;
     box-shadow: 0 10px 24px rgba(230, 126, 34, 0.32);
+    transform: translateY(-1px);
+}
+
+.acciones-cuenta {
+    display: flex;
+    gap: 12px;
+}
+
+.acciones-cuenta .btn {
+    flex: 1;
+    padding: 14px;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-cerrar-cuenta {
+    background: rgba(231, 76, 60, 0.14);
+    color: #ff8b7d;
+    border: 1px solid rgba(231, 76, 60, 0.35);
+    border-radius: 999px;
+}
+
+.btn-cerrar-cuenta:hover {
+    background: #e74c3c;
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(231, 76, 60, 0.28);
     transform: translateY(-1px);
 }
 

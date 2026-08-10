@@ -1,0 +1,72 @@
+.page-description {
+    color: #d3d3d3;
+    margin-top: 0.35rem;
+}
+.card.card-dark {
+    background: #1a1c1e;
+    border: 1px solid #2c2c2c;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-top: 1rem;
+}
+.card-body {
+    padding: 0;
+}
+.badge-mesa {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.35rem;
+    background: #E67E22;
+    color: #fff;
+    font-weight: 700;
+}
+.bartek-datatable thead th {
+    background: #2a2a2a;
+    color: #E67E22;
+    border-bottom: 1px solid #333;
+}
+.bartek-datatable tbody tr {
+    background: #1f2123;
+    color: #eceff1;
+}
+.bartek-datatable tbody tr:hover {
+    background: #2c2d31;
+}
+.dataTables_wrapper .dt-buttons button {
+    background-color: #E67E22 !important;
+    border-color: #E67E22 !important;
+    color: #fff !important;
+}
+.dataTables_wrapper .dt-buttons button:hover {
+    background-color: #cf7b17 !important;
+    border-color: #cf7b17 !important;
+}
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 0.75rem;
+    border: none;
+    background: #dc3545;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.action-btn:hover {
+    background: #c82333;
+}
+.action-btn i {
+    font-size: 0.9rem;
+}
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+    background: #1f2123;
+    color: #eceff1;
+    border: 1px solid #333;
+}
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    color: #ccc;
+}

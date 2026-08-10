@@ -26,11 +26,41 @@ class ReservaController extends BaseController
         $reservas = $this->reservaModel->obtenerTodas();
 
         // Carga la vista de reservas pasándole la variable $reservas
-        $this->render('empleados/reservas', [
-            'reservas' => $reservas,
-            'titulo' => 'Reservas - Bartek',
-            'flash' => obtenerFlash(),
+        $this->render('reservas/reservas', [
+            'reservas'  => $reservas,
+            'titulo'     => 'Reservas - Bartek',
+            'tokenCSRF'  => generarTokenCSRF('reserva_eliminar'),
+            'flash'      => obtenerFlash(),
         ]);
+    }
+
+    /**
+     * Elimina una reserva por ID.
+     * POST /reservas/eliminar
+     *
+     * @return void
+     */
+    public function eliminar(): void
+    {
+        requerirAutenticacion();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirigir('/reservas');
+            return;
+        }
+
+        if (!validarTokenCSRF($_POST['csrf_token'] ?? '', 'reserva_eliminar')) {
+            flashMensaje('error', 'Token inválido.');
+            $this->redirigir('/reservas');
+            return;
+        }
+
+        $id = $this->entero('id', 'post');
+        $filas = $this->reservaModel->eliminar($id);
+
+        flashMensaje($filas > 0 ? 'success' : 'error',
+                     $filas > 0 ? 'Reserva eliminada.' : 'No se pudo eliminar la reserva.');
+        $this->redirigir('/reservas');
     }
 
     /**

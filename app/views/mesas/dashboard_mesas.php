@@ -1,4 +1,4 @@
-<?php /* app/views/empleados/dashboard_mesas.php */ ?>
+<?php /* app/views/mesas/dashboard_mesas.php */ ?>
 
 <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/mesas.css">
 

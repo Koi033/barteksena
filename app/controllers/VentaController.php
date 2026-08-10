@@ -112,7 +112,7 @@ class VentaController extends BaseController
             ];
         }
 
-        $this->render('empleados/dashboard_mesas', [
+        $this->render('mesas/dashboard_mesas', [
             'titulo'        => 'Mesas - Bartek',
             'totalMesas'    => TOTAL_MESAS,
             'mesasOcupadas' => $mesasOcupadas,
@@ -142,10 +142,10 @@ class VentaController extends BaseController
         // 2. Obtener todo el inventario activo para mostrarlo en la tabla de la izquierda
         require_once BASE_PATH . '/app/models/InventarioModel.php';
         $inventarioModel = new InventarioModel();
-        $inventario = $inventarioModel->obtenerActivos(); // Asegúrate de tener este método en tu modelo de inventario
+        $inventario = $inventarioModel->obtenerTodos(); // Asegúrate de tener este método en tu modelo de inventario
 
         // 3. Renderizar la vista de detalle
-        $this->render('empleados/mesa_detalle', [
+        $this->render('mesas/mesa_detalle', [
             'titulo'        => 'Mesa ' . $numeroMesa . ' - Bartek',
             'numeroMesa'    => $numeroMesa,
             'venta'         => $venta,
@@ -201,6 +201,62 @@ class VentaController extends BaseController
 
         $this->redirigir('/ventas/mesa/' . $mesa);
     }
+
+    /**
+     * Guarda los productos actuales de la mesa y cierra la venta,
+     * dejando la mesa disponible nuevamente.
+     * POST /ventas/cerrar-cuenta
+     *
+     * @return void
+     */
+    public function cerrarCuenta(): void
+    {
+        requerirAutenticacion();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirigir('/ventas/mesas');
+            return;
+        }
+        if (!validarTokenCSRF($_POST['csrf_token'] ?? '', 'venta')) {
+            flashMensaje('error', 'Token inválido.');
+            $this->redirigir('/ventas/mesas');
+            return;
+        }
+
+        $mesa = $this->post('mesa', 2);
+        $ventaId = $this->entero('venta_id', 'post');
+        $productos = $_POST['productos'] ?? [];
+
+        // Si no existe una venta abierta para esta mesa, la creamos primero
+        if (!$ventaId) {
+            $empleadoId = $_SESSION['empleado_id'] ?? null;
+
+            $ventaId = $this->modelo->crear([
+                'mesa'        => $mesa,
+                'empleado_id' => $empleadoId,
+                'estado'      => 'abierto'
+            ]);
+        }
+
+        if (!$ventaId) {
+            flashMensaje('error', 'No se pudo cerrar la venta.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        try {
+            // Guardar los productos actuales antes de cerrar, para que la cuenta final sea correcta
+            $this->modelo->actualizarDetallesVenta($ventaId, $productos);
+            $this->modelo->cerrar($ventaId);
+            flashMensaje('success', 'Venta cerrada. La mesa quedó disponible.');
+        } catch (\Exception $e) {
+            // Ej: stock insuficiente para alguno de los productos solicitados
+            flashMensaje('error', $e->getMessage());
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        $this->redirigir('/ventas/mesas');
+    }
     public function mesa($numeroMesa): void
     {
         requerirAutenticacion();
@@ -219,7 +275,7 @@ class VentaController extends BaseController
         $inventario = $inventarioModel->obtenerTodos();
 
         // 3. Renderizar la vista
-        $this->render('empleados/mesa_detalle', [
+        $this->render('mesas/mesa_detalle', [
             'titulo'        => 'Mesa ' . $numeroMesa . ' - Bartek',
             'numeroMesa'    => $numeroMesa,
             'venta'         => $venta,

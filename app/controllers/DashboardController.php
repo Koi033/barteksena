@@ -50,7 +50,7 @@ class DashboardController extends BaseController
         // Obtiene un arreglo con los números de mesa ocupadas (ej: ['1', '4'])
         $mesasOcupadas = $this->ventaModel->obtenerMesasOcupadas();
         
-        $this->render('empleados/dashboard_mesas', [
+        $this->render('mesas/dashboard_mesas', [
             'titulo'        => 'Control de Mesas - Bartek',
             'mesasOcupadas' => $mesasOcupadas,
             'totalMesas'    => 12, // Puedes cambiar este número según la capacidad de tu bar
