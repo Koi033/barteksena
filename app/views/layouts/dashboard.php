@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/dashboard.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/datatables-custom.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/calendario-horario.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/ventas.css">
 </head>
 
 <body class="layout-dashboard">

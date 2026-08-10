@@ -73,6 +73,35 @@ class VentaController extends BaseController
     }
 
     /**
+     * Devuelve en JSON los productos (detalle) de una venta específica.
+     * GET /ventas/detalle/{id}
+     *
+     * @param string|int $id
+     * @return void
+     */
+    public function detalle($id): void
+    {
+        requerirAutenticacion();
+
+        $id = (int) $id;
+        header('Content-Type: application/json; charset=utf-8');
+
+        if ($id <= 0) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'mensaje' => 'ID de venta inválido.']);
+            return;
+        }
+
+        $detalles = $this->modelo->obtenerDetallesVenta($id);
+
+        echo json_encode([
+            'success'   => true,
+            'ventaId'   => $id,
+            'detalles'  => $detalles,
+        ]);
+    }
+
+    /**
      * Cierra una venta activa.
      * POST /ventas/cerrar
      *

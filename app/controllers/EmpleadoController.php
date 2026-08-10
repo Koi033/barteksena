@@ -106,12 +106,12 @@ public function guardar(): void
             return;
         }
 
-        // Preparar datos del usuario (dividir nombre completo para la tabla usuarios)
-        $partesNombre = explode(' ', $datosEmpleado['nombre_completo'], 2);
-        
+        // Preparar datos del usuario a partir del nombre y apellido
+        // ingresados en el formulario (evita partir "nombre_completo" a ciegas,
+        // lo cual fallaba con nombres compuestos como "Ana María").
         $datosUsuario = [
-            'nombre'     => $partesNombre[0],
-            'apellido'   => $partesNombre[1] ?? '',
+            'nombre'     => $datosEmpleado['nombre'],
+            'apellido'   => $datosEmpleado['apellido'],
             'email'      => $datosEmpleado['email'],
             'telefono'   => $datosEmpleado['telefono'],
             'usuario'    => $usuarioRaw,
@@ -224,13 +224,20 @@ public function guardar(): void
 
     /**
      * Extrae y sanea los campos del formulario de empleado.
+     * El formulario pide nombre y apellido por separado; aquí se combinan
+     * en "nombre_completo" para persistirlos como lo espera la tabla `empleados`.
      *
      * @return array Datos saneados
      */
     private function extraerDatosFormulario(): array
     {
+        $nombre   = $this->post('nombre', 75);
+        $apellido = $this->post('apellido', 75);
+
         return [
-            'nombre_completo' => $this->post('nombre_completo', 150),
+            'nombre'          => $nombre,
+            'apellido'        => $apellido,
+            'nombre_completo' => trim($nombre . ' ' . $apellido),
             'puesto'          => $this->post('puesto', 80),
             'departamento'    => $this->post('departamento', 80) ?: 'General',
             'email'           => filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL) ?: '',
@@ -247,7 +254,8 @@ public function guardar(): void
     private function validarDatos(array $datos): array
     {
         $errores = [];
-        if (empty($datos['nombre_completo'])) $errores[] = 'El nombre completo es obligatorio.';
+        if (empty($datos['nombre']))          $errores[] = 'El nombre es obligatorio.';
+        if (empty($datos['apellido']))        $errores[] = 'El apellido es obligatorio.';
         if (empty($datos['puesto']))          $errores[] = 'El puesto es obligatorio.';
         if (empty($datos['departamento']))    $errores[] = 'El departamento es obligatorio.';
         if (empty($datos['email']))           $errores[] = 'El correo electrónico no es válido.';

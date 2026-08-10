@@ -1,0 +1,112 @@
+/* Estilos específicos para la vista de ventas */
+.ventas-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.ventas-page .action-btn.view-btn {
+    margin-right: 6px;
+}
+
+.ventas-page .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    padding: 1rem;
+}
+
+.ventas-page .modal-overlay.active {
+    display: flex;
+}
+
+.ventas-page .modal-box {
+    background: #1f2326;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    animation: ventasModalEntra 0.2s ease;
+}
+
+@keyframes ventasModalEntra {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.ventas-page .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(90deg, rgba(230, 126, 34, 0.14), transparent);
+}
+
+.ventas-page .modal-header h3 {
+    margin: 0;
+    font-size: 1.04rem;
+    color: #fff;
+}
+
+.ventas-page .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #c7c7c7;
+    transition: color 0.2s ease;
+}
+
+.ventas-page .modal-close:hover {
+    color: #fff;
+}
+
+.ventas-page .modal-body {
+    padding: 1rem 1.25rem 1.25rem;
+    color: #e4e4e4;
+}
+
+.ventas-page .modal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+.ventas-page .modal-table th,
+.ventas-page .modal-table td {
+    padding: 0.7rem 0.6rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ventas-page .modal-table th {
+    color: #f4b266;
+    font-weight: 700;
+}
+
+.ventas-page .modal-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.ventas-page .modal-total {
+    text-align: right;
+    margin-top: 0.9rem;
+    font-size: 1rem;
+    color: #fff;
+    font-weight: 600;
+}
