@@ -16,7 +16,10 @@ define('APP_VERSION', '1.0.0');
 // Ejemplos:
 //   XAMPP en htdocs/bartek  → '/bartek'
 //   Servidor en raíz        → ''  (cadena vacía)
-define('BASE_URL', '/bartek');
+// ── Ruta base URL ─────────────────────────────────────────────────────────────
+// Si estamos en desarrollo local (XAMPP), usa '/bartek'. En producción (Render), usa '' (cadena vacía).
+$isLocal = ($_SERVER['HTTP_HOST'] ?? '') === 'localhost' || str_contains($_SERVER['HTTP_HOST'] ?? '', '127.0.0.1');
+define('BASE_URL', $isLocal ? '/bartek' : '');
 
 // ── BASE_PATH ─────────────────────────────────────────────────────────────────
 // Se define en index.php como __DIR__ antes de cargar este archivo.

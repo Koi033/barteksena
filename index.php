@@ -65,6 +65,9 @@ iniciarSesion();
 
 // ── Enrutamiento ──────────────────────────────────────────────────────────────
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+if (preg_match('/\.(?:png|jpg|jpeg|gif|css|js|ico|svg|woff2?)$/i', $uri)) {
+    exit;
+}
 $uri = str_replace(BASE_URL, '', $uri);
 $uri = trim($uri, '/');
 
