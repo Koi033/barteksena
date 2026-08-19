@@ -47,7 +47,9 @@ class Database
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,  // Lanza excepciones en errores
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,        // Arrays asociativos por defecto
             PDO::ATTR_EMULATE_PREPARES   => false,                   // Prepared statements nativos
-            PDO::MYSQL_ATTR_FOUND_ROWS   => true,                    // Rows encontradas vs afectadas
+            PDO::MYSQL_ATTR_FOUND_ROWS   => true, 
+            PDO::MYSQL_ATTR_SSL_CA          => true,
+            PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,                   // Rows encontradas vs afectadas
         ];
 
         try {
