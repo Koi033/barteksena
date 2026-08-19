@@ -44,6 +44,26 @@ class AuthController extends BaseController
     }
 
     /**
+     * Vista pública del menú digital para clientes vía Código QR.
+     * GET /menu/publico (o la ruta libre que configures)
+     *
+     * @return void
+     */
+    public function publico(): void
+    {
+        // NO lleva requerirAutenticacion() para que sea libre para los clientes
+        
+        // Obtenemos las categorías y los productos/licores activos directamente de la BD
+        $categorias = $this->modelo->obtenerCategorias();
+        $licores = $this->modelo->obtenerLicoresDisponibles(); // Método que trae los licores con stock > 0
+
+        $this->render('menu/publico', [
+            'titulo'     => 'Carta Digital - Bartek',
+            'categorias' => $categorias,
+            'licores'    => $licores,
+        ], false); // El 'false' al final indica que no use la plantilla de administración general, sino un diseño limpio para celulares
+    }
+    /**
      * Muestra la página "Nosotros".
      *
      * @return void
@@ -155,7 +175,7 @@ class AuthController extends BaseController
             $_SESSION['empleado_id']     = null;
             $_SESSION['empleado_nombre'] = null;
         }
-
+        $_SESSION['usuario_foto']   = $user['foto'] ?? '';
         $this->redirigir('/dashboard');
     }
 

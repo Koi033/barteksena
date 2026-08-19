@@ -2,7 +2,7 @@
 /**
  * app/controllers/PerfilController.php
  * Controlador para que el usuario autenticado vea y edite su propio perfil.
- * Permite cambiar nombre, email, teléfono y contraseña.
+ * Permite cambiar nombre, email, teléfono, contraseña y foto de perfil.
  *
  * @package Bartek\Controllers
  */
@@ -73,15 +73,35 @@ class PerfilController extends BaseController
         $id  = (int)$_SESSION['usuario_id'];
         $pdo = Database::obtenerInstancia()->obtenerConexion();
 
-        // Actualizar datos generales
+        // --- PROCESAR LA FOTO DE PERFIL ---
+        if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
+            $nombreOriginal = $_FILES['foto_perfil']['name'];
+            $rutaTemporal   = $_FILES['foto_perfil']['tmp_name'];
+            $nombreNuevo    = time() . '_' . basename($nombreOriginal);
+            
+            $carpetaDestino = BASE_PATH . '/public/uploads/';
+            
+            if (!is_dir($carpetaDestino)) {
+                mkdir($carpetaDestino, 0755, true);
+            }
+            
+            $rutaDestino = $carpetaDestino . $nombreNuevo;
+            
+            if (move_uploaded_file($rutaTemporal, $rutaDestino)) {
+                // Asegúrate de que esta línea termine bien con WHERE id = :id
+                $stmtFoto = $pdo->prepare('UPDATE usuarios SET foto = :f WHERE id = :id');
+                $stmtFoto->execute([':f' => $nombreNuevo, ':id' => $id]);
+                $_SESSION['usuario_foto'] = $nombreNuevo;
+            }
+        }
+        // --- ACTUALIZAR DATOS GENERALES ---
         $sql  = 'UPDATE usuarios SET nombre = :n, email = :e, telefono = :t WHERE id = :id';
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':n' => $nombre, ':e' => $email, ':t' => $telefono, ':id' => $id]);
 
-        // Actualizar nombre en sesión
         $_SESSION['usuario_nombre'] = $nombre;
 
-        // Cambio de contraseña (opcional)
+        // --- CAMBIO DE CONTRASEÑA (OPCIONAL) ---
         $passActual = $_POST['pass_actual']   ?? '';
         $passNueva  = $_POST['pass_nueva']    ?? '';
         $passConf   = $_POST['pass_confirmar'] ?? '';

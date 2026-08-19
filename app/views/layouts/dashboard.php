@@ -80,11 +80,19 @@
                     </a>
                 </li>
 
-                <!-- Menú Interactivo (Permitido para ambos) -->
+                <!-- Agrega esto en tu menú lateral de dashboard.php -->
+                <li/>
+                     <a href="/bartek/public/publico.php" class="nav-link">
+                      <i class="fa-solid fa-wine-bottle"></i> 
+                        <span>Ver Menú Digital</span>
+                           </a>
+                </li>
+
+                <!-- Sistema de Puntos (Integrado directamente en el menú) -->
                 <li>
-                    <a href="<?= BASE_URL ?>/menu"
-                        class="<?= str_contains($_SERVER['REQUEST_URI'], '/menu') ? 'active' : '' ?>">
-                        <i class="fas fa-cocktail" aria-hidden="true"></i> Menú Interactivo
+                    <a href="<?= BASE_URL ?>/puntos"
+                        class="<?= str_contains($_SERVER['REQUEST_URI'], '/puntos') ? 'active' : '' ?>">
+                        <i class="fas fa-coins" aria-hidden="true"></i> Sistema de Puntos
                     </a>
                 </li>
 
@@ -121,7 +129,6 @@
                 <a href="<?= BASE_URL ?>/perfil" class="user-name" style="text-decoration:none; color:#fff;">
                     <?= htmlspecialchars($_SESSION['usuario_nombre'] ?? '', ENT_QUOTES, 'UTF-8') ?>
                 </a>
-                <!-- DESPUÉS (Muestra "Dueño" en pantalla) -->
                 <span class="user-role">
                     <?= $rolUsuario === 'dueno' ? 'Dueño' : htmlspecialchars(ucfirst($rolUsuario), ENT_QUOTES, 'UTF-8') ?>
                 </span>

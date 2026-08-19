@@ -46,6 +46,8 @@ require_once BASE_PATH . '/app/models/MenuModel.php';
 require_once BASE_PATH . '/app/models/NotificacionModel.php';
 require_once BASE_PATH . '/app/models/ContactoModel.php';
 
+
+
 // ── Controladores ─────────────────────────────────────────────────────────────
 require_once BASE_PATH . '/app/controllers/AuthController.php';
 require_once BASE_PATH . '/app/controllers/DashboardController.php';
@@ -63,11 +65,11 @@ require_once BASE_PATH . '/app/controllers/PasswordController.php';
 // ── Sesión ────────────────────────────────────────────────────────────────────
 iniciarSesion();
 
+
+
 // ── Enrutamiento ──────────────────────────────────────────────────────────────
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-if (preg_match('/\.(?:png|jpg|jpeg|gif|css|js|ico|svg|woff2?)$/i', $uri)) {
-    exit;
-}
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+$uri = parse_url($requestUri, PHP_URL_PATH) ?: '';
 $uri = str_replace(BASE_URL, '', $uri);
 $uri = trim($uri, '/');
 
@@ -94,6 +96,7 @@ $rutas = [
     'horarios'   => ['HorarioController',    $accion],
     'menu'       => ['MenuController',       $accion],
     'reservas'   => ['ReservaController',    $accion],
+    'menu-publico' => ['MenuController'],
     'reportes'   => ['ReporteController',    $accion],
     'perfil'     => ['PerfilController',     $accion],
     'recuperar'  => ['PasswordController',  'recuperar'],

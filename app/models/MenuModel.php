@@ -21,7 +21,14 @@ class MenuModel extends BaseModel
                 ORDER BY c.nombre ASC';
         return $this->consultarTodos($sql);
     }
-
+     // Obtener licores disponibles 
+    public function obtenerLicoresDisponibles()
+    {
+        $sql = "SELECT * FROM inventario WHERE stock_actual > 0 AND activo = 1 ORDER BY categoria_id ASC, nombre ASC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     /** Busca una categoría por ID. */
     public function buscarPorId(int $id): array|false
     {

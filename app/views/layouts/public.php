@@ -54,7 +54,10 @@
 
     <footer class="footer-public">
         <p>© 2026 Bartek</p>
-    
+        <div class="redes">
+            <a href="https://www.facebook.com/share/1B9g2TnVrB/" target="_blank" rel="noopener">Facebook</a>
+            <a href="https://www.instagram.com/bartek.bar_?igsh=MTc0amM2OTQ0ZDVqaA==" target="_blank" rel="noopener">Instagram</a>
+        </div>
     </footer>
 
     <script src="<?= BASE_URL ?>/public/js/main.js"></script>

@@ -16,8 +16,8 @@ RewriteRule ^(app|config|setup|sql)(/.*)?$ - [F,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Todo lo demás al Front Controller
-RewriteRule ^(.*)$ index.php [QSA,L]
+# Todo lo demás al Front Controller (con esta línea corregida)
+RewriteRule ^(.*)$ public/index.php?url=$1 [QSA,L]
 
 # Cabeceras de seguridad
 <IfModule mod_headers.c>
