@@ -11,6 +11,7 @@
     <!-- Estilos desde carpeta CSS separada -->
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/style.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/public.css">
+    <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/public/images/favicon.jfif">
 </head>
 <body class="layout-public">
 

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/style.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/auth.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/recuperar.css">
+    <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/public/images/favicon.jfif">
 </head>
 <body class="layout-auth">
 

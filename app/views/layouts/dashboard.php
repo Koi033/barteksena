@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/datatables-custom.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/calendario-horario.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/ventas.css">
+    <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/public/images/favicon.jfif">
     <?php
     $rutaCssModulo = BASE_PATH . '/public/css/dashboard-' . ($cssModulo ?? '') . '.css';
     if (!empty($cssModulo) && file_exists($rutaCssModulo)):
