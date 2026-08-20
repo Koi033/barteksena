@@ -21,10 +21,12 @@
 
 <!-- Instrucciones para el camarero -->
 <p class="puntos-instrucciones">
-    <i class="fas fa-circle-info" aria-hidden="true"></i>
-    Completa estos datos con la información que te dé el cliente al momento de pagar:
-    su <strong>nombre completo</strong>, su <strong>número de cédula</strong> (sin puntos ni espacios)
-    y la <strong>cantidad de puntos</strong> que le corresponde según su consumo.
+    <span class="puntos-instrucciones-icono"><i class="fas fa-circle-info" aria-hidden="true"></i></span>
+    <span class="puntos-instrucciones-texto">
+        Completa estos datos con la información que te dé el cliente al momento de pagar:
+        su <strong>nombre completo</strong>, su <strong>número de cédula</strong> (sin puntos ni espacios)
+        y la <strong>cantidad de puntos</strong> que le corresponde según su consumo.
+    </span>
 </p>
 
 <!-- Abonar puntos: tarjeta horizontal -->

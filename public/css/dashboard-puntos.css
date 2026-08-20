@@ -130,14 +130,14 @@
     max-width: 780px;
 }
 
-.puntos-instrucciones i {
+.puntos-instrucciones-icono {
     color: #E67E22;
     font-size: 1rem;
     margin-top: 0.15rem;
     flex-shrink: 0;
 }
 
-.puntos-instrucciones strong { color: #fff; }
+.puntos-instrucciones-texto strong { color: #fff; }
 
 .puntos-historial-card {
     max-width: 420px;

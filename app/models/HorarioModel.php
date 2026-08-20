@@ -34,14 +34,14 @@ class HorarioModel extends BaseModel
 
     /** Horarios pendientes de aprobación. */
     public function obtenerPendientes(): array
-    {
-        $sql = 'SELECT h.id, e.nombre_completo, h.fecha, h.hora_inicio, h.hora_fin
-                FROM horarios h
-                INNER JOIN empleados e ON e.id = h.empleado_id
-                WHERE h.estado = "pendiente"
-                ORDER BY h.fecha ASC';
-        return $this->consultarTodos($sql);
-    }
+{
+    $sql = "SELECT h.id, e.nombre_completo, h.fecha, h.hora_inicio, h.hora_fin
+            FROM horarios h
+            INNER JOIN empleados e ON e.id = h.empleado_id
+            WHERE h.estado = 'pendiente'
+            ORDER BY h.fecha ASC";
+    return $this->consultarTodos($sql);
+}
 
     /** Crea un nuevo horario. */
     public function crear(array $datos): int
