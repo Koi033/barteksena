@@ -25,9 +25,6 @@
 
 <!-- Filtros -->
 <form method="GET" action="<?= BASE_URL ?>/inventario" class="controls-section">
-    <input type="text" name="busqueda" class="search-bar"
-           placeholder="Buscar por nombre o código..."
-           value="<?= htmlspecialchars($busqueda, ENT_QUOTES, 'UTF-8') ?>">
 
     <select name="categoria" class="filter-dropdown">
         <option value="0">Todas las categorías</option>

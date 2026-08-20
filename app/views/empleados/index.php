@@ -10,17 +10,6 @@
 <div class="action-buttons">
     <a href="<?= BASE_URL ?>/empleados/crear" class="btn-primary">+ Agregar Empleado</a>
 </div>
-
-<!-- Barra de búsqueda y filtros (server-side simplificado) -->
-<form method="GET" action="<?= BASE_URL ?>/empleados" class="controls-section">
-    <input type="text" name="busqueda" class="search-bar"
-           placeholder="Buscar por nombre, puesto o email..."
-           value="<?= htmlspecialchars($busqueda, ENT_QUOTES, 'UTF-8') ?>">
-
-    <button type="submit" class="btn-filter"><i class="fas fa-search" aria-hidden="true"></i> Buscar</button>
-    <a href="<?= BASE_URL ?>/empleados" class="btn-secondary"><i class="fas fa-times" aria-hidden="true"></i> Limpiar</a>
-</form>
-
 <!-- Tabla con DataTables -->
 <div class="table-section">
     <table class="bartek-datatable dt-buttons" id="tablaEmpleados">
