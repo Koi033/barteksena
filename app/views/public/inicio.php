@@ -32,7 +32,7 @@
     </a>
     
     <!-- Tu tarjeta de Menú digital que ya abre la carta perfecta -->
-    <a class="beneficio-item" href="/bartek/public/publico.php" target="_blank" aria-label="Menú digital">
+    <a class="beneficio-item" href="<?= BASE_URL ?>/public/publico.php" target="_blank" aria-label="Menú digital">
         <h3>Menú digital</h3>
         <p>Publica y actualiza tu carta con precios, descripciones y ofertas especiales desde un solo lugar.</p>
     </a>
