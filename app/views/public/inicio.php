@@ -28,7 +28,7 @@
     <!-- Tarjeta de Reservas sin el # -->
     <a class="beneficio-item" href="javascript:void(0);" aria-label="Reservas">
         <h3>Reservas</h3>
-        <p>Gestiona reservaciones y disponibilidad de mesas con confirmaciones automáticas para el cliente.</p>
+        <p>Ahora puedes reservar con nuestro chat bot de la esquina inferior derecha.</p>
     </a>
     
     <!-- Tu tarjeta de Menú digital que ya abre la carta perfecta -->
