@@ -20,6 +20,12 @@ class BaseController
      */
     protected function render(string $vista, array $datos = [], string $layout = 'dashboard'): void
     {
+        // Detecta automáticamente el módulo de CSS a partir del primer
+        if (!isset($datos['cssModulo'])) {
+            $segmentoVista = explode('/', $vista)[0] ?? '';
+            $datos['cssModulo'] = $segmentoVista;
+        }
+
         // Hacer disponibles las variables en el scope de la vista
         extract($datos, EXTR_SKIP);   // EXTR_SKIP evita sobrescribir variables existentes
 
@@ -139,5 +145,47 @@ class BaseController
     {
         $valor = ($fuente === 'post') ? ($_POST[$campo] ?? $default) : ($_GET[$campo] ?? $default);
         return (int) filter_var($valor, FILTER_SANITIZE_NUMBER_INT);
+    }
+
+    /**
+     * Guarda en sesión los datos del formulario para poder rellenarlos
+     * de nuevo si la validación falla, evitando que el usuario tenga
+     * que volver a escribir todo. Se guarda por 'clave' para no chocar
+     * entre formularios distintos (ej: 'registro', 'contacto').
+     *
+     * NUNCA se guardan campos sensibles como contraseñas o tokens CSRF.
+     *
+     * @param  string $clave    Identificador del formulario (ej: 'registro')
+     * @param  array  $datos    Normalmente $_POST
+     * @param  array  $excluir  Nombres de campos a excluir (además de los sensibles por defecto)
+     * @return void
+     */
+    protected function guardarInputAntiguo(string $clave, array $datos, array $excluir = []): void
+    {
+        $camposSensibles = array_merge(
+            ['csrf_token', 'contrasena', 'contrasena_confirm', 'password', 'password_confirm'],
+            $excluir
+        );
+
+        foreach ($camposSensibles as $campo) {
+            unset($datos[$campo]);
+        }
+
+        $_SESSION['_old_input'][$clave] = $datos;
+    }
+
+    /**
+     * Recupera y CONSUME (borra tras leer) el input anterior guardado
+     * para un formulario. Así solo se rellena una vez, justo después
+     * del error, y no queda "pegado" en visitas posteriores.
+     *
+     * @param  string $clave Identificador del formulario (ej: 'registro')
+     * @return array         Array asociativo campo => valor (vacío si no había nada)
+     */
+    protected function obtenerInputAntiguo(string $clave): array
+    {
+        $datos = $_SESSION['_old_input'][$clave] ?? [];
+        unset($_SESSION['_old_input'][$clave]);
+        return $datos;
     }
 }

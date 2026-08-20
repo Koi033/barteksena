@@ -7,7 +7,8 @@
     <title><?= htmlspecialchars($titulo ?? 'Bartek Panel', ENT_QUOTES, 'UTF-8') ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
     <script src="https://kit.fontawesome.com/18f357a62d.js" crossorigin="anonymous"></script>
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -19,6 +20,13 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/datatables-custom.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/calendario-horario.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/ventas.css">
+    <?php
+    $rutaCssModulo = BASE_PATH . '/public/css/dashboard-' . ($cssModulo ?? '') . '.css';
+    if (!empty($cssModulo) && file_exists($rutaCssModulo)):
+        ?>
+        <link rel="stylesheet"
+            href="<?= BASE_URL ?>/public/css/dashboard-<?= htmlspecialchars($cssModulo, ENT_QUOTES, 'UTF-8') ?>.css">
+    <?php endif; ?>
 </head>
 
 <body class="layout-dashboard">
@@ -29,7 +37,8 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <span>Bartek</span>
-            <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Cerrar menú"><i class="fas fa-bars" aria-hidden="true"></i></button>
+            <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Cerrar menú"><i class="fas fa-bars"
+                    aria-hidden="true"></i></button>
         </div>
 
         <nav>
@@ -65,11 +74,11 @@
                 </li>
                 <!-- Reservas (solo empleado) -->
                 <li>
-                 <a href="<?= BASE_URL ?>/reservas"
+                    <a href="<?= BASE_URL ?>/reservas"
                         class="<?= str_contains($_SERVER['REQUEST_URI'], '/reservas') ? 'active' : '' ?>">
                         <i class="fas fa-calendar-alt" aria-hidden="true"></i> Reservas
-                </a>
-                
+                    </a>
+
                 </li>
 
                 <!-- Ventas (Permitido para ambos) -->
@@ -80,12 +89,11 @@
                     </a>
                 </li>
 
-                <!-- Agrega esto en tu menú lateral de dashboard.php -->
-                <li/>
-                     <a href="/bartek/public/publico.php" class="nav-link">
-                      <i class="fa-solid fa-wine-bottle"></i> 
+                <li>
+                    <a href="<?= BASE_URL ?>/menu-publico" class="nav-link" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-wine-bottle"></i>
                         <span>Ver Menú Digital</span>
-                           </a>
+                    </a>
                 </li>
 
                 <!-- Sistema de Puntos (Integrado directamente en el menú) -->
@@ -134,11 +142,11 @@
                 </span>
             </div>
             <!-- Logout con confirmación y POST para evitar CSRF por GET -->
-            <form method="POST" action="<?= BASE_URL ?>/logout"
-                onsubmit="return confirm('¿Cerrar sesión?')">
+            <form method="POST" action="<?= BASE_URL ?>/logout" onsubmit="return confirm('¿Cerrar sesión?')">
                 <input type="hidden" name="csrf_token"
                     value="<?= htmlspecialchars(generarTokenCSRF('logout'), ENT_QUOTES, 'UTF-8') ?>">
-                <button type="submit" class="btn-logout"><i class="fas fa-power-off" aria-hidden="true"></i> Cerrar Sesión</button>
+                <button type="submit" class="btn-logout"><i class="fas fa-power-off" aria-hidden="true"></i> Cerrar
+                    Sesión</button>
             </form>
         </div>
     </aside>

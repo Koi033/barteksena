@@ -1,0 +1,73 @@
+/* ============================================================
+   css/dashboard-horarios.css — Bartek · Módulo Horarios
+   Incluir junto a dashboard-base.css SOLO en vistas de horarios.
+   ============================================================ */
+
+.calendar-section {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.calendar-section h2 { color: #E67E22; font-size: 1.1rem; margin-bottom: 1rem; }
+
+.pending-schedules {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.5rem;
+    grid-column: 1 / -1;
+}
+
+.pending-schedules h2 { color: #E67E22; font-size: 1.1rem; margin-bottom: 1rem; }
+
+.schedule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #252728;
+    border-radius: 8px;
+    border-left: 4px solid #E67E22;
+    margin-bottom: 0.8rem;
+    gap: 1rem;
+}
+
+.schedule-employee { color: #fff; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+.schedule-time     { color: #aaa; font-size: 0.82rem; }
+
+.schedule-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-shrink: 0;
+}
+
+.btn-action {
+    padding: 0.4rem 0.9rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: all 0.25s;
+}
+
+.btn-approve { background-color: #28a745; color: #fff; }
+.btn-approve:hover { background-color: #218838; }
+.btn-reject  { background-color: #dc3545; color: #fff; }
+.btn-reject:hover  { background-color: #c82333; }
+
+/* ── Modal de horario (usa .modal-overlay/.modal-box de la base) ──── */
+.time-inputs { display: flex; gap: 0.6rem; }
+.time-inputs input { flex: 1; }
+
+/* ── Responsive específico de horarios ────────────────────────────── */
+@media (max-width: 1024px) {
+    .pending-schedules { grid-column: 1; }
+}
+
+@media (max-width: 768px) {
+    .schedule-item  { flex-direction: column; align-items: flex-start; }
+    .schedule-actions { width: 100%; }
+    .btn-action { flex: 1; text-align: center; }
+}

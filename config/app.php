@@ -11,15 +11,14 @@ define('APP_ENV',     getenv('APP_ENV')  ?: 'development');
 define('APP_NAME',    'Bartek');
 define('APP_VERSION', '1.0.0');
 
-// ── Ruta base URL ─────────────────────────────────────────────────────────────
-// BASE_URL = subcarpeta donde está el proyecto en el servidor.
-// Ejemplos:
-//   XAMPP en htdocs/bartek  → '/bartek'
-//   Servidor en raíz        → ''  (cadena vacía)
-// ── Ruta base URL ─────────────────────────────────────────────────────────────
-// Si estamos en desarrollo local (XAMPP), usa '/bartek'. En producción (Render), usa '' (cadena vacía).
-$isLocal = ($_SERVER['HTTP_HOST'] ?? '') === 'localhost' || str_contains($_SERVER['HTTP_HOST'] ?? '', '127.0.0.1');
-define('BASE_URL', $isLocal ? '/bartek' : '');
+// ── Ruta base URL ────────────────────────────────────────────────────────────
+$carpetaBase = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+$carpetaBase = rtrim($carpetaBase, '/');
+// Evita que quede como '/.' cuando el proyecto está en la raíz del dominio
+if ($carpetaBase === '/' || $carpetaBase === '.') {
+    $carpetaBase = '';
+}
+define('BASE_URL', $carpetaBase);
 
 // ── BASE_PATH ─────────────────────────────────────────────────────────────────
 // Se define en index.php como __DIR__ antes de cargar este archivo.

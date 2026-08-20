@@ -1,0 +1,202 @@
+/* ============================================================
+   css/dashboard-puntos.css — Bartek · Módulo Sistema de Puntos
+   Incluir junto a dashboard-base.css SOLO en vistas de puntos.
+   ============================================================ */
+
+/* ── Header: icono + título agrupados, badge de operador ─────────── */
+.puntos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.puntos-header-titulo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.puntos-operador-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #1a1c1e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    color: #ccc;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.puntos-operador-badge i { color: #E67E22; }
+
+.puntos-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background-color: rgba(230, 126, 34, 0.12);
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    color: #E67E22;
+    flex-shrink: 0;
+}
+
+/* ── Inputs del formulario (form-group), consistentes con el resto
+      del panel — dashboard-base.css no define un estilo genérico
+      de <input>, así que lo declaramos aquí para este módulo. ────── */
+.form-card .form-group input[type="text"],
+.form-card .form-group input[type="number"] {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    background-color: #0d0e0f;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+}
+
+.form-card .form-group input::placeholder { color: #666; }
+
+.form-card .form-group input:focus {
+    outline: none;
+    border-color: #E67E22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.18);
+}
+
+.puntos-input-destacado {
+    color: #E67E22 !important;
+    font-weight: 800;
+    font-size: 1.2rem !important;
+}
+
+/* ── Tarjeta de "Abonar Puntos" en formato horizontal ─────────────── */
+.puntos-form-horizontal {
+    max-width: none;
+    width: 100%;
+}
+
+.puntos-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) auto;
+    gap: 1.2rem;
+    align-items: end;
+}
+
+.puntos-form-grid .form-group { margin-bottom: 0; }
+
+.puntos-form-btn-wrap {
+    display: flex;
+}
+
+.puntos-form-btn {
+    white-space: nowrap;
+    height: 46px;
+}
+
+@media (max-width: 900px) {
+    .puntos-form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .puntos-form-btn-wrap { grid-column: 1 / -1; }
+    .puntos-form-btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 560px) {
+    .puntos-form-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Columna izquierda: intro + tarjeta de historial ──────────────── */
+/* ── Texto instructivo para el camarero ───────────────────────────── */
+.puntos-instrucciones {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    background-color: rgba(230, 126, 34, 0.08);
+    border: 1px solid rgba(230, 126, 34, 0.25);
+    border-radius: 10px;
+    padding: 0.9rem 1.2rem;
+    color: #ccc;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin-bottom: 1.5rem;
+    max-width: 780px;
+}
+
+.puntos-instrucciones i {
+    color: #E67E22;
+    font-size: 1rem;
+    margin-top: 0.15rem;
+    flex-shrink: 0;
+}
+
+.puntos-instrucciones strong { color: #fff; }
+
+.puntos-historial-card {
+    max-width: 420px;
+    margin-top: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: #1a1c1e;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 1.1rem 1.3rem;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.puntos-historial-card:hover {
+    border-color: #E67E22;
+    box-shadow: 0 8px 20px rgba(230, 126, 34, 0.15);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.puntos-historial-icono {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background-color: rgba(230, 126, 34, 0.12);
+    color: #E67E22;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.puntos-historial-texto { flex: 1; }
+
+.puntos-historial-texto h3 {
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+
+.puntos-historial-texto p {
+    color: #888;
+    font-size: 0.78rem;
+}
+
+.puntos-historial-flecha {
+    color: #E67E22;
+    transition: transform 0.25s ease;
+}
+
+.puntos-historial-card:hover .puntos-historial-flecha {
+    transform: translateX(4px);
+}
+
+/* ── Responsive ────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .puntos-historial-card { flex-direction: column; text-align: center; }
+}

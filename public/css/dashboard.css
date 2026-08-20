@@ -1,6 +1,8 @@
 /* ============================================================
-   css/dashboard.css — Bartek · Estilos del Panel Interno
-   Sidebar + main content + todos los componentes del dashboard
+   css/dashboard-base.css — Bartek · Panel Interno (BASE)
+   Incluir SIEMPRE en toda vista del dashboard.
+   Contiene: layout, sidebar, botones, tablas genéricas,
+   tarjetas resumen, formularios, paginación, modal base.
    ============================================================ */
 
 /* ── Layout general del dashboard ───────────────────────────────── */
@@ -28,7 +30,6 @@
     flex-shrink: 0;
 }
 
-/* ── Marca del sidebar ───────────────────────────────────────────── */
 .sidebar-brand {
     display: flex;
     align-items: center;
@@ -58,7 +59,6 @@
 
 .sidebar-toggle-btn:hover { color: #E67E22; }
 
-/* ── Menú lateral ────────────────────────────────────────────────── */
 .sidebar-menu {
     list-style: none;
     flex: 1;
@@ -98,7 +98,6 @@
     border-color: #0066ff;
 }
 
-/* ── Footer del sidebar (usuario + logout) ───────────────────────── */
 .sidebar-footer {
     border-top: 1px solid #333;
     padding-top: 1rem;
@@ -151,10 +150,9 @@
     flex: 1;
     padding: 2rem 2.5rem;
     overflow-y: auto;
-    min-width: 0; /* Previene desbordamiento en flex */
+    min-width: 0;
 }
 
-/* ── Encabezado de página ────────────────────────────────────────── */
 .page-header {
     margin-bottom: 2rem;
 }
@@ -325,7 +323,24 @@
     font-size: 0.8rem;
 }
 
-/* ── Alerta de stock bajo ────────────────────────────────────────── */
+/* ── Sección de pedidos/notificaciones recientes ─────────────────── */
+.recent-orders {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.8rem;
+}
+
+.recent-orders h2 {
+    color: #E67E22;
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+}
+
+/* ── Alerta de stock bajo ──────────────────────────────────────────
+   Vive en la base (no en dashboard-inventario.css) porque se usa
+   tanto en el dashboard principal (Notificaciones) como en la vista
+   de inventario. */
 .stock-alert-box {
     background: #3a1a1a;
     border: 1px solid #e74c3c;
@@ -362,21 +377,11 @@
     margin: 0.2rem;
 }
 
-/* ── Sección de pedidos/notificaciones ───────────────────────────── */
-.recent-orders {
-    background-color: #1a1c1e;
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 1.8rem;
-}
+.stock-low    { color: #e74c3c; font-weight: 700; }
+.stock-medium { color: #f39c12; font-weight: 700; }
+.stock-ok     { color: #28a745; font-weight: 700; }
 
-.recent-orders h2 {
-    color: #E67E22;
-    font-size: 1.1rem;
-    margin-bottom: 1.2rem;
-}
-
-/* ── Tablas ──────────────────────────────────────────────────────── */
+/* ── Tablas genéricas ────────────────────────────────────────────── */
 .table-section {
     background-color: #1a1c1e;
     border-radius: 10px;
@@ -434,15 +439,11 @@
     background-color: #252728;
 }
 
-/* Clases especiales de celda */
 .id-cell,
 .employee-name { color: #fff; font-weight: 700; }
 .transaction-id { color: #E67E22; font-weight: 700; }
 .email-cell { color: #7fb3ff; }
 .price-cell { color: #E67E22; font-weight: 700; }
-.stock-low    { color: #e74c3c; font-weight: 700; }
-.stock-medium { color: #f39c12; font-weight: 700; }
-.stock-ok     { color: #28a745; font-weight: 700; }
 
 .category-badge {
     display: inline-block;
@@ -454,7 +455,7 @@
     color: #ccc;
 }
 
-/* ── Badges de estado ────────────────────────────────────────────── */
+/* ── Badges de estado (usados por ventas, horarios, etc.) ─────────── */
 .status-badge {
     display: inline-block;
     padding: 0.25rem 0.65rem;
@@ -555,35 +556,6 @@
     grid-template-columns: 1fr;
 }
 
-/* ── Top productos ───────────────────────────────────────────────── */
-.top-products,
-.transactions {
-    background-color: #1a1c1e;
-    border-radius: 10px;
-    padding: 1.5rem;
-}
-
-.top-products h2,
-.transactions h2 {
-    color: #E67E22;
-    font-size: 1.1rem;
-    margin-bottom: 1.2rem;
-}
-
-.product-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid #2f3133;
-    color: #ccc;
-    font-size: 0.88rem;
-}
-
-.product-item:last-child { border-bottom: none; }
-.product-name    { color: #fff; font-weight: 600; }
-.product-quantity { color: #E67E22; font-weight: 600; }
-
 /* ── Formulario interno (crear/editar) ───────────────────────────── */
 .form-card {
     background-color: #1a1c1e;
@@ -619,7 +591,6 @@
     flex-wrap: wrap;
 }
 
-/* ── Sección formulario (horarios, etc.) ─────────────────────────── */
 .form-section {
     background-color: #1a1c1e;
     border-radius: 10px;
@@ -651,140 +622,7 @@
     box-shadow: 0 5px 15px rgba(0, 102, 255, 0.3);
 }
 
-/* ── Horarios pendientes ─────────────────────────────────────────── */
-.calendar-section {
-    background-color: #1a1c1e;
-    border-radius: 10px;
-    padding: 1.5rem;
-}
-
-.calendar-section h2 { color: #E67E22; font-size: 1.1rem; margin-bottom: 1rem; }
-
-.pending-schedules {
-    background-color: #1a1c1e;
-    border-radius: 10px;
-    padding: 1.5rem;
-    grid-column: 1 / -1;
-}
-
-.pending-schedules h2 { color: #E67E22; font-size: 1.1rem; margin-bottom: 1rem; }
-
-.schedule-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background-color: #252728;
-    border-radius: 8px;
-    border-left: 4px solid #E67E22;
-    margin-bottom: 0.8rem;
-    gap: 1rem;
-}
-
-.schedule-employee { color: #fff; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
-.schedule-time     { color: #aaa; font-size: 0.82rem; }
-
-.schedule-actions {
-    display: flex;
-    gap: 0.6rem;
-    flex-shrink: 0;
-}
-
-.btn-action {
-    padding: 0.4rem 0.9rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    transition: all 0.25s;
-}
-
-.btn-approve { background-color: #28a745; color: #fff; }
-.btn-approve:hover { background-color: #218838; }
-.btn-reject  { background-color: #dc3545; color: #fff; }
-.btn-reject:hover  { background-color: #c82333; }
-
-/* ── Tabs ────────────────────────────────────────────────────────── */
-.tabs-section {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.2rem;
-    border-bottom: 2px solid #333;
-    flex-wrap: wrap;
-}
-
-.tab-button {
-    padding: 0.75rem 1.2rem;
-    background: none;
-    border: none;
-    border-bottom: 3px solid transparent;
-    color: #aaa;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 600;
-    cursor: pointer;
-    margin-bottom: -2px;
-    transition: all 0.25s;
-}
-
-.tab-button:hover { color: #E67E22; }
-.tab-button.active { color: #E67E22; border-bottom-color: #E67E22; }
-
-/* ── Categorías (menú) ───────────────────────────────────────────── */
-.categories-list { display: flex; flex-direction: column; gap: 1rem; }
-
-.category-card {
-    background-color: #1a1c1e;
-    border-radius: 10px;
-    padding: 1.2rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-left: 4px solid #E67E22;
-    transition: all 0.25s;
-    gap: 1rem;
-}
-
-.category-card:hover {
-    box-shadow: 0 5px 16px rgba(230, 126, 34, 0.2);
-    transform: translateX(4px);
-}
-
-.category-name        { color: #fff; font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
-.category-description { color: #aaa; font-size: 0.82rem; margin-bottom: 0.3rem; }
-.category-count       { color: #666; font-size: 0.78rem; }
-
-.category-actions {
-    display: flex;
-    gap: 0.6rem;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.view-products-btn {
-    background-color: #0066ff;
-    color: #fff;
-    padding: 0.45rem 1rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    transition: all 0.25s;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-.view-products-btn:hover {
-    background-color: #0051cc;
-    text-decoration: none;
-    color: #fff;
-}
-
-/* ── Modal ───────────────────────────────────────────────────────── */
+/* ── Modal base (reutilizado por horarios, ventas, etc.) ──────────── */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -813,35 +651,6 @@
 
 .modal-box h2 { color: #E67E22; margin-bottom: 1.5rem; }
 
-.time-inputs { display: flex; gap: 0.6rem; }
-.time-inputs input { flex: 1; }
-
-/* ── Modal: Detalle de venta ─────────────────────────────────────── */
-.modal-box.modal-detalle {
-    max-width: 560px;
-    max-height: 85vh;
-    overflow-y: auto;
-}
-
-.modal-detalle-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #333;
-}
-
-.modal-detalle-header h3 {
-    color: #E67E22;
-    font-size: 1.05rem;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
 .modal-close {
     -webkit-appearance: none;
     appearance: none;
@@ -860,43 +669,11 @@
 
 .modal-close:hover { color: #fff; }
 
-.modal-detalle-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.88rem;
-}
-
-.modal-detalle-table th {
-    text-align: left;
-    color: #999;
-    font-weight: 600;
-    padding: 0.5rem 0.4rem;
-    border-bottom: 2px solid #333;
-}
-
-.modal-detalle-table td {
-    padding: 0.55rem 0.4rem;
-    color: #ccc;
-    border-bottom: 1px solid #2f3133;
-}
-
-.modal-detalle-total {
-    text-align: right;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #333;
-    color: #ccc;
-    font-size: 0.95rem;
-}
-
-.modal-detalle-total strong { color: #E67E22; font-size: 1.1rem; }
-
-/* ── Responsive dashboard ────────────────────────────────────────── */
+/* ── Responsive base (layout, sidebar, botones, tablas, forms) ────── */
 @media (max-width: 1024px) {
     .content-grid {
         grid-template-columns: 1fr;
     }
-    .pending-schedules { grid-column: 1; }
 }
 
 @media (max-width: 768px) {
@@ -959,13 +736,6 @@
     .sales-summary { grid-template-columns: 1fr 1fr; }
 
     .content-grid { grid-template-columns: 1fr; }
-
-    .category-card  { flex-direction: column; align-items: flex-start; }
-    .category-actions { width: 100%; }
-
-    .schedule-item  { flex-direction: column; align-items: flex-start; }
-    .schedule-actions { width: 100%; }
-    .btn-action { flex: 1; text-align: center; }
 
     .pagination-section { flex-direction: column; }
 

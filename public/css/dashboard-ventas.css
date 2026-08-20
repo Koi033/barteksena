@@ -1,0 +1,90 @@
+/* ============================================================
+   css/dashboard-ventas.css — Bartek · Módulo Ventas
+   Incluir junto a dashboard-base.css SOLO en vistas de ventas.
+   ============================================================ */
+
+/* ── Top productos / transacciones (widgets del dashboard de ventas) */
+.top-products,
+.transactions {
+    background-color: #1a1c1e;
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.top-products h2,
+.transactions h2 {
+    color: #E67E22;
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid #2f3133;
+    color: #ccc;
+    font-size: 0.88rem;
+}
+
+.product-item:last-child { border-bottom: none; }
+.product-name    { color: #fff; font-weight: 600; }
+.product-quantity { color: #E67E22; font-weight: 600; }
+
+/* ── Modal: Detalle de venta (usa .modal-overlay/.modal-box base) ─── */
+.modal-box.modal-detalle {
+    max-width: 560px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.modal-detalle-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+.modal-detalle-header h3 {
+    color: #E67E22;
+    font-size: 1.05rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-detalle-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.modal-detalle-table th {
+    text-align: left;
+    color: #999;
+    font-weight: 600;
+    padding: 0.5rem 0.4rem;
+    border-bottom: 2px solid #333;
+}
+
+.modal-detalle-table td {
+    padding: 0.55rem 0.4rem;
+    color: #ccc;
+    border-bottom: 1px solid #2f3133;
+}
+
+.modal-detalle-total {
+    text-align: right;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #333;
+    color: #ccc;
+    font-size: 0.95rem;
+}
+
+.modal-detalle-total strong { color: #E67E22; font-size: 1.1rem; }

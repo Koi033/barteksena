@@ -53,9 +53,28 @@
     padding: 2.5rem 2rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* Antes tenía "justify-content: center", pero esa combinación con
+       overflow-y:auto + contenido más alto que max-height provoca que
+       el navegador no permita hacer scroll hasta el inicio del formulario
+       (el primer campo queda inalcanzable). Con margin:auto en su lugar,
+       formularios cortos (como login) se siguen viendo centrados, y
+       formularios largos (como registro) son 100% scrolleables desde
+       el primer campo. */
+    justify-content: flex-start;
     overflow-y: auto;
     max-height: 90vh;
+}
+
+/* Centra verticalmente SOLO cuando el formulario entra sin necesitar
+   scroll (ej: login, que tiene pocos campos). h1 es el primer hijo y
+   .login-footer el último, así que un margin:auto en cada extremo
+   reparte el espacio sobrante igual que justify-content:center, pero
+   sin el bug de scroll cuando el contenido sí desborda. */
+.form-content h1 {
+    margin-top: auto;
+}
+.form-content .login-footer {
+    margin-bottom: auto;
 }
 
 /* Scrollbar específico para el panel del formulario (más visible en tema oscuro) */

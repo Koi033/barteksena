@@ -200,10 +200,12 @@ class AuthController extends BaseController
 
         $tokenCSRF = generarTokenCSRF('registro');
         $flash     = obtenerFlash();
+        $old       = $this->obtenerInputAntiguo('registro'); // Rellena campos si vino de un error
         $this->render('auth/registro', [
             'titulo'    => 'Crear Cuenta',
             'tokenCSRF' => $tokenCSRF,
             'flash'     => $flash,
+            'old'       => $old,
         ], 'auth');
     }
 
@@ -260,6 +262,7 @@ class AuthController extends BaseController
             foreach ($errores as $err) {
                 flashMensaje('error', $err);
             }
+            $this->guardarInputAntiguo('registro', $_POST);
             $this->redirigir('/registro');
             return;
         }
@@ -267,11 +270,13 @@ class AuthController extends BaseController
         // Verificar unicidad
         if ($this->usuarioModel->existeUsuario($usuario)) {
             flashMensaje('error', 'El nombre de usuario ya está en uso.');
+            $this->guardarInputAntiguo('registro', $_POST);
             $this->redirigir('/registro');
             return;
         }
         if ($this->usuarioModel->existeEmail($email)) {
             flashMensaje('error', 'El correo ya está registrado.');
+            $this->guardarInputAntiguo('registro', $_POST);
             $this->redirigir('/registro');
             return;
         }

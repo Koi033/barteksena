@@ -8,61 +8,124 @@
 ## Estructura del proyecto
 
 ```
-bartek/
+barteksena/
+├── .gitignore
+├── .htaccess                         ← Reglas de acceso y reescritura en la raíz
+├── Dockerfile                        ← Configuración de la imagen Docker
+├── composer.json                     ← Dependencias PHP
+├── composer.lock                     ← Versiones bloqueadas de dependencias
+├── index.php                         ← Punto de entrada de la aplicación
+├── README.md
 ├── app/
-│   ├── controllers/        ← Controladores (lógica HTTP)
-│   │   ├── BaseController.php
+│   ├── controllers/                  ← Controladores y lógica HTTP
 │   │   ├── AuthController.php
+│   │   ├── BaseController.php
+│   │   ├── ContactoController.php
 │   │   ├── DashboardController.php
 │   │   ├── EmpleadoController.php
-│   │   ├── InventarioController.php
-│   │   ├── VentaController.php
 │   │   ├── HorarioController.php
+│   │   ├── InventarioController.php
 │   │   ├── MenuController.php
-│   │   └── ContactoController.php
-│   ├── models/             ← Modelos (acceso a BD con PDO)
+│   │   ├── PasswordController.php
+│   │   ├── PerfilController.php
+│   │   ├── PuntosController.php
+│   │   ├── ReporteController.php
+│   │   ├── ReservaController.php
+│   │   └── VentaController.php
+│   ├── models/                       ← Modelos y acceso a la base de datos
 │   │   ├── BaseModel.php
-│   │   ├── UsuarioModel.php
+│   │   ├── ContactoModel.php
 │   │   ├── EmpleadoModel.php
-│   │   ├── InventarioModel.php
-│   │   ├── VentaModel.php
 │   │   ├── HorarioModel.php
+│   │   ├── InventarioModel.php
 │   │   ├── MenuModel.php
 │   │   ├── NotificacionModel.php
-│   │   └── ContactoModel.php
-│   └── views/              ← Vistas PHP (sin lógica de negocio)
-│       ├── layouts/
-│       │   ├── public.php
-│       │   ├── auth.php
-│       │   └── dashboard.php
-│       ├── auth/           (login, registro)
-│       ├── dashboard/
+│   │   ├── PuntosModel.php
+│   │   ├── ReservaModel.php
+│   │   ├── UsuarioModel.php
+│   │   └── VentaModel.php
+│   └── views/                        ← Vistas PHP
+│       ├── auth/
+│       │   ├── login.php
+│       │   ├── recuperar_password.php
+│       │   ├── registro.php
+│       │   └── restablecer_password.php
+│       ├── dashboard/index.php
 │       ├── empleados/
-│       ├── inventario/
-│       ├── ventas/
+│       │   ├── formulario.php
+│       │   └── index.php
 │       ├── horarios/
-│       ├── menu/
-│       └── public/         (inicio, nosotros, servicios, contacto, 404)
+│       │   ├── index.php
+│       │   └── mi_horario.php
+│       ├── inventario/
+│       │   ├── formulario.php
+│       │   └── index.php
+│       ├── layouts/
+│       │   ├── auth.php
+│       │   ├── dashboard.php
+│       │   └── public.php
+│       ├── menu/index.php
+│       ├── mesas/
+│       │   ├── dashboard_mesas.php
+│       │   └── mesa_detalle.php
+│       ├── perfil/index.php
+│       ├── puntos/
+│       │   ├── editar.php
+│       │   ├── index.php
+│       │   └── listado.php
+│       ├── public/
+│       │   ├── 404.php
+│       │   ├── contacto.php
+│       │   ├── inicio.php
+│       │   ├── nosotros.php
+│       │   └── servicios.php
+│       ├── reportes/index.php
+│       ├── reservas/reservas.php
+│       └── ventas/index.php
 ├── config/
-│   ├── app.php             ← Constantes globales
-│   ├── database.php        ← Singleton PDO
-│   └── sesion.php          ← Manejo seguro de sesiones + CSRF
-├── public/                 ← Document root del servidor web
-│   ├── index.php           ← Front Controller (único punto de entrada)
-│   ├── .htaccess           ← URL rewriting + cabeceras de seguridad
+│   ├── app.php                       ← Configuración general
+│   ├── database.php                  ← Conexión Singleton PDO
+│   ├── sesion.php                    ← Sesiones y protección CSRF
+│   └── setting.php                   ← Ajustes de la aplicación
+├── public/                           ← Document root del servidor web
+│   ├── .htaccess                     ← URL rewriting y cabeceras de seguridad
+│   ├── index.php                     ← Front Controller público
+│   ├── publico.php                   ← Entrada para páginas públicas
+│   ├── api/
+│   │   ├── check_mesa.php
+│   │   └── crear_reserva.php
 │   ├── css/
-│   │   ├── style.css
-│   │   ├── public.css
 │   │   ├── auth.css
+│   │   ├── calendario-horario.css
 │   │   ├── dashboard.css
-│   │   └── datatables-custom.css
+│   │   ├── datatables-custom.css
+│   │   ├── mesa-detalle.css
+│   │   ├── mesas.css
+│   │   ├── public.css
+│   │   ├── recuperar.css
+│   │   ├── reservas.css
+│   │   ├── style.css
+│   │   └── ventas.css
+│   ├── images/
+│   │   ├── README.txt
+│   │   ├── img.jpg, login_side.jpg, logo.1.png
+│   │   └── stock1.jpg ... stock8.jpg
 │   ├── js/
+│   │   ├── dashboard.js
 │   │   ├── main.js
-│   │   └── dashboard.js
-│   └── images/             ← Imágenes (logos, stock, etc.)
-└── sql/
-    └── bartek.sql          ← Script de creación de BD
+│   │   └── validaciones-auth.js
+│   └── uploads/                      ← Archivos subidos por usuarios
+│       └── .gitkeep y archivos multimedia
+├── sql/
+│   ├── bartek_db_1.4.sql
+│   └── bartek_db_1.5.sql             ← Versiones del esquema de BD
+└── vendor/                           ← Dependencias instaladas por Composer
+    ├── autoload.php
+    ├── composer/
+    └── phpmailer/phpmailer/
 ```
+
+> `vendor/` y los archivos de `public/uploads/` pueden variar según las dependencias instaladas y el contenido cargado en cada entorno.
 
 ---
 
