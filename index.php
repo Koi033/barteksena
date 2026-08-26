@@ -4,11 +4,6 @@
  * ====================================================
  * Punto de entrada único de la aplicación Bartek.
  *
- * IMPORTANTE: este es el ÚNICO front controller real de la app.
- * public/index.php ya NO tiene lógica propia: solo delega aquí,
- * para que nunca vuelvan a desincronizarse las rutas entre
- * el entorno local (docroot = raíz) y producción (docroot = public/).
- *
  * @package Bartek
  */
 
@@ -105,6 +100,12 @@ $rutas = [
     'puntos/actualizar' => ['PuntosController', 'actualizar'],
     'puntos/eliminar'   => ['PuntosController', 'eliminar'],
     'puntos/editar'     => ['PuntosController', 'editar'],
+    'error/400'    => ['BaseController', 'solicitudIncorrecta'],
+    'error/401'    => ['BaseController', 'noAutenticado'],
+    'error/403'    => ['BaseController', 'accesoDenegado'],
+    'error/404'    => ['BaseController', 'paginaNoEncontrada'],
+    'error/500'    => ['BaseController', 'errorInterno'],
+    'error/503'    => ['BaseController', 'servicioNoDisponible'],
 ];
 
 // ── Ejecución de la ruta ────────────────────────────────────────────────────
@@ -141,7 +142,15 @@ if ($clase && $metodo) {
     if (class_exists($clase)) {
         $instancia = new $clase();
         if (method_exists($instancia, $metodo)) {
-            $instancia->$metodo($parametro);
+            // Solo se pasa $parametro si realmente viene en la URL.
+            // Evita pasar null explícito a métodos con parámetros
+            // tipados como string no-nullable (rompería con TypeError
+            // aunque el método tenga un valor por defecto).
+            if ($parametro !== null) {
+                $instancia->$metodo($parametro);
+            } else {
+                $instancia->$metodo();
+            }
         } else {
             http_response_code(404);
             $instancia->paginaNoEncontrada();

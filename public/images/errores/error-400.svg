@@ -1,0 +1,49 @@
+<svg viewBox="0 0 700 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="dots400" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="1.2" cy="1.2" r="1.2" fill="#1a1a1a"/>
+    </pattern>
+  </defs>
+
+  <ellipse cx="330" cy="540" rx="230" ry="30" fill="url(#dots400)" opacity="0.5"/>
+  <path d="M90 520 L610 520 L580 545 L120 545 Z" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+
+  <!-- bartender leyendo comanda confundido -->
+  <g stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M340 330 L500 330 L520 520 L320 520 Z" fill="#1a1a1a" opacity="0.06"/>
+    <path d="M340 330 L500 330 L520 520 L320 520 Z"/>
+    <path d="M405 322 L420 332 L435 322 L420 340 Z" fill="#1a1a1a"/>
+    <path d="M340 340 L300 400 L320 415 L360 365"/>
+    <path d="M500 340 L540 395 L520 412 L480 362"/>
+    <circle cx="420" cy="270" r="55"/>
+    <path d="M368 250 Q380 205 420 210 Q460 205 472 250 Q460 235 420 235 Q380 235 368 250 Z" fill="#1a1a1a"/>
+    <path d="M398 262 L414 267"/>
+    <path d="M442 262 L426 267"/>
+    <circle cx="404" cy="278" r="4" fill="#1a1a1a" stroke="none"/>
+    <circle cx="436" cy="278" r="4" fill="#1a1a1a" stroke="none"/>
+    <path d="M403 300 Q420 295 437 300"/>
+  </g>
+
+  <!-- comanda con texto ilegible / tachado -->
+  <g transform="translate(295,395) rotate(-6)" stroke="#1a1a1a" stroke-width="3" fill="#ffffff">
+    <rect x="0" y="0" width="95" height="120" rx="4"/>
+    <line x1="15" y1="25" x2="80" y2="25" stroke-width="2"/>
+    <line x1="15" y1="40" x2="65" y2="40" stroke-width="2"/>
+    <line x1="15" y1="55" x2="75" y2="55" stroke-width="2"/>
+    <path d="M12 70 L83 100" stroke="#E8792A" stroke-width="3"/>
+    <path d="M12 100 L83 70" stroke="#E8792A" stroke-width="3"/>
+  </g>
+
+  <!-- letrero 400 -->
+  <g transform="translate(480,170) rotate(-4)">
+    <rect x="0" y="0" width="130" height="60" rx="6" fill="#ffffff" stroke="#1a1a1a" stroke-width="3"/>
+    <text x="65" y="40" font-family="Arial, sans-serif" font-weight="800" font-size="30" fill="#E8792A" text-anchor="middle">400</text>
+  </g>
+
+  <!-- signos de exclamacion de confusion -->
+  <g stroke="#E8792A" stroke-width="4" stroke-linecap="round">
+    <line x1="200" y1="200" x2="190" y2="175"/>
+    <circle cx="188" cy="185" r="0" />
+  </g>
+  <text x="185" y="220" font-family="Arial, sans-serif" font-weight="800" font-size="40" fill="#E8792A" text-anchor="middle">¿?</text>
+</svg>

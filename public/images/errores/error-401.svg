@@ -1,0 +1,48 @@
+<svg viewBox="0 0 700 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="dots401" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="1.2" cy="1.2" r="1.2" fill="#1a1a1a"/>
+    </pattern>
+  </defs>
+
+  <ellipse cx="340" cy="540" rx="230" ry="30" fill="url(#dots401)" opacity="0.5"/>
+  <path d="M80 500 L620 500 L590 530 L110 530 Z" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+
+  <!-- puerta cerrada -->
+  <g stroke="#1a1a1a" stroke-width="4" fill="#1a1a1a" fill-opacity="0.05">
+    <rect x="440" y="180" width="140" height="320" rx="4"/>
+    <circle cx="555" cy="345" r="6" fill="#1a1a1a" stroke="none"/>
+  </g>
+
+  <!-- bartender frente a la puerta pidiendo id -->
+  <g stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M230 320 L390 320 L410 500 L210 500 Z" fill="#1a1a1a" opacity="0.06"/>
+    <path d="M230 320 L390 320 L410 500 L210 500 Z"/>
+    <path d="M300 312 L315 322 L330 312 L315 330 Z" fill="#1a1a1a"/>
+    <!-- brazo extendido pidiendo -->
+    <path d="M385 335 L440 345 L460 340"/>
+    <path d="M235 335 L200 400 L220 415 L255 365"/>
+    <circle cx="310" cy="262" r="55"/>
+    <path d="M258 242 Q270 197 310 202 Q350 197 362 242 Q350 227 310 227 Q270 227 258 242 Z" fill="#1a1a1a"/>
+    <path d="M288 255 L305 258"/>
+    <path d="M332 258 L315 255"/>
+    <circle cx="294" cy="270" r="4" fill="#1a1a1a" stroke="none"/>
+    <circle cx="328" cy="270" r="4" fill="#1a1a1a" stroke="none"/>
+    <line x1="297" y1="295" x2="325" y2="295"/>
+  </g>
+
+  <!-- tarjeta / credencial en la mano -->
+  <g transform="translate(455,325) rotate(8)" stroke="#1a1a1a" stroke-width="3" fill="#ffffff">
+    <rect x="0" y="0" width="70" height="46" rx="4"/>
+    <circle cx="16" cy="18" r="8" fill="none" stroke-width="2"/>
+    <line x1="32" y1="14" x2="58" y2="14" stroke-width="2"/>
+    <line x1="32" y1="24" x2="52" y2="24" stroke-width="2"/>
+    <line x1="8" y1="36" x2="62" y2="36" stroke="#E8792A" stroke-width="3"/>
+  </g>
+
+  <!-- letrero 401 -->
+  <g transform="translate(150,190) rotate(-4)">
+    <rect x="0" y="0" width="130" height="60" rx="6" fill="#ffffff" stroke="#1a1a1a" stroke-width="3"/>
+    <text x="65" y="40" font-family="Arial, sans-serif" font-weight="800" font-size="30" fill="#E8792A" text-anchor="middle">401</text>
+  </g>
+</svg>

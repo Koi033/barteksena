@@ -1,0 +1,48 @@
+<svg viewBox="0 0 700 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="dotsgen" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="1.2" cy="1.2" r="1.2" fill="#1a1a1a"/>
+    </pattern>
+  </defs>
+
+  <ellipse cx="340" cy="540" rx="230" ry="30" fill="url(#dotsgen)" opacity="0.5"/>
+
+  <path d="M90 520 L610 520 L580 545 L120 545 Z" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+
+  <!-- bartender encogiendose de hombros -->
+  <g stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M280 335 L460 335 L480 520 L260 520 Z" fill="#1a1a1a" opacity="0.06"/>
+    <path d="M280 335 L460 335 L480 520 L260 520 Z"/>
+    <path d="M360 327 L375 337 L390 327 L375 345 Z" fill="#1a1a1a"/>
+    <!-- brazos abiertos, hombros encogidos -->
+    <path d="M280 345 L220 320 L200 340"/>
+    <path d="M460 345 L520 320 L540 340"/>
+    <!-- manos abiertas -->
+    <path d="M200 340 L185 335 M200 340 L190 350"/>
+    <path d="M540 340 L555 335 M540 340 L550 350"/>
+    <!-- cabeza -->
+    <circle cx="370" cy="277" r="55"/>
+    <path d="M318 257 Q330 212 370 217 Q410 212 422 257 Q410 242 370 242 Q330 242 318 257 Z" fill="#1a1a1a"/>
+    <!-- cejas neutras -->
+    <path d="M348 270 L365 273"/>
+    <path d="M392 273 L375 270"/>
+    <circle cx="352" cy="285" r="4" fill="#1a1a1a" stroke="none"/>
+    <circle cx="388" cy="285" r="4" fill="#1a1a1a" stroke="none"/>
+    <!-- boca de lado, incertidumbre -->
+    <path d="M355 308 Q372 302 385 306"/>
+  </g>
+
+  <!-- copa volcada al lado -->
+  <g stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linejoin="round" transform="translate(520,470) rotate(70)">
+    <path d="M0 0 L55 0 L27 65 Z"/>
+    <line x1="27" y1="65" x2="27" y2="95"/>
+  </g>
+
+  <!-- signo de interrogacion flotante -->
+  <g transform="translate(180,190)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-weight="800" font-size="70" fill="#E8792A" text-anchor="middle">?</text>
+  </g>
+  <g transform="translate(560,210)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-weight="800" font-size="46" fill="#E8792A" text-anchor="middle" opacity="0.7">?</text>
+  </g>
+</svg>

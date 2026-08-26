@@ -1,0 +1,76 @@
+<svg viewBox="0 0 700 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="dots404" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="1.2" cy="1.2" r="1.2" fill="#1a1a1a"/>
+    </pattern>
+  </defs>
+
+  <!-- sombra halftone -->
+  <ellipse cx="330" cy="540" rx="230" ry="30" fill="url(#dots404)" opacity="0.5"/>
+
+  <!-- mesa -->
+  <path d="M90 520 L610 520 L580 545 L120 545 Z" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+
+  <!-- copa de cóctel -->
+  <g stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linejoin="round">
+    <path d="M180 300 L260 300 L220 400 Z"/>
+    <line x1="220" y1="400" x2="220" y2="460"/>
+    <line x1="185" y1="470" x2="255" y2="470"/>
+  </g>
+  <!-- liquido -->
+  <path d="M195 320 L245 320 L220 375 Z" fill="#1a1a1a" opacity="0.08"/>
+  <!-- rodaja de limon -->
+  <g transform="translate(165,280) rotate(-15)">
+    <circle cx="0" cy="0" r="26" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+    <circle cx="0" cy="0" r="17" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+    <line x1="0" y1="-17" x2="0" y2="17" stroke="#1a1a1a" stroke-width="1.5"/>
+    <line x1="-15" y1="-8" x2="15" y2="8" stroke="#1a1a1a" stroke-width="1.5"/>
+    <line x1="-15" y1="8" x2="15" y2="-8" stroke="#1a1a1a" stroke-width="1.5"/>
+  </g>
+
+  <!-- bartender cuerpo -->
+  <g stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <!-- torso / delantal -->
+    <path d="M340 330 L500 330 L520 520 L320 520 Z" fill="#1a1a1a" opacity="0.06"/>
+    <path d="M340 330 L500 330 L520 520 L320 520 Z"/>
+    <!-- camisa mangas -->
+    <path d="M330 340 L280 420 L300 440 L345 370"/>
+    <path d="M500 340 L470 400 L495 415 L520 360"/>
+    <!-- moño -->
+    <path d="M405 322 L420 332 L435 322 L420 340 Z" fill="#1a1a1a"/>
+    <!-- cabeza -->
+    <circle cx="420" cy="270" r="55"/>
+    <!-- pelo -->
+    <path d="M368 250 Q380 205 420 210 Q460 205 472 250 Q460 235 420 235 Q380 235 368 250 Z" fill="#1a1a1a"/>
+    <!-- cejas preocupadas -->
+    <path d="M395 262 L412 268" />
+    <path d="M445 262 L428 268" />
+    <!-- ojos -->
+    <circle cx="402" cy="278" r="4" fill="#1a1a1a" stroke="none"/>
+    <circle cx="438" cy="278" r="4" fill="#1a1a1a" stroke="none"/>
+    <!-- boca confundida -->
+    <path d="M405 300 Q420 292 435 300 Q420 306 405 300 Z"/>
+  </g>
+
+  <!-- mapa/papel en mano -->
+  <g transform="translate(455,395) rotate(12)" stroke="#1a1a1a" stroke-width="3" fill="#ffffff">
+    <rect x="0" y="0" width="90" height="120" rx="4"/>
+    <path d="M15 25 Q40 10 65 25 Q75 55 55 75 Q40 95 20 75 Q5 55 15 25 Z" fill="none" stroke-width="2.5"/>
+    <line x1="10" y1="100" x2="80" y2="100" stroke-width="2"/>
+    <line x1="10" y1="110" x2="60" y2="110" stroke-width="2"/>
+  </g>
+
+  <!-- globo de dialogo -->
+  <g>
+    <path d="M470 150 Q450 90 520 75 Q600 60 630 110 Q655 155 610 175 Q590 183 570 175 L545 200 L550 178 Q495 190 470 150 Z" fill="#ffffff" stroke="#1a1a1a" stroke-width="3.5"/>
+    <text x="550" y="130" font-family="Arial, sans-serif" font-weight="700" font-size="15" fill="#1a1a1a" text-anchor="middle" transform="rotate(-6 550 130)">?%&amp;#!</text>
+    <rect x="520" y="140" width="55" height="24" rx="4" fill="none" stroke="#E8792A" stroke-width="3" transform="rotate(-8 545 152)"/>
+    <text x="547" y="159" font-family="Arial, sans-serif" font-weight="800" font-size="14" fill="#E8792A" text-anchor="middle" transform="rotate(-8 547 159)">404</text>
+  </g>
+
+  <!-- botella flotando -->
+  <g transform="translate(600,230) rotate(18)" stroke="#E8792A" stroke-width="4" fill="none" stroke-linejoin="round">
+    <path d="M15 0 L25 0 L25 20 L35 40 L35 90 L5 90 L5 40 L15 20 Z"/>
+    <line x1="10" y1="55" x2="30" y2="55"/>
+  </g>
+</svg>

@@ -81,14 +81,104 @@ class BaseController
     }
 
     /**
+     * Muestra una página de error personalizada (404, 403, 500, etc.)
+     * usando la vista genérica 'public/error'.
+     *
+     * @param  int    $codigo  Código HTTP a mostrar (404, 403, 500...)
+     * @param  string $mensaje Mensaje personalizado (opcional, sobreescribe el texto por defecto)
+     * @return void
+     */
+    protected function renderError(int $codigo, string $mensaje = ''): void
+    {
+        http_response_code($codigo);
+
+        $textos = [
+            400 => ['titulo' => 'Solicitud incorrecta',   'mensaje' => 'La solicitud tiene datos inválidos o mal formados.'],
+            401 => ['titulo' => 'No autenticado',         'mensaje' => 'Debes iniciar sesión para acceder a esta sección.'],
+            403 => ['titulo' => 'Acceso denegado',        'mensaje' => 'No tienes permisos para acceder a esta sección.'],
+            404 => ['titulo' => 'Página no encontrada',   'mensaje' => 'La página que buscas no existe o fue movida.'],
+            500 => ['titulo' => 'Error interno',          'mensaje' => 'Ocurrió un error inesperado. Ya estamos trabajando en ello.'],
+            503 => ['titulo' => 'Servicio no disponible', 'mensaje' => 'Estamos en mantenimiento. Vuelve a intentarlo en unos minutos.'],
+        ];
+
+        $data = [
+            'codigo'  => $codigo,
+            'titulo'  => $textos[$codigo]['titulo'] ?? 'Error',
+            'mensaje' => $mensaje !== '' ? $mensaje : ($textos[$codigo]['mensaje'] ?? 'Ha ocurrido un error inesperado.'),
+        ];
+
+        $this->render('public/error', $data, 'public');
+    }
+
+    /**
      * Muestra la página 404 personalizada.
+     * Mantiene compatibilidad con código existente que ya llama a este método.
      *
      * @return void
      */
     public function paginaNoEncontrada(): void
     {
-        http_response_code(404);
-        $this->render('public/404', [], 'public');
+        $this->renderError(404);
+    }
+
+    /**
+     * Muestra la página 403 (acceso denegado) personalizada.
+     *
+     * @return void
+     */
+    public function accesoDenegado(): void
+    {
+        $this->renderError(403);
+    }
+
+    /**
+     * Muestra la página 500 (error interno) personalizada.
+     * Acepta null explícito (ej: cuando el router llama al método
+     * sin haber recibido un tercer segmento en la URL).
+     *
+     * @param  string|null $mensaje Mensaje personalizado opcional
+     * @return void
+     */
+    public function errorInterno(?string $mensaje = null): void
+    {
+        $this->renderError(500, $mensaje ?? '');
+    }
+
+    /**
+     * Muestra la página 400 (solicitud incorrecta) personalizada.
+     * Útil para datos de formulario inválidos o JSON mal formado
+     * en los endpoints de public/api/ (check_mesa.php, crear_reserva.php).
+     *
+     * @param  string|null $mensaje Mensaje personalizado opcional
+     * @return void
+     */
+    public function solicitudIncorrecta(?string $mensaje = null): void
+    {
+        $this->renderError(400, $mensaje ?? '');
+    }
+
+    /**
+     * Muestra la página 401 (no autenticado) personalizada.
+     * Diferencia de accesoDenegado(): esta es para cuando NO hay
+     * sesión iniciada; 403 es cuando SÍ hay sesión pero sin el rol requerido.
+     *
+     * @return void
+     */
+    public function noAutenticado(): void
+    {
+        $this->renderError(401);
+    }
+
+    /**
+     * Muestra la página 503 (servicio no disponible) personalizada.
+     * Útil cuando la conexión a la BD falla o durante mantenimiento programado.
+     *
+     * @param  string|null $mensaje Mensaje personalizado opcional
+     * @return void
+     */
+    public function servicioNoDisponible(?string $mensaje = null): void
+    {
+        $this->renderError(503, $mensaje ?? '');
     }
 
     /**

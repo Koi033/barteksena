@@ -8,10 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/18f357a62d.js" crossorigin="anonymous"></script>
-    <!-- Estilos desde carpeta CSS separada -->
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/style.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/public.css">
     <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/public/images/favicon.jfif">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/errors.css">
 </head>
 <body class="layout-public">
 
