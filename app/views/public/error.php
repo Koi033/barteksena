@@ -13,8 +13,8 @@
         <p class="error-mensaje"><?= htmlspecialchars($mensaje, ENT_QUOTES) ?></p>
 
         <div class="error-acciones">
-            <a href="/bartek" class="btn-error btn-error-primary">Volver a inicio</a>
-            <a href="/bartek/contacto" class="btn-error btn-error-secondary">Contactar soporte</a>
+            <a href="<?= BASE_URL ?>/" class="btn-error btn-error-primary">Volver a inicio</a>
+            <a href="<?= BASE_URL ?>/contacto" class="btn-error btn-error-secondary">Contactar soporte</a>
         </div>
     </div>
 
