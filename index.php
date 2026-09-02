@@ -100,6 +100,8 @@ $rutas = [
     'puntos/actualizar' => ['PuntosController', 'actualizar'],
     'puntos/eliminar'   => ['PuntosController', 'eliminar'],
     'puntos/editar'     => ['PuntosController', 'editar'],
+    // Registro público: cualquier cliente puede inscribirse sin iniciar sesión
+    'puntos/registro'   => ['PuntosController', 'registroPublico'],
     'error/400'    => ['BaseController', 'solicitudIncorrecta'],
     'error/401'    => ['BaseController', 'noAutenticado'],
     'error/403'    => ['BaseController', 'accesoDenegado'],

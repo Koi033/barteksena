@@ -328,6 +328,10 @@
             <div class="canje">
                 ¡Canjea tus puntos por <strong>Cerveza Gratis</strong> o <strong>Rebajas en Whisky</strong> con tu mesero!
             </div>
+
+            <a href="<?php echo BASE_URL; ?>/puntos/registro" class="btn-registro-puntos" style="display:inline-block; margin-top:10px; padding:8px 18px; border-radius:20px; background:linear-gradient(135deg,#e06614,#ffa233); color:#0a0a0a; font-weight:700; font-size:10.5px; letter-spacing:1px; text-decoration:none; text-transform:uppercase;">
+                <i class="fa-solid fa-user-plus"></i> Regístrate y acumula puntos
+            </a>
         </div>
 
         <!-- PIE DE CARTA -->

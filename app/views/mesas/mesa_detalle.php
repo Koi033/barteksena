@@ -99,12 +99,12 @@
 
             <div class="acciones-cuenta">
                 <button type="submit" class="btn btn-guardar-cuenta">
-                    <i class="fas fa-save"></i> Guardar / Cobrar Cuenta
+                    <i class="fas fa-save"></i> Guardar Orden
                 </button>
                 <button type="submit" class="btn btn-cerrar-cuenta"
                         formaction="<?= BASE_URL ?>/ventas/cerrar-cuenta"
                         onclick="return confirm('¿Cerrar la venta y liberar la mesa?')">
-                    <i class="fas fa-lock"></i> Cerrar Venta
+                    <i class="fas fa-lock"></i> Cerrar Cuenta
                 </button>
             </div>
         </form>

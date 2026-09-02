@@ -1,0 +1,255 @@
+diff --git a/app/controllers/PuntosController.php b/app/controllers/PuntosController.php
+index 63361b4..06a2700 100644
+--- a/app/controllers/PuntosController.php
++++ b/app/controllers/PuntosController.php
+@@ -98,4 +98,85 @@ class PuntosController extends BaseController
+ 
+         $this->redirigir('/puntos/listado');
+     }
++
++    /**
++     * Formulario público de inscripción al club de fidelización.
++     * GET  /puntos/registro  -> muestra el formulario
++     * POST /puntos/registro  -> procesa la inscripción
++     *
++     * A propósito NO lleva requerirAutenticacion(): cualquier cliente debe
++     * poder registrarse por su cuenta (por ejemplo, escaneando un QR en su
++     * mesa) sin que un mesero tenga que iniciar sesión por él.
++     */
++    public function registroPublico(): void
++    {
++        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
++            $this->procesarRegistroPublico();
++            return;
++        }
++
++        $this->render('puntos/registro_publico', [
++            'titulo'    => 'Club de Fidelización - Bartek',
++            'tokenCSRF' => generarTokenCSRF('puntos_registro'),
++            'flash'     => obtenerFlash(),
++            'old'       => $this->obtenerInputAntiguo('puntos_registro'),
++        ], 'auth');
++    }
++
++    /**
++     * Valida y guarda la inscripción pública de un cliente nuevo.
++     *
++     * @return void
++     */
++    private function procesarRegistroPublico(): void
++    {
++        // 1. Validar token CSRF (la sesión anónima ya existe gracias a iniciarSesion())
++        if (!validarTokenCSRF($_POST['csrf_token'] ?? '', 'puntos_registro')) {
++            flashMensaje('error', 'Solicitud inválida. Por favor recarga la página e inténtalo de nuevo.');
++            $this->redirigir('/puntos/registro');
++            return;
++        }
++
++        // 2. Obtener y limpiar campos
++        $nombre = $this->post('nombre', 80);
++        $cedula = preg_replace('/[^0-9]/', '', $_POST['cedula'] ?? '');
++
++        // 3. Validaciones básicas
++        if (empty($nombre) || empty($cedula)) {
++            flashMensaje('error', 'Debes ingresar tu nombre y tu número de cédula.');
++            $this->guardarInputAntiguo('puntos_registro', $_POST);
++            $this->redirigir('/puntos/registro');
++            return;
++        }
++
++        if (strlen($cedula) < 6 || strlen($cedula) > 10) {
++            flashMensaje('error', 'Ingresa un número de cédula válido (sin puntos ni espacios).');
++            $this->guardarInputAntiguo('puntos_registro', $_POST);
++            $this->redirigir('/puntos/registro');
++            return;
++        }
++
++        $puntoModel = new PuntosModel();
++
++        // 4. Evitar registros duplicados para la misma cédula
++        if ($puntoModel->existeClienteRegistrado($cedula)) {
++            flashMensaje('info', 'Esta cédula ya está inscrita en el Club de Fidelización. ¡Sigue acumulando puntos con tu consumo!');
++            $this->redirigir('/puntos/registro');
++            return;
++        }
++
++        // 5. Registrar al cliente con puntos de bienvenida
++        $ok = $puntoModel->registrarClientePublico($cedula, $nombre);
++
++        if ($ok) {
++            flashMensaje(
++                'success',
++                '¡Bienvenido/a al Club de Fidelización, ' . $nombre . '! Ya tienes puntos de bienvenida. Muéstrale tu cédula al mesero en tu próxima visita para seguir acumulando.'
++            );
++        } else {
++            flashMensaje('error', 'No pudimos completar tu registro. Intenta de nuevo en un momento.');
++        }
++
++        $this->redirigir('/puntos/registro');
++    }
+ }
+\ No newline at end of file
+diff --git a/app/models/PuntosModel.php b/app/models/PuntosModel.php
+index 223c00d..0a96ef5 100644
+--- a/app/models/PuntosModel.php
++++ b/app/models/PuntosModel.php
+@@ -83,4 +83,64 @@ class PuntosModel extends BaseModel
+             ':id'     => $id
+         ]);
+     }
++
++    /**
++     * Verifica si una cédula ya está inscrita en el club de fidelización,
++     * es decir, si ya existe un movimiento de tipo 'registro' para ella.
++     * Se usa para evitar que un mismo cliente se registre dos veces.
++     *
++     * @param  string $cedula
++     * @return bool
++     */
++    public function existeClienteRegistrado(string $cedula): bool
++    {
++        $sql = "SELECT 1 FROM historial_puntos WHERE cedula_cliente = :cedula AND tipo = 'registro' LIMIT 1";
++        $stmt = $this->db->prepare($sql);
++        $stmt->execute([':cedula' => $cedula]);
++        return (bool) $stmt->fetchColumn();
++    }
++
++    /**
++     * Inscribe a un cliente nuevo en el club de fidelización de forma
++     * PÚBLICA, es decir, sin que haya ningún empleado con sesión iniciada.
++     * Se le otorgan puntos de bienvenida y el movimiento queda marcado con
++     * tipo 'registro' para diferenciarlo de los puntos que gana un mesero
++     * al momento de cobrar un consumo.
++     *
++     * @param  string $cedula
++     * @param  string $nombre
++     * @param  int    $puntosBienvenida
++     * @return bool
++     */
++    public function registrarClientePublico(string $cedula, string $nombre, int $puntosBienvenida = 5): bool
++    {
++        $sql = "INSERT INTO historial_puntos (nombre, cedula_cliente, cantidad_puntos, tipo)
++                VALUES (:nombre, :cedula, :puntos, 'registro')";
++
++        $stmt = $this->db->prepare($sql);
++        return $stmt->execute([
++            ':nombre' => $nombre,
++            ':cedula' => $cedula,
++            ':puntos' => $puntosBienvenida,
++        ]);
++    }
++
++    /**
++     * Calcula el total de puntos vigentes de un cliente: suma lo ganado
++     * y el registro (bienvenida), y resta lo canjeado o cancelado.
++     *
++     * @param  string $cedula
++     * @return int
++     */
++    public function totalPuntos(string $cedula): int
++    {
++        $sql = "SELECT COALESCE(SUM(
++                    CASE WHEN tipo IN ('canjeado', 'cancelado') THEN -cantidad_puntos ELSE cantidad_puntos END
++                ), 0) AS total
++                FROM historial_puntos
++                WHERE cedula_cliente = :cedula";
++        $stmt = $this->db->prepare($sql);
++        $stmt->execute([':cedula' => $cedula]);
++        return (int) $stmt->fetchColumn();
++    }
+ }   
+\ No newline at end of file
+diff --git a/app/views/public/inicio.php b/app/views/public/inicio.php
+index 2f1be25..9ab17b3 100644
+--- a/app/views/public/inicio.php
++++ b/app/views/public/inicio.php
+@@ -42,6 +42,12 @@
+         <h3>Agenda de personal</h3>
+         <p>Organiza turnos, horarios y asistencia del equipo desde una sola plataforma.</p>
+     </a>
++
++    <!-- Tarjeta de Club de Fidelización: registro público, sin necesidad de iniciar sesión -->
++    <a class="beneficio-item" href="<?= BASE_URL ?>/puntos/registro" aria-label="Club de Fidelización">
++        <h3><i class="fa-solid fa-coins" aria-hidden="true"></i> Club de Fidelización</h3>
++        <p>¿Eres cliente? Regístrate gratis y empieza a acumular puntos con tu consumo, sin crear una cuenta.</p>
++    </a>
+ </div>
+ 
+   
+diff --git a/app/views/puntos/registro_publico.php b/app/views/puntos/registro_publico.php
+new file mode 100644
+index 0000000..2e65625
+--- /dev/null
++++ b/app/views/puntos/registro_publico.php
+@@ -0,0 +1,43 @@
++<?php /* app/views/puntos/registro_publico.php - Registro público al club de fidelización, sin necesidad de iniciar sesión */ ?>
++<section class="form-section">
++    <div class="login-card">
++        <div class="login-image">
++            <img src="<?= BASE_URL ?>/public/images/login_side.jpg" alt="Bartek">
++        </div>
++
++        <div class="form-content">
++            <h1><i class="fa-solid fa-coins" aria-hidden="true"></i> Club de Fidelización</h1>
++            <p class="recuperar-subtitle">
++                Regístrate en segundos y empieza a acumular puntos con cada consumo.<br>
++                No necesitas cuenta ni contraseña: solo tu <strong class="highlight">nombre</strong> y tu <strong class="highlight">cédula</strong>.
++            </p>
++
++            <form id="formRegistroPuntos" method="POST" action="<?= BASE_URL ?>/puntos/registro" novalidate>
++                <input type="hidden" name="csrf_token"
++                       value="<?= htmlspecialchars($tokenCSRF, ENT_QUOTES, 'UTF-8') ?>">
++
++                <div class="campo-grupo">
++                    <label for="rpNombre">Nombre y Apellido</label>
++                    <input type="text" id="rpNombre" name="nombre"
++                           placeholder="Ej. Carlos Pérez" maxlength="80"
++                           value="<?= htmlspecialchars($old['nombre'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
++                </div>
++
++                <div class="campo-grupo">
++                    <label for="rpCedula">Número de Cédula</label>
++                    <input type="text" id="rpCedula" name="cedula" inputmode="numeric"
++                           placeholder="Sin puntos ni espacios" maxlength="10"
++                           value="<?= htmlspecialchars($old['cedula'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
++                </div>
++
++                <button type="submit" class="btn-form">
++                    <i class="fa-solid fa-star" aria-hidden="true"></i> Unirme al Club
++                </button>
++            </form>
++
++            <div class="login-footer">
++                <p><a href="<?= BASE_URL ?>/"><i class="fas fa-arrow-left" aria-hidden="true"></i> Volver al inicio</a></p>
++            </div>
++        </div>
++    </div>
++</section>
+diff --git a/index.php b/index.php
+index 425e692..09ac9a0 100644
+--- a/index.php
++++ b/index.php
+@@ -100,6 +100,8 @@ $rutas = [
+     'puntos/actualizar' => ['PuntosController', 'actualizar'],
+     'puntos/eliminar'   => ['PuntosController', 'eliminar'],
+     'puntos/editar'     => ['PuntosController', 'editar'],
++    // Registro público: cualquier cliente puede inscribirse sin iniciar sesión
++    'puntos/registro'   => ['PuntosController', 'registroPublico'],
+     'error/400'    => ['BaseController', 'solicitudIncorrecta'],
+     'error/401'    => ['BaseController', 'noAutenticado'],
+     'error/403'    => ['BaseController', 'accesoDenegado'],
+diff --git a/public/publico.php b/public/publico.php
+index a34fbf0..68e1122 100644
+--- a/public/publico.php
++++ b/public/publico.php
+@@ -328,6 +328,10 @@
+             <div class="canje">
+                 ¡Canjea tus puntos por <strong>Cerveza Gratis</strong> o <strong>Rebajas en Whisky</strong> con tu mesero!
+             </div>
++
++            <a href="<?php echo BASE_URL; ?>/puntos/registro" class="btn-registro-puntos" style="display:inline-block; margin-top:10px; padding:8px 18px; border-radius:20px; background:linear-gradient(135deg,#e06614,#ffa233); color:#0a0a0a; font-weight:700; font-size:10.5px; letter-spacing:1px; text-decoration:none; text-transform:uppercase;">
++                <i class="fa-solid fa-user-plus"></i> Regístrate y acumula puntos
++            </a>
+         </div>
+ 
+         <!-- PIE DE CARTA -->

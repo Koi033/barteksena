@@ -83,4 +83,64 @@ class PuntosModel extends BaseModel
             ':id'     => $id
         ]);
     }
+
+    /**
+     * Verifica si una cédula ya está inscrita en el club de fidelización,
+     * es decir, si ya existe un movimiento de tipo 'registro' para ella.
+     * Se usa para evitar que un mismo cliente se registre dos veces.
+     *
+     * @param  string $cedula
+     * @return bool
+     */
+    public function existeClienteRegistrado(string $cedula): bool
+    {
+        $sql = "SELECT 1 FROM historial_puntos WHERE cedula_cliente = :cedula AND tipo = 'registro' LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':cedula' => $cedula]);
+        return (bool) $stmt->fetchColumn();
+    }
+
+    /**
+     * Inscribe a un cliente nuevo en el club de fidelización de forma
+     * PÚBLICA, es decir, sin que haya ningún empleado con sesión iniciada.
+     * Se le otorgan puntos de bienvenida y el movimiento queda marcado con
+     * tipo 'registro' para diferenciarlo de los puntos que gana un mesero
+     * al momento de cobrar un consumo.
+     *
+     * @param  string $cedula
+     * @param  string $nombre
+     * @param  int    $puntosBienvenida
+     * @return bool
+     */
+    public function registrarClientePublico(string $cedula, string $nombre, int $puntosBienvenida = 5): bool
+    {
+        $sql = "INSERT INTO historial_puntos (nombre, cedula_cliente, cantidad_puntos, tipo)
+                VALUES (:nombre, :cedula, :puntos, 'registro')";
+
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':nombre' => $nombre,
+            ':cedula' => $cedula,
+            ':puntos' => $puntosBienvenida,
+        ]);
+    }
+
+    /**
+     * Calcula el total de puntos vigentes de un cliente: suma lo ganado
+     * y el registro (bienvenida), y resta lo canjeado o cancelado.
+     *
+     * @param  string $cedula
+     * @return int
+     */
+    public function totalPuntos(string $cedula): int
+    {
+        $sql = "SELECT COALESCE(SUM(
+                    CASE WHEN tipo IN ('canjeado', 'cancelado') THEN -cantidad_puntos ELSE cantidad_puntos END
+                ), 0) AS total
+                FROM historial_puntos
+                WHERE cedula_cliente = :cedula";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':cedula' => $cedula]);
+        return (int) $stmt->fetchColumn();
+    }
 }   
