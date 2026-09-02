@@ -1,10 +1,12 @@
 FROM php:8.2-apache
 
 # 1. Instalar dependencias del sistema y extensiones de PHP para base de datos
+# (libcurl + curl: necesarios para llamar a la API HTTP de Brevo en PasswordController)
 RUN apt-get update && apt-get install -y \
     unzip \
     libpq-dev \
-    && docker-php-ext-install pdo pdo_mysql mysqli
+    libcurl4-openssl-dev \
+    && docker-php-ext-install pdo pdo_mysql mysqli curl
 
 # 2. Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

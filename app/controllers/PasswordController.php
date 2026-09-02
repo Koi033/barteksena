@@ -14,11 +14,6 @@
 
 require_once BASE_PATH . '/app/controllers/BaseController.php';
 
-// PHPMailer (instalado con Composer)
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
 class PasswordController extends BaseController
 {
     /** @var UsuarioModel */
@@ -214,7 +209,14 @@ class PasswordController extends BaseController
     // ── Envío de correo ───────────────────────────────────────────────────────
 
     /**
-     * Envía el correo con el enlace de restablecimiento usando PHPMailer.
+     * Envía el correo con el enlace de restablecimiento usando la API HTTP
+     * de Brevo (https://api.brevo.com), en vez de SMTP.
+     *
+     * Nota: Render (y otras plataformas gratuitas) bloquean el tráfico
+     * saliente a los puertos SMTP en sus planes gratis, lo que hacía que
+     * esta petición se quedara "colgada" cargando indefinidamente. La API
+     * de Brevo viaja por HTTPS (puerto 443), que sí está permitido, y
+     * además se usa un timeout corto para fallar rápido si algo sale mal.
      *
      * @param  string $correo        Email del destinatario
      * @param  string $nombre        Nombre del destinatario
@@ -236,40 +238,42 @@ class PasswordController extends BaseController
 
         $enlace = $baseUrl . '/restablecer?token=' . urlencode($tokenReset);
 
-        $mail = new PHPMailer(true);
+        if (empty(BREVO_API_KEY) || empty(BREVO_SENDER_EMAIL)) {
+            error_log('[Bartek][Mail] Faltan BREVO_API_KEY o BREVO_SENDER_EMAIL en las variables de entorno.');
+            return;
+        }
 
-        try {
-            // Servidor SMTP (valores desde config/setting.php)
-            $mail->isSMTP();
-            $mail->Host       = HOST;
-            $mail->SMTPAuth   = true;
-            $mail->Username   = USERNAME;
-            $mail->Password   = PASSWORD;
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = 587;
-            $mail->CharSet    = 'UTF-8';
+        $payload = json_encode([
+            'sender'      => ['name' => BREVO_SENDER_NAME, 'email' => BREVO_SENDER_EMAIL],
+            'to'          => [['email' => $correo, 'name' => $nombre]],
+            'subject'     => 'Recuperación de contraseña - Bartek',
+            'htmlContent' => $this->plantillaCorreo($nombre, $enlace),
+            'textContent' => "Hola $nombre, visita este enlace para restablecer tu contraseña (válido 5 minutos): $enlace",
+        ]);
 
-            // Habilita debug temporal para diagnosticar envío (registra en error_log)
-            $mail->SMTPDebug  = SMTP::DEBUG_SERVER;
-            $mail->Debugoutput = function($str, $level) {
-                error_log('[PHPMailer]['.$level.'] '.$str);
-            };
+        $ch = curl_init('https://api.brevo.com/v3/smtp/email');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $payload,
+            CURLOPT_HTTPHEADER     => [
+                'accept: application/json',
+                'api-key: ' . BREVO_API_KEY,
+                'content-type: application/json',
+            ],
+            // Timeouts cortos: si algo falla, falla rápido en vez de dejar la petición colgada.
+            CURLOPT_CONNECTTIMEOUT => 8,
+            CURLOPT_TIMEOUT        => 12,
+        ]);
 
-            // Remitente y destinatario
-            $mail->setFrom(USERNAME, 'Bartek App');
-            $mail->addAddress($correo, $nombre);
+        $respuesta  = curl_exec($ch);
+        $codigoHttp = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $errorCurl  = curl_error($ch);
+        curl_close($ch);
 
-            // Contenido HTML
-            $mail->isHTML(true);
-            $mail->Subject = 'Recuperación de contraseña - Bartek';
-            $mail->Body    = $this->plantillaCorreo($nombre, $enlace);
-            $mail->AltBody = "Hola $nombre, visita este enlace para restablecer tu contraseña (válido 5 minutos): $enlace";
-
-            $mail->send();
-
-        } catch (Exception $e) {
+        if ($errorCurl || $codigoHttp >= 300) {
             // Solo log — no exponemos el error al usuario
-            error_log('[Bartek][Mail] Error al enviar correo de reset: ' . $mail->ErrorInfo);
+            error_log('[Bartek][Mail] Error al enviar correo de reset (HTTP ' . $codigoHttp . '): ' . ($errorCurl ?: $respuesta));
         }
     }
 
