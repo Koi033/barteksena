@@ -47,6 +47,7 @@ class InventarioController extends BaseController
             'paginaActual' => $pagina,
             'totalPaginas' => (int) ceil($total / ITEMS_POR_PAGINA),
             'total'        => $total,
+            'tokenCSRF'    => generarTokenCSRF('eliminar_inv'),
             'flash'        => obtenerFlash(),
         ]);
     }

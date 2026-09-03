@@ -60,10 +60,11 @@
     <!-- Columna Derecha: Cuenta Actual de la Mesa -->
     <div class="cuenta-panel">
         <h3>Cuenta de la Mesa</h3>
-        <form action="<?= BASE_URL ?>/ventas/guardar-detalle" method="POST">
+        <form action="<?= BASE_URL ?>/ventas/guardar-detalle" method="POST" id="formCuentaMesa">
             <input type="hidden" name="csrf_token" value="<?= $tokenCSRF ?>">
             <input type="hidden" name="mesa" value="<?= $numeroMesa ?>">
             <input type="hidden" name="venta_id" value="<?= $venta['id'] ?? '' ?>">
+            <input type="hidden" name="metodo_pago" id="metodoPagoHidden" value="">
 
             <div class="table-responsive">
                 <table class="table" id="tablaCuenta">
@@ -101,13 +102,50 @@
                 <button type="submit" class="btn btn-guardar-cuenta">
                     <i class="fas fa-save"></i> Guardar Orden
                 </button>
-                <button type="submit" class="btn btn-cerrar-cuenta"
-                        formaction="<?= BASE_URL ?>/ventas/cerrar-cuenta"
-                        onclick="return confirm('¿Cerrar la venta y liberar la mesa?')">
+                <!-- Ya no envía el formulario directamente: abre el modal de método de pago -->
+                <button type="button" class="btn btn-cerrar-cuenta" id="btnAbrirModalPago">
                     <i class="fas fa-lock"></i> Cerrar Cuenta
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal: Selección de método de pago -->
+<div id="modalMetodoPago" class="modal-pago-overlay" style="display:none;">
+    <div class="modal-pago-box">
+        <h3><i class="fas fa-money-bill-wave" aria-hidden="true"></i> ¿Cómo pagó el cliente?</h3>
+        <p class="modal-pago-subtitulo">Selecciona el método de pago para cerrar la cuenta de la Mesa <?= htmlspecialchars($numeroMesa, ENT_QUOTES, 'UTF-8') ?>.</p>
+
+        <div class="metodos-pago-grid">
+            <label class="metodo-pago-opcion">
+                <input type="radio" name="metodo_pago_radio" value="efectivo">
+                <span><i class="fas fa-money-bill-wave" aria-hidden="true"></i> Efectivo</span>
+            </label>
+            <label class="metodo-pago-opcion">
+                <input type="radio" name="metodo_pago_radio" value="tarjeta_credito">
+                <span><i class="fas fa-credit-card" aria-hidden="true"></i> Tarjeta de Crédito</span>
+            </label>
+            <label class="metodo-pago-opcion">
+                <input type="radio" name="metodo_pago_radio" value="nequi_daviplata">
+                <span><i class="fas fa-mobile-alt" aria-hidden="true"></i> Nequi / Daviplata</span>
+            </label>
+            <label class="metodo-pago-opcion">
+                <input type="radio" name="metodo_pago_radio" value="bre_b">
+                <span><i class="fas fa-bolt" aria-hidden="true"></i> Bre-B</span>
+            </label>
+        </div>
+
+        <p id="errorMetodoPago" class="modal-pago-error" style="display:none;">
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i> Selecciona un método de pago para continuar.
+        </p>
+
+        <div class="modal-pago-acciones">
+            <button type="button" class="btn btn-secondary" id="btnCancelarPago">Cancelar</button>
+            <button type="button" class="btn btn-cerrar-cuenta" id="btnConfirmarPago">
+                <i class="fas fa-check" aria-hidden="true"></i> Confirmar y Cerrar
+            </button>
+        </div>
     </div>
 </div>
 
@@ -196,4 +234,69 @@
     }
 
     calcularTotalGeneral();
+
+    // ---- Modal de método de pago ----
+    const formCuentaMesa   = document.getElementById('formCuentaMesa');
+    const btnAbrirModalPago = document.getElementById('btnAbrirModalPago');
+    const modalMetodoPago   = document.getElementById('modalMetodoPago');
+    const btnCancelarPago   = document.getElementById('btnCancelarPago');
+    const btnConfirmarPago  = document.getElementById('btnConfirmarPago');
+    const metodoPagoHidden  = document.getElementById('metodoPagoHidden');
+    const errorMetodoPago   = document.getElementById('errorMetodoPago');
+
+    function abrirModalPago() {
+        const filas = document.querySelectorAll('#tablaCuenta tbody tr');
+        if (filas.length === 0) {
+            alert('Agrega al menos un producto antes de cerrar la cuenta.');
+            return;
+        }
+        errorMetodoPago.style.display = 'none';
+        modalMetodoPago.style.display = 'flex';
+    }
+
+    function cerrarModalPago() {
+        modalMetodoPago.style.display = 'none';
+        errorMetodoPago.style.display = 'none';
+    }
+
+    btnAbrirModalPago.addEventListener('click', abrirModalPago);
+    btnCancelarPago.addEventListener('click', cerrarModalPago);
+
+    // Resalta visualmente la opción de pago seleccionada
+    document.querySelectorAll('input[name="metodo_pago_radio"]').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            document.querySelectorAll('.metodo-pago-opcion').forEach(function (label) {
+                label.classList.remove('seleccionada');
+            });
+            radio.closest('.metodo-pago-opcion').classList.add('seleccionada');
+            errorMetodoPago.style.display = 'none';
+        });
+    });
+
+    // Cerrar al hacer clic fuera de la caja del modal
+    modalMetodoPago.addEventListener('click', function (e) {
+        if (e.target === modalMetodoPago) cerrarModalPago();
+    });
+
+    // Cerrar con la tecla Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modalMetodoPago.style.display === 'flex') cerrarModalPago();
+    });
+
+    btnConfirmarPago.addEventListener('click', function () {
+        const seleccionado = document.querySelector('input[name="metodo_pago_radio"]:checked');
+
+        if (!seleccionado) {
+            errorMetodoPago.style.display = 'block';
+            return;
+        }
+
+        if (!confirm('¿Confirmas el cierre de la cuenta y liberar la mesa?')) {
+            return;
+        }
+
+        metodoPagoHidden.value = seleccionado.value;
+        formCuentaMesa.action = "<?= BASE_URL ?>/ventas/cerrar-cuenta";
+        formCuentaMesa.submit();
+    });
 </script>

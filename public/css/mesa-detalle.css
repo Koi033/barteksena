@@ -240,6 +240,125 @@
     text-decoration: none;
 }
 
+/* ── Modal: Método de pago ───────────────────────────────────────── */
+.modal-pago-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+}
+
+.modal-pago-box {
+    background: #1a1c1e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 28px;
+    width: 100%;
+    max-width: 440px;
+    color: #ECEFF1;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.45);
+}
+
+.modal-pago-box h3 {
+    color: #E67E22;
+    font-size: 1.15rem;
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-pago-subtitulo {
+    color: #9aa0a6;
+    font-size: 0.88rem;
+    margin: 0 0 20px;
+}
+
+.metodos-pago-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.metodo-pago-opcion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #121315;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px 10px;
+    cursor: pointer;
+    color: #ECEFF1;
+    font-size: 0.88rem;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.metodo-pago-opcion:hover {
+    border-color: rgba(230, 126, 34, 0.5);
+}
+
+.metodo-pago-opcion i {
+    color: #E67E22;
+    width: 16px;
+    text-align: center;
+}
+
+.metodo-pago-opcion input[type="radio"] {
+    accent-color: #E67E22;
+}
+
+/* Resaltado al seleccionar (JS agrega .seleccionada; :has() lo hace también en navegadores compatibles) */
+.metodo-pago-opcion.seleccionada,
+.metodo-pago-opcion:has(input:checked) {
+    border-color: #E67E22;
+    background: rgba(230, 126, 34, 0.12);
+}
+
+.modal-pago-error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #ff8b7d;
+    font-size: 0.85rem;
+    margin: 4px 0 14px;
+}
+
+.modal-pago-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.modal-pago-acciones .btn {
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-pago-acciones .btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ECEFF1;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.modal-pago-acciones .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.14);
+}
+
 /* ── Responsive ───────────────────────────────────────────────────── */
 @media (max-width: 768px) {
     .mesa-container {
@@ -248,5 +367,8 @@
     .inventario-panel,
     .cuenta-panel {
         min-width: 100%;
+    }
+    .metodos-pago-grid {
+        grid-template-columns: 1fr;
     }
 }
