@@ -2,12 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Aug 10, 2026 at 02:56 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
-SET SESSION sql_require_primary_key = OFF;
-SET FOREIGN_KEY_CHECKS = 0;
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 07-09-2026 a las 19:17:15
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `bartek_db`
+-- Base de datos: `bartek_db`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `categorias_menu`
+-- Estructura de tabla para la tabla `categorias_menu`
 --
 
 CREATE TABLE `categorias_menu` (
@@ -38,7 +36,7 @@ CREATE TABLE `categorias_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `categorias_menu`
+-- Volcado de datos para la tabla `categorias_menu`
 --
 
 INSERT INTO `categorias_menu` (`id`, `nombre`, `descripcion`, `activa`, `creado_en`) VALUES
@@ -46,47 +44,12 @@ INSERT INTO `categorias_menu` (`id`, `nombre`, `descripcion`, `activa`, `creado_
 (2, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:21:53'),
 (3, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:21:53'),
 (4, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:21:53'),
-(5, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:21:53'),
-(6, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:35:09'),
-(7, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:35:09'),
-(8, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:35:09'),
-(9, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:35:09'),
-(10, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:35:09'),
-(11, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:35:54'),
-(12, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:35:54'),
-(13, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:35:54'),
-(14, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:35:54'),
-(15, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:35:54'),
-(16, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:38:17'),
-(17, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:38:17'),
-(18, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:38:17'),
-(19, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:38:17'),
-(20, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:38:17'),
-(21, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:41:18'),
-(22, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:41:18'),
-(23, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:41:18'),
-(24, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:41:18'),
-(25, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:41:18'),
-(26, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:41:42'),
-(27, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:41:42'),
-(28, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:41:42'),
-(29, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:41:42'),
-(30, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:41:42'),
-(31, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:44:50'),
-(32, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:44:50'),
-(33, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:44:50'),
-(34, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:44:50'),
-(35, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:44:50'),
-(36, 'Cervezas', 'Variedad de cervezas nacionales e importadas.', 1, '2026-05-03 14:50:44'),
-(37, 'Vinos', 'Selección de vinos tintos, blancos y rosados.', 1, '2026-05-03 14:50:44'),
-(38, 'Cócteles', 'Cócteles clásicos y de autor para cada gusto.', 1, '2026-05-03 14:50:44'),
-(39, 'Licores', 'Whiskies, rones, vodkas y más.', 1, '2026-05-03 14:50:44'),
-(40, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:50:44');
+(5, 'Refrescos', 'Bebidas sin alcohol para todos.', 1, '2026-05-03 14:21:53');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `contacto_mensajes`
+-- Estructura de tabla para la tabla `contacto_mensajes`
 --
 
 CREATE TABLE `contacto_mensajes` (
@@ -99,7 +62,7 @@ CREATE TABLE `contacto_mensajes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `contacto_mensajes`
+-- Volcado de datos para la tabla `contacto_mensajes`
 --
 
 INSERT INTO `contacto_mensajes` (`id`, `nombre`, `correo`, `mensaje`, `leido`, `creado_en`) VALUES
@@ -110,7 +73,7 @@ INSERT INTO `contacto_mensajes` (`id`, `nombre`, `correo`, `mensaje`, `leido`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `detalle_ventas`
+-- Estructura de tabla para la tabla `detalle_ventas`
 --
 
 CREATE TABLE `detalle_ventas` (
@@ -123,19 +86,18 @@ CREATE TABLE `detalle_ventas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `detalle_ventas`
+-- Volcado de datos para la tabla `detalle_ventas`
 --
 
 INSERT INTO `detalle_ventas` (`id`, `venta_id`, `inventario_id`, `cantidad`, `precio_unitario`, `subtotal`) VALUES
-(1, 1, 4, 1, 10.00, 10.00),
-(2, 1, 2, 1, 7.50, 7.50),
-(3, 2, 2, 1, 7.50, 7.50),
-(4, 2, 41, 1, 1000000.00, 1000000.00);
+(5, 1, 4, 1, 10.00, 10.00),
+(6, 1, 2, 1, 7.50, 7.50),
+(8, 2, 55, 3, 4000.00, 12000.00);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `empleados`
+-- Estructura de tabla para la tabla `empleados`
 --
 
 CREATE TABLE `empleados` (
@@ -151,7 +113,7 @@ CREATE TABLE `empleados` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `empleados`
+-- Volcado de datos para la tabla `empleados`
 --
 
 INSERT INTO `empleados` (`id`, `usuario_id`, `nombre_completo`, `puesto`, `departamento`, `email`, `telefono`, `activo`, `creado_en`) VALUES
@@ -163,7 +125,29 @@ INSERT INTO `empleados` (`id`, `usuario_id`, `nombre_completo`, `puesto`, `depar
 -- --------------------------------------------------------
 
 --
--- Table structure for table `horarios`
+-- Estructura de tabla para la tabla `historial_puntos`
+--
+
+CREATE TABLE `historial_puntos` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `cedula_cliente` varchar(10) NOT NULL,
+  `cantidad_puntos` int(11) NOT NULL,
+  `tipo` varchar(20) NOT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `historial_puntos`
+--
+
+INSERT INTO `historial_puntos` (`id`, `nombre`, `cedula_cliente`, `cantidad_puntos`, `tipo`, `fecha`) VALUES
+(11, 'mari', '1023578907', 22, 'canjeado', '2026-08-09 01:46:58');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `horarios`
 --
 
 CREATE TABLE `horarios` (
@@ -179,7 +163,7 @@ CREATE TABLE `horarios` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `inventario`
+-- Estructura de tabla para la tabla `inventario`
 --
 
 CREATE TABLE `inventario` (
@@ -196,21 +180,45 @@ CREATE TABLE `inventario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `inventario`
+-- Volcado de datos para la tabla `inventario`
 --
 
 INSERT INTO `inventario` (`id`, `categoria_id`, `codigo`, `nombre`, `stock_actual`, `stock_minimo`, `precio_unitario`, `activo`, `actualizado_en`, `creado_en`) VALUES
-(1, 4, 'BEB001', 'Whisky Escocés', 15, 5, 16.00, 1, '2026-05-03 14:21:53', '2026-05-03 14:21:53'),
-(2, 1, 'BEB002', 'Cerveza Artesanal IPA', 6, 5, 7.50, 1, '2026-08-08 20:00:20', '2026-05-03 14:21:53'),
-(3, 2, 'BEB003', 'Vino Tinto Malbec', 3, 5, 12.00, 1, '2026-05-03 14:21:53', '2026-05-03 14:21:53'),
-(4, 4, 'BEB004', 'Ron Añejo', 24, 5, 10.00, 1, '2026-08-08 13:44:17', '2026-05-03 14:21:53'),
-(5, 4, 'BEB005', 'Vodka Premium', 6, 5, 4.00, 1, '2026-05-03 14:21:53', '2026-05-03 14:21:53'),
-(41, 12, '456645', 'tula', 9, 15, 1000000.00, 1, '2026-08-08 20:00:20', '2026-05-03 18:39:52');
+(42, 1, 'BEB006', 'Cerveza Club Colombia Dorada 330ml', 48, 12, 6500.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(43, 1, 'BEB007', 'Cerveza Corona Extra 355ml', 36, 10, 10000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(44, 1, 'BEB008', 'Cerveza BBC Candelaria 330ml', 24, 8, 12000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(45, 2, 'BEB009', 'Vino Blanco Sauvignon Blanc 750ml', 10, 4, 6500.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(46, 2, 'BEB010', 'Vino Rosado Gato Negro 750ml', 8, 3, 48000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(47, 3, 'BEB011', 'Mojito Clásico', 50, 10, 22000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(48, 3, 'BEB012', 'Margarita de Limón', 40, 10, 25000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(49, 3, 'BEB013', 'Gin Tonic Premium', 30, 8, 30000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(50, 4, 'BEB014', 'Aguardiente Antioqueño Tapa Azul 750ml', 18, 5, 55000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(51, 4, 'BEB015', 'Aguardiente Amarillo de Manzanares 750ml', 15, 5, 70000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(52, 4, 'BEB016', 'Ron Viejo de Caldas 3 Años 750ml', 12, 4, 62000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(53, 4, 'BEB017', 'Whisky Old Parr 12 Años 750ml', 6, 2, 160000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(54, 5, 'BEB018', 'Coca-Cola Sabor Original 300ml', 60, 15, 5000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(55, 5, 'BEB019', 'Agua Mineral Nacimiento 500ml', 37, 10, 4000.00, 1, '2026-09-03 15:26:41', '2026-09-03 15:04:00'),
+(56, 5, 'BEB020', 'Red Bull Energizante 250ml', 24, 6, 12000.00, 1, '2026-09-03 15:04:00', '2026-09-03 15:04:00'),
+(57, 1, 'BEB021', 'Cerveza Stella Artois 330ml', 30, 10, 11000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(58, 1, 'BEB022', 'Cerveza Heineken 330ml', 36, 12, 10500.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(59, 1, 'BEB023', 'Cerveza Poker 330ml', 60, 15, 5000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(60, 2, 'BEB024', 'Vino Tinto Cabernet Sauvignon 750ml', 12, 4, 72000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(61, 2, 'BEB025', 'Vino Espumoso Prosecco 750ml', 6, 2, 85000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(62, 3, 'BEB026', 'Piña Colada', 25, 8, 24000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(63, 3, 'BEB027', 'Aperol Spritz', 20, 6, 28000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(64, 3, 'BEB028', 'Cuba Libre Premium', 35, 10, 22000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(65, 4, 'BEB029', 'Tequila Don Julio Reposado 700ml', 5, 2, 280000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(66, 4, 'BEB030', 'Ginebra Tanqueray London Dry 750ml', 8, 3, 135000.00, 0, '2026-09-03 15:39:43', '2026-09-03 15:05:08'),
+(67, 4, 'BEB031', 'Whisky Buchanans Deluxe 12 Años 750ml', 10, 3, 175000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(68, 4, 'BEB032', 'Jägermeister 700ml', 12, 4, 110000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(69, 5, 'BEB033', 'Soda Hatsu Sparkling 300ml', 30, 8, 7000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(70, 5, 'BEB034', 'Tónica Mil976 250ml', 24, 6, 6500.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08'),
+(71, 5, 'BEB035', 'Jugo de Naranja Natural 350ml', 20, 5, 8000.00, 1, '2026-09-03 15:05:08', '2026-09-03 15:05:08');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notificaciones`
+-- Estructura de tabla para la tabla `notificaciones`
 --
 
 CREATE TABLE `notificaciones` (
@@ -223,7 +231,7 @@ CREATE TABLE `notificaciones` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `notificaciones`
+-- Volcado de datos para la tabla `notificaciones`
 --
 
 INSERT INTO `notificaciones` (`id`, `tipo`, `titulo`, `descripcion`, `leida`, `creado_en`) VALUES
@@ -263,7 +271,7 @@ INSERT INTO `notificaciones` (`id`, `tipo`, `titulo`, `descripcion`, `leida`, `c
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reservas`
+-- Estructura de tabla para la tabla `reservas`
 --
 
 CREATE TABLE `reservas` (
@@ -278,7 +286,7 @@ CREATE TABLE `reservas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `reservas`
+-- Volcado de datos para la tabla `reservas`
 --
 
 INSERT INTO `reservas` (`id`, `nombre_cliente`, `fecha`, `hora`, `numero_mesa`, `personas`, `telefono`, `creado_en`) VALUES
@@ -290,7 +298,7 @@ INSERT INTO `reservas` (`id`, `nombre_cliente`, `fecha`, `hora`, `numero_mesa`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `usuarios`
+-- Estructura de tabla para la tabla `usuarios`
 --
 
 CREATE TABLE `usuarios` (
@@ -303,6 +311,7 @@ CREATE TABLE `usuarios` (
   `contrasena` varchar(255) NOT NULL,
   `rol` enum('dueno','empleado') NOT NULL DEFAULT 'empleado',
   `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `foto` varchar(255) DEFAULT NULL,
   `creado_en` datetime NOT NULL DEFAULT current_timestamp(),
   `token_reset` varchar(64) DEFAULT NULL,
   `token_expira` int(10) UNSIGNED DEFAULT NULL,
@@ -310,24 +319,25 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `usuarios`
+-- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `email`, `telefono`, `usuario`, `contrasena`, `rol`, `activo`, `creado_en`, `token_reset`, `token_expira`, `solicitud_reset`) VALUES
-(7, 'Administrador', '', 'admin@ejemplo.com', '555-0001', 'admin', '$2y$12$8EeZfyfM6eUgVHhemCeJHeMucbar8vrveU5aq9nwNmGRpTgs9CRT.', 'dueno', 1, '2026-05-03 14:44:50', NULL, NULL, 0),
-(9, 'Julio santana', '', 'ejemplo@ejemplo.com', NULL, 'empleado', '$2y$12$seaFZCsF9Ep7B8obzZHcPOjXLubQ5RDjok.M2izGS3nofwl4XVq6i', 'empleado', 1, '2026-05-03 14:50:44', NULL, NULL, 0),
-(10, 'maria', '', 'maria@ejemplo.com', '45644655', 'mariabb', '$2y$12$4kKFqUtXdEr7kNzlgKXZKekelffBZAyuSp1VUgqN7Nvxb/oXBDegm', 'dueno', 1, '2026-05-21 15:50:53', NULL, NULL, 0),
-(11, 'diego', 'arevalo', 'digo@gmail.com', '5437656876', 'diegobb', '$2y$12$3pJIBWyAZYqFf7gL/AThgun901oF65NYFiXGy435vbMyZi/7z29Iu', 'dueno', 1, '2026-05-21 15:59:29', NULL, NULL, 0),
-(12, 'alan', 'brito', 'lan@ejemplo.com', '1234565487', 'alanbrito', '$2y$12$ekKiwfyQKzmGHHvoed6dCeqznQ9n056anlnp5r3NngG1wFdbFk36O', 'dueno', 1, '2026-05-21 16:10:33', NULL, NULL, 0),
-(13, 'asdsadasd', 'sdasdasd', 'asdasdq@asda.com', '', 'asdasd', '$2y$12$EmzO9lmbj0Jcegk3m5iA9.LkK/RKntXLHjHn3Xcz552wHNe2k49DK', 'dueno', 1, '2026-05-21 16:12:25', NULL, NULL, 0),
-(14, 'ALAN', 'BRICEÑO', 'alanbetancourtbriceno101@gmail.com', '32343432', 'alita', '$2y$12$YZgJDUQyLeP9Nk4c71OyS.lRvy.dIO3x9ulzhjKTdqY9O36CdH.5S', 'dueno', 1, '2026-05-22 16:45:43', NULL, NULL, 0),
-(15, 'alan2', '', 'alannose@gmail.com', '1234567890', 'alitan2', '$2y$12$5II.Z2pDTMaW.S4DzzAYIeoJev7feEFHX8yxiRCsLmNTlq/TYz1Jy', 'empleado', 1, '2026-08-02 22:00:01', NULL, NULL, 0),
-(16, 'alanpa', '', 'alanpa@gmail.com', '3012836286', 'alanpa', '$2y$12$PDJGq521RH/pDhpkOIbMRuaMHbjh7CmSY5JhOG/p8Wpve4clND/Ze', 'empleado', 1, '2026-08-08 13:43:54', NULL, NULL, 0);
+INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `email`, `telefono`, `usuario`, `contrasena`, `rol`, `activo`, `foto`, `creado_en`, `token_reset`, `token_expira`, `solicitud_reset`) VALUES
+(7, 'Administrador', '', 'admin@ejemplo.com', '555-0001', 'admin', '$2y$12$8EeZfyfM6eUgVHhemCeJHeMucbar8vrveU5aq9nwNmGRpTgs9CRT.', 'dueno', 1, NULL, '2026-05-03 14:44:50', NULL, NULL, 0),
+(9, 'Julio santana', '', 'ejemplo@ejemplo.com', NULL, 'empleado', '$2y$12$seaFZCsF9Ep7B8obzZHcPOjXLubQ5RDjok.M2izGS3nofwl4XVq6i', 'empleado', 1, NULL, '2026-05-03 14:50:44', NULL, NULL, 0),
+(10, 'maria', '', 'maria@ejemplo.com', '45644655', 'mariabb', '$2y$12$4kKFqUtXdEr7kNzlgKXZKekelffBZAyuSp1VUgqN7Nvxb/oXBDegm', 'dueno', 1, NULL, '2026-05-21 15:50:53', NULL, NULL, 0),
+(11, 'diego', 'arevalo', 'digo@gmail.com', '5437656876', 'diegobb', '$2y$12$3pJIBWyAZYqFf7gL/AThgun901oF65NYFiXGy435vbMyZi/7z29Iu', 'dueno', 1, NULL, '2026-05-21 15:59:29', NULL, NULL, 0),
+(12, 'alan', 'brito', 'lan@ejemplo.com', '1234565487', 'alanbrito', '$2y$12$ekKiwfyQKzmGHHvoed6dCeqznQ9n056anlnp5r3NngG1wFdbFk36O', 'dueno', 1, NULL, '2026-05-21 16:10:33', NULL, NULL, 0),
+(13, 'asdsadasd', 'sdasdasd', 'asdasdq@asda.com', '', 'asdasd', '$2y$12$EmzO9lmbj0Jcegk3m5iA9.LkK/RKntXLHjHn3Xcz552wHNe2k49DK', 'dueno', 1, NULL, '2026-05-21 16:12:25', NULL, NULL, 0),
+(14, 'ALAN', 'BRICEÑO', 'alanbetancourtbriceno101@gmail.com', '32343432', 'alita', '$2y$12$YZgJDUQyLeP9Nk4c71OyS.lRvy.dIO3x9ulzhjKTdqY9O36CdH.5S', 'dueno', 1, NULL, '2026-05-22 16:45:43', NULL, NULL, 0),
+(15, 'alan2', '', 'alannose@gmail.com', '1234567890', 'alitan2', '$2y$12$5II.Z2pDTMaW.S4DzzAYIeoJev7feEFHX8yxiRCsLmNTlq/TYz1Jy', 'empleado', 1, NULL, '2026-08-02 22:00:01', NULL, NULL, 0),
+(16, 'alanpa', '', 'alanpa@gmail.com', '3012836286', 'alanpa', '$2y$12$PDJGq521RH/pDhpkOIbMRuaMHbjh7CmSY5JhOG/p8Wpve4clND/Ze', 'empleado', 1, NULL, '2026-08-08 13:43:54', NULL, NULL, 0),
+(17, 'julio', 'ando', 'juliosantanamb@gmail.com', '3112348287', 'koi32', '$2y$12$pUr6R5aFE4i3w4sf5yE5Heygh7Bj4NeKyPyCuLceapOWtSkp2n8cC', 'dueno', 1, NULL, '2026-08-26 18:12:19', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ventas`
+-- Estructura de tabla para la tabla `ventas`
 --
 
 CREATE TABLE `ventas` (
@@ -336,36 +346,38 @@ CREATE TABLE `ventas` (
   `mesa` varchar(30) DEFAULT NULL,
   `total` decimal(10,2) NOT NULL DEFAULT 0.00,
   `estado` enum('abierto','cerrado','cancelado') NOT NULL DEFAULT 'abierto',
+  `metodo_pago` enum('efectivo','tarjeta_credito','nequi_daviplata','bre_b') DEFAULT NULL,
   `creado_en` datetime NOT NULL DEFAULT current_timestamp(),
   `cerrado_en` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `ventas`
+-- Volcado de datos para la tabla `ventas`
 --
 
-INSERT INTO `ventas` (`id`, `empleado_id`, `mesa`, `total`, `estado`, `creado_en`, `cerrado_en`) VALUES
-(1, NULL, '1', 17.50, 'abierto', '2026-08-08 13:44:17', NULL),
-(2, NULL, '2', 1000007.50, 'abierto', '2026-08-08 20:00:20', NULL);
+INSERT INTO `ventas` (`id`, `empleado_id`, `mesa`, `total`, `estado`, `metodo_pago`, `creado_en`, `cerrado_en`) VALUES
+(1, NULL, '1', 17.50, 'cerrado', 'efectivo', '2026-08-08 13:44:17', '2026-09-03 14:58:48'),
+(2, 4, '1', 12000.00, 'cerrado', 'bre_b', '2026-09-03 15:26:27', '2026-09-03 15:26:41');
 
 --
--- Indexes for dumped tables
+-- Índices para tablas volcadas
 --
 
 --
--- Indexes for table `categorias_menu`
+-- Indices de la tabla `categorias_menu`
 --
 ALTER TABLE `categorias_menu`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_categoria_nombre` (`nombre`);
 
 --
--- Indexes for table `contacto_mensajes`
+-- Indices de la tabla `contacto_mensajes`
 --
 ALTER TABLE `contacto_mensajes`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `detalle_ventas`
+-- Indices de la tabla `detalle_ventas`
 --
 ALTER TABLE `detalle_ventas`
   ADD PRIMARY KEY (`id`),
@@ -373,21 +385,27 @@ ALTER TABLE `detalle_ventas`
   ADD KEY `inventario_id` (`inventario_id`);
 
 --
--- Indexes for table `empleados`
+-- Indices de la tabla `empleados`
 --
 ALTER TABLE `empleados`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`);
 
 --
--- Indexes for table `horarios`
+-- Indices de la tabla `historial_puntos`
+--
+ALTER TABLE `historial_puntos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `horarios`
 --
 ALTER TABLE `horarios`
   ADD PRIMARY KEY (`id`),
   ADD KEY `empleado_id` (`empleado_id`);
 
 --
--- Indexes for table `inventario`
+-- Indices de la tabla `inventario`
 --
 ALTER TABLE `inventario`
   ADD PRIMARY KEY (`id`),
@@ -395,19 +413,19 @@ ALTER TABLE `inventario`
   ADD KEY `categoria_id` (`categoria_id`);
 
 --
--- Indexes for table `notificaciones`
+-- Indices de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `reservas`
+-- Indices de la tabla `reservas`
 --
 ALTER TABLE `reservas`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `usuarios`
+-- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
@@ -415,112 +433,82 @@ ALTER TABLE `usuarios`
   ADD UNIQUE KEY `usuario` (`usuario`);
 
 --
--- Indexes for table `ventas`
+-- Indices de la tabla `ventas`
 --
 ALTER TABLE `ventas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `empleado_id` (`empleado_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT for table `categorias_menu`
+-- AUTO_INCREMENT de la tabla `categorias_menu`
 --
 ALTER TABLE `categorias_menu`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `contacto_mensajes`
+-- AUTO_INCREMENT de la tabla `contacto_mensajes`
 --
 ALTER TABLE `contacto_mensajes`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `detalle_ventas`
+-- AUTO_INCREMENT de la tabla `detalle_ventas`
 --
 ALTER TABLE `detalle_ventas`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `empleados`
+-- AUTO_INCREMENT de la tabla `empleados`
 --
 ALTER TABLE `empleados`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `horarios`
+-- AUTO_INCREMENT de la tabla `historial_puntos`
+--
+ALTER TABLE `historial_puntos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT de la tabla `horarios`
 --
 ALTER TABLE `horarios`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `inventario`
+-- AUTO_INCREMENT de la tabla `inventario`
 --
 ALTER TABLE `inventario`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
--- AUTO_INCREMENT for table `notificaciones`
+-- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
--- AUTO_INCREMENT for table `reservas`
+-- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `usuarios`
+-- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
--- AUTO_INCREMENT for table `ventas`
+-- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `detalle_ventas`
---
-ALTER TABLE `detalle_ventas`
-  ADD CONSTRAINT `detalle_ventas_ibfk_1` FOREIGN KEY (`venta_id`) REFERENCES `ventas` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `detalle_ventas_ibfk_2` FOREIGN KEY (`inventario_id`) REFERENCES `inventario` (`id`);
-
---
--- Constraints for table `empleados`
---
-ALTER TABLE `empleados`
-  ADD CONSTRAINT `empleados_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL;
-
---
--- Constraints for table `horarios`
---
-ALTER TABLE `horarios`
-  ADD CONSTRAINT `horarios_ibfk_1` FOREIGN KEY (`empleado_id`) REFERENCES `empleados` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `inventario`
---
-ALTER TABLE `inventario`
-  ADD CONSTRAINT `inventario_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias_menu` (`id`);
-
---
--- Constraints for table `ventas`
---
-ALTER TABLE `ventas`
-  ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`empleado_id`) REFERENCES `empleados` (`id`) ON DELETE SET NULL;
 COMMIT;
-SET FOREIGN_KEY_CHECKS = 1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
