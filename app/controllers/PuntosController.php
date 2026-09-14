@@ -1,5 +1,7 @@
 <?php
 require_once BASE_PATH . '/app/controllers/BaseController.php';
+require_once BASE_PATH . '/app/models/ConfiguracionPuntosModel.php';
+require_once BASE_PATH . '/app/models/VentaModel.php';
 
 class PuntosController extends BaseController
 {
@@ -11,26 +13,25 @@ class PuntosController extends BaseController
         ]);
     }
 
- public function guardar(): void
-{
-    requerirAutenticacion();
+    public function guardar(): void
+    {
+        requerirAutenticacion();
 
-    // Capturamos el nombre real que escribió el mesero en la vista
-    $nombre = $_POST['nombre'] ?? '';
-    $cedula = $_POST['cedula'] ?? '';
-    $puntos = (int)($_POST['puntos'] ?? 0);
+        // Capturamos el nombre real que escribió el mesero en la vista
+        $nombre = $_POST['nombre'] ?? '';
+        $cedula = $_POST['cedula'] ?? '';
+        $puntos = (int)($_POST['puntos'] ?? 0);
 
-    if (!empty($cedula) && !empty($nombre) && $puntos > 0) {
-        $puntoModel = new PuntosModel();
-        // Enviamos el nombre real a la base de datos
-        $puntoModel->registrarPuntos($cedula, $nombre, $puntos, 'ganado');
+        if (!empty($cedula) && !empty($nombre) && $puntos > 0) {
+            $puntoModel = new PuntosModel();
+            // Enviamos el nombre real a la base de datos
+            $puntoModel->registrarPuntos($cedula, $nombre, $puntos, 'ganado');
+        }
+
+        $this->redirigir('/puntos');
     }
 
-    $this->redirigir('/puntos');
-
-    
-}
-   public function listado(): void
+    public function listado(): void
     {
         requerirAutenticacion();
 
@@ -40,7 +41,6 @@ class PuntosController extends BaseController
         if ($busqueda) {
             $registros = $puntoModel->buscarPorCedulaONombre($busqueda);
         } else {
-            // Aquí llamamos al método que SÍ existe en tu PuntosModel.php
             $registros = $puntoModel->obtenerTodosLosRegistros();
         }
 
@@ -49,6 +49,7 @@ class PuntosController extends BaseController
             'registros' => $registros
         ]);
     }
+
     // Muestra el formulario para editar el estado de un registro de puntos
     public function editar($id = null): void
     {
@@ -84,7 +85,8 @@ class PuntosController extends BaseController
         header('Location: ' . BASE_URL . '/puntos/listado');
         exit;
     }
- // Eliminar
+
+    // Eliminar
     public function eliminar(): void
     {
         requerirAutenticacion();
@@ -224,7 +226,11 @@ class PuntosController extends BaseController
 
     /**
      * Redime (canjea) una recompensa del catálogo por los puntos de un
-     * cliente, desde la vista de una mesa.
+     * cliente, desde la vista de una mesa. A diferencia de la versión
+     * anterior, aquí el descuento (o el producto gratis) se aplica
+     * AUTOMÁTICAMENTE sobre el total de la venta abierta de la mesa,
+     * usando VentaModel::aplicarDescuentoRecompensa(). El mesero ya no
+     * tiene que calcular ni restar nada manualmente.
      * POST /puntos/mesa/redimir
      *
      * @return void
@@ -252,9 +258,8 @@ class PuntosController extends BaseController
             return;
         }
 
-        require_once BASE_PATH . '/app/models/ConfiguracionPuntosModel.php';
         $configModel = new ConfiguracionPuntosModel();
-        $recompensa = $configModel->obtenerRecompensaPorId($recompensaId);
+        $recompensa  = $configModel->obtenerRecompensaPorId($recompensaId);
 
         if (!$recompensa || !$recompensa['activo']) {
             flashMensaje('error', 'La recompensa seleccionada no está disponible.');
@@ -262,7 +267,19 @@ class PuntosController extends BaseController
             return;
         }
 
-        $puntoModel = new PuntosModel();
+        // La recompensa se aplica sobre la venta ABIERTA de la mesa: si aún
+        // no hay ninguna cuenta iniciada, no hay total sobre el cual aplicar
+        // el descuento (o registrar el producto gratis).
+        $ventaModel = new VentaModel();
+        $venta = $ventaModel->obtenerVentaAbiertaPorMesa($mesa);
+
+        if (!$venta) {
+            flashMensaje('error', 'Agrega al menos un producto a la cuenta antes de canjear una recompensa.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        $puntoModel  = new PuntosModel();
         $nombreFinal = $nombre !== '' ? $nombre : ($puntoModel->obtenerNombrePorCedula($cedula) ?? 'Cliente');
         $totalActual = $puntoModel->totalPuntos($cedula);
         $puntosRequeridos = (int) $recompensa['puntos_requeridos'];
@@ -273,11 +290,31 @@ class PuntosController extends BaseController
             return;
         }
 
+        // 1. Aplicar el efecto real de la recompensa sobre la venta
+        //    (descuenta del total o agrega el producto gratis + stock).
+        //    Si algo falla (sin stock, categoría sin consumo, etc.) no se
+        //    descuentan puntos del cliente: se corta aquí.
+        try {
+            $valorBeneficio = $ventaModel->aplicarDescuentoRecompensa((int) $venta['id'], $recompensa);
+        } catch (\Exception $e) {
+            flashMensaje('error', $e->getMessage());
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        // 2. Solo si el paso anterior tuvo éxito, se descuentan los puntos
+        //    del historial de fidelización del cliente.
         $ok = $puntoModel->redimirPuntos($cedula, $nombreFinal, $puntosRequeridos, $recompensaId, $empleadoId, $mesa);
+
+        $mensajeExtra = $recompensa['tipo'] === 'descuento_categoria'
+            ? sprintf('Se descontaron $%s de la cuenta.', number_format($valorBeneficio, 2))
+            : 'El producto se agregó gratis a la cuenta.';
 
         flashMensaje(
             $ok ? 'success' : 'error',
-            $ok ? "Se canjeó \"{$recompensa['nombre']}\" por {$puntosRequeridos} puntos." : 'No se pudo redimir la recompensa.'
+            $ok
+                ? "Se canjeó \"{$recompensa['nombre']}\" por {$puntosRequeridos} puntos. {$mensajeExtra}"
+                : 'No se pudo redimir la recompensa.'
         );
         $this->redirigir('/ventas/mesa/' . $mesa);
     }

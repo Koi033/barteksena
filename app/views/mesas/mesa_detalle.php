@@ -79,9 +79,20 @@
                     <tbody>
                         <?php if (!empty($detallesVenta)): ?>
                             <?php foreach ($detallesVenta as $det): ?>
-                                <?php $maxDisponible = (int)$det['stock_actual'] + (int)$det['cantidad']; ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($det['nombre'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <?php
+                                    $maxDisponible = (int)$det['stock_actual'] + (int)$det['cantidad'];
+                                    // Los productos entregados por una recompensa de tipo
+                                    // "producto_gratis" quedan guardados con precio $0: se
+                                    // marcan solo visualmente, sin alterar el cálculo del total.
+                                    $esRegalo = (float)$det['precio_unitario'] <= 0;
+                                ?>
+                                <tr<?= $esRegalo ? ' class="fila-regalo"' : '' ?>>
+                                    <td>
+                                        <?= htmlspecialchars($det['nombre'], ENT_QUOTES, 'UTF-8') ?>
+                                        <?php if ($esRegalo): ?>
+                                            <span class="status-badge status-completed" style="margin-left:6px;">Gratis</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td><input type="number" name="productos[<?= $det['inventario_id'] ?>][cantidad]" value="<?= $det['cantidad'] ?>" min="1" max="<?= $maxDisponible ?>" class="input-cant" data-precio="<?= $det['precio_unitario'] ?>" data-max="<?= $maxDisponible ?>"></td>
                                     <td class="subtotal-item">$<?= number_format($det['subtotal'], 2) ?></td>
                                     <td><button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash"></i></button></td>
@@ -91,6 +102,13 @@
                     </tbody>
                 </table>
             </div>
+
+            <?php if (!empty($venta['descuento_recompensa']) && (float)$venta['descuento_recompensa'] > 0): ?>
+                <div class="descuento-recompensa-info">
+                    <i class="fas fa-tags" aria-hidden="true"></i>
+                    Beneficio de recompensas aplicado: $<?= number_format((float)$venta['descuento_recompensa'], 2) ?>
+                </div>
+            <?php endif; ?>
 
             <hr>
             <div class="total-cuenta">

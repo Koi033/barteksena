@@ -19,7 +19,8 @@ class VentaModel extends BaseModel
     public function obtenerTodos(int $pagina = 1, int $porPagina = ITEMS_POR_PAGINA): array
     {
         $offset = ($pagina - 1) * $porPagina;
-        $sql    = "SELECT v.id, v.mesa, v.total, v.estado, v.metodo_pago, v.creado_en,
+        $sql    = "SELECT v.id, v.mesa, v.total, v.descuento_recompensa, v.descuento_categoria_acumulado,
+                  v.estado, v.metodo_pago, v.creado_en,
                   COALESCE(e.nombre_completo, 'Sin asignar') AS empleado
            FROM ventas v
            LEFT JOIN empleados e ON e.id = v.empleado_id
@@ -105,20 +106,20 @@ class VentaModel extends BaseModel
 
     /**
      * Obtiene los números de mesa que tienen una venta abierta.
-     * 
+     *
      * @return array Arreglo con los números de las mesas ocupadas (ej. ['1', '5'])
      */
     public function obtenerMesasOcupadas(): array
     {
         $sql = "SELECT DISTINCT mesa FROM ventas WHERE estado = 'abierto'";
         $resultados = $this->consultarTodos($sql);
-        
+
         return array_column($resultados, 'mesa');
     }
 
     /**
      * Obtiene una venta abierta por su número de mesa.
-     * 
+     *
      * @param string|int $mesa
      * @return array|false
      */
@@ -130,7 +131,7 @@ class VentaModel extends BaseModel
 
     /**
      * Obtiene los detalles (productos) de una venta específica.
-     * 
+     *
      * @param int $ventaId
      * @return array
      */
@@ -146,7 +147,12 @@ class VentaModel extends BaseModel
     /**
      * Actualiza o reemplaza los detalles de la venta, recalcula el total general
      * y descuenta las cantidades correspondientes del inventario.
-     * 
+     *
+     * IMPORTANTE: al recalcular el total desde cero, se conserva el
+     * descuento por recompensas ya aplicado (descuento_recompensa), para
+     * que agregar/quitar productos de la cuenta no borre un beneficio
+     * de fidelización que el cliente ya canjeó.
+     *
      * @param int $ventaId
      * @param array $productos Array asociativo [inventario_id => ['cantidad' => X]]
      * @return void
@@ -194,14 +200,14 @@ class VentaModel extends BaseModel
                     $totalGeneral += $subtotal;
 
                     // Insertar el detalle de la venta
-                    $sqlInsert = "INSERT INTO detalle_ventas (venta_id, inventario_id, cantidad, precio_unitario, subtotal) 
+                    $sqlInsert = "INSERT INTO detalle_ventas (venta_id, inventario_id, cantidad, precio_unitario, subtotal)
                                   VALUES (:venta_id, :inventario_id, :cantidad, :precio_unitario, :subtotal)";
                     $this->ejecutar($sqlInsert, [
                         ':venta_id'        => $ventaId,
                         ':inventario_id'   => $inventarioId,
                         ':cantidad'        => $cantidad,
                         ':precio_unitario' => $precioUnitario,
-                        ':subtotal'        => $subtotal 
+                        ':subtotal'        => $subtotal
                     ]);
 
                     // Descontar del inventario
@@ -213,10 +219,24 @@ class VentaModel extends BaseModel
                 }
             }
 
-            // 4. Actualizar el total general en la tabla ventas
+            // 4. Restar el descuento por CATEGORÍA ya aplicado a esta venta
+            //    (si el mesero ya había canjeado una recompensa de ese tipo
+            //    antes de seguir agregando/quitando productos de la cuenta).
+            //    Los productos regalados NO se restan aquí: ya entran en
+            //    $totalGeneral con precio $0 porque son líneas reales de
+            //    detalle_ventas, así que restarlos de nuevo los descontaría
+            //    dos veces.
+            $ventaActual = $this->consultarUno(
+                'SELECT descuento_categoria_acumulado FROM ventas WHERE id = :id',
+                [':id' => $ventaId]
+            );
+            $descuentoCategoria = (float) ($ventaActual['descuento_categoria_acumulado'] ?? 0);
+            $totalConDescuento = max($totalGeneral - $descuentoCategoria, 0);
+
+            // 5. Actualizar el total general en la tabla ventas
             $sqlUpdateVenta = "UPDATE ventas SET total = :total WHERE id = :id";
             $this->ejecutar($sqlUpdateVenta, [
-                ':total' => $totalGeneral,
+                ':total' => $totalConDescuento,
                 ':id'    => $ventaId
             ]);
 
@@ -225,6 +245,117 @@ class VentaModel extends BaseModel
 
         } catch (\Exception $e) {
             // Revertir cambios en caso de error
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Aplica el efecto de una recompensa de fidelización sobre la venta
+     * abierta de una mesa. Es el punto único donde vive la lógica de
+     * automatización pedida: el mesero solo elige la recompensa y aquí
+     * se calcula y descuenta el valor real de la cuenta.
+     *
+     *  - descuento_categoria: resta al total el % indicado, calculado
+     *    sobre lo que el cliente ya consumió de esa categoría en la
+     *    cuenta actual. Si no hay productos de esa categoría, falla con
+     *    un mensaje claro en vez de aplicar un descuento de $0.
+     *  - producto_gratis: agrega una unidad del producto al detalle con
+     *    precio $0 (no afecta el total porque esa línea suma $0), valida
+     *    stock antes de entregarlo y lo descuenta del inventario igual
+     *    que cualquier otra venta.
+     *
+     * Todo ocurre en una única transacción: si algo falla (sin stock,
+     * categoría sin consumo, etc.) no queda ningún cambio a medias.
+     *
+     * @param  int   $ventaId
+     * @param  array $recompensa Fila de recompensas_puntos (con tipo,
+     *                           categoria_id, porcentaje_descuento y/o
+     *                           producto_id según corresponda)
+     * @return float             Valor monetario del beneficio otorgado,
+     *                           útil para mostrarlo en el mensaje al mesero
+     * @throws \Exception        Con un mensaje listo para mostrar al usuario
+     */
+    public function aplicarDescuentoRecompensa(int $ventaId, array $recompensa): float
+    {
+        $this->db->beginTransaction();
+
+        try {
+            $valorBeneficio = 0.00;
+
+            if ($recompensa['tipo'] === 'descuento_categoria') {
+                $res = $this->consultarUno(
+                    "SELECT COALESCE(SUM(dv.subtotal), 0) AS subtotal_categoria
+                     FROM detalle_ventas dv
+                     INNER JOIN inventario i ON i.id = dv.inventario_id
+                     WHERE dv.venta_id = :venta_id AND i.categoria_id = :categoria_id",
+                    [':venta_id' => $ventaId, ':categoria_id' => $recompensa['categoria_id']]
+                );
+                $subtotalCategoria = (float) ($res['subtotal_categoria'] ?? 0);
+
+                if ($subtotalCategoria <= 0) {
+                    throw new \Exception('La mesa no tiene productos de esa categoría para aplicar el descuento.');
+                }
+
+                $valorBeneficio = round($subtotalCategoria * ((float) $recompensa['porcentaje_descuento'] / 100), 2);
+
+                // NOTA: se usa un placeholder distinto por cada aparición del
+                // mismo valor porque el proyecto corre con
+                // PDO::ATTR_EMULATE_PREPARES = false (ver config/database.php),
+                // y los prepared statements nativos de MySQL no permiten
+                // reutilizar un mismo parámetro con nombre más de una vez
+                // dentro de la misma consulta.
+                $this->ejecutar(
+                    'UPDATE ventas
+                     SET descuento_recompensa = descuento_recompensa + :d1,
+                         descuento_categoria_acumulado = descuento_categoria_acumulado + :d2,
+                         total = GREATEST(total - :d3, 0)
+                     WHERE id = :id',
+                    [':d1' => $valorBeneficio, ':d2' => $valorBeneficio, ':d3' => $valorBeneficio, ':id' => $ventaId]
+                );
+
+            } elseif ($recompensa['tipo'] === 'producto_gratis') {
+                $producto = $this->consultarUno(
+                    'SELECT id, nombre, precio_unitario, stock_actual
+                     FROM inventario WHERE id = :id AND activo = 1 FOR UPDATE',
+                    [':id' => $recompensa['producto_id']]
+                );
+
+                if (!$producto) {
+                    throw new \Exception('El producto de la recompensa ya no está disponible.');
+                }
+                if ((int) $producto['stock_actual'] <= 0) {
+                    throw new \Exception('No hay stock disponible de "' . $producto['nombre'] . '" para entregarlo gratis.');
+                }
+
+                $this->ejecutar(
+                    'INSERT INTO detalle_ventas (venta_id, inventario_id, cantidad, precio_unitario, subtotal)
+                     VALUES (:venta_id, :inventario_id, 1, 0, 0)',
+                    [':venta_id' => $ventaId, ':inventario_id' => $producto['id']]
+                );
+
+                $this->ejecutar(
+                    'UPDATE inventario SET stock_actual = stock_actual - 1 WHERE id = :id',
+                    [':id' => $producto['id']]
+                );
+
+                $valorBeneficio = (float) $producto['precio_unitario'];
+
+                // El total no se resta aquí: la línea gratis ya entra en $0
+                // en detalle_ventas. Solo se registra el valor regalado
+                // para reportes/trazabilidad.
+                $this->ejecutar(
+                    'UPDATE ventas SET descuento_recompensa = descuento_recompensa + :d WHERE id = :id',
+                    [':d' => $valorBeneficio, ':id' => $ventaId]
+                );
+            } else {
+                throw new \Exception('Tipo de recompensa no soportado.');
+            }
+
+            $this->db->commit();
+            return $valorBeneficio;
+
+        } catch (\Exception $e) {
             $this->db->rollBack();
             throw $e;
         }
