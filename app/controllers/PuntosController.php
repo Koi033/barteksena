@@ -100,6 +100,189 @@ class PuntosController extends BaseController
     }
 
     /**
+     * Busca un cliente por cédula y devuelve su nombre más reciente y su
+     * total de puntos vigente, en JSON. Se usa desde la vista de mesas
+     * para autocompletar el panel de puntos cuando el mesero escribe la
+     * cédula del cliente.
+     * GET /puntos/mesa/consultar?cedula=...
+     *
+     * @return void
+     */
+    public function consultarCliente(): void
+    {
+        requerirAutenticacion();
+        header('Content-Type: application/json; charset=utf-8');
+
+        $cedula = preg_replace('/[^0-9]/', '', $_GET['cedula'] ?? '');
+
+        if (empty($cedula)) {
+            echo json_encode(['success' => false, 'mensaje' => 'Cédula inválida.']);
+            return;
+        }
+
+        $puntoModel = new PuntosModel();
+        $nombre = $puntoModel->obtenerNombrePorCedula($cedula);
+        $total  = $puntoModel->totalPuntos($cedula);
+
+        echo json_encode([
+            'success' => true,
+            'existe'  => $nombre !== null,
+            'nombre'  => $nombre,
+            'total'   => $total,
+        ]);
+    }
+
+    /**
+     * Abona puntos a un cliente desde la vista de una mesa.
+     * POST /puntos/mesa/agregar
+     *
+     * @return void
+     */
+    public function mesaAgregar(): void
+    {
+        requerirAutenticacion();
+
+        $mesa = $this->post('mesa', 10);
+
+        if (!validarTokenCSRF($_POST['csrf_token'] ?? '', 'venta')) {
+            flashMensaje('error', 'Token inválido. Intenta de nuevo.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        $cedula = preg_replace('/[^0-9]/', '', $_POST['cedula'] ?? '');
+        $nombre = $this->post('nombre', 80);
+        $puntos = (int) ($_POST['puntos'] ?? 0);
+        $empleadoId = $_SESSION['empleado_id'] ?? null;
+
+        if (empty($cedula) || empty($nombre) || $puntos <= 0) {
+            flashMensaje('error', 'Debes indicar cédula, nombre y una cantidad de puntos válida.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        $puntoModel = new PuntosModel();
+        $ok = $puntoModel->agregarPuntos($cedula, $nombre, $puntos, $empleadoId, $mesa);
+
+        flashMensaje(
+            $ok ? 'success' : 'error',
+            $ok ? "Se abonaron {$puntos} puntos a {$nombre}." : 'No se pudieron abonar los puntos.'
+        );
+        $this->redirigir('/ventas/mesa/' . $mesa);
+    }
+
+    /**
+     * Descuenta puntos de un cliente desde la vista de una mesa.
+     * POST /puntos/mesa/descontar
+     *
+     * @return void
+     */
+    public function mesaDescontar(): void
+    {
+        requerirAutenticacion();
+
+        $mesa = $this->post('mesa', 10);
+
+        if (!validarTokenCSRF($_POST['csrf_token'] ?? '', 'venta')) {
+            flashMensaje('error', 'Token inválido. Intenta de nuevo.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        $cedula = preg_replace('/[^0-9]/', '', $_POST['cedula'] ?? '');
+        $nombre = $this->post('nombre', 80);
+        $puntos = (int) ($_POST['puntos'] ?? 0);
+        $empleadoId = $_SESSION['empleado_id'] ?? null;
+
+        if (empty($cedula) || $puntos <= 0) {
+            flashMensaje('error', 'Debes indicar la cédula del cliente y una cantidad de puntos válida.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        $puntoModel = new PuntosModel();
+        $nombreFinal = $nombre !== '' ? $nombre : ($puntoModel->obtenerNombrePorCedula($cedula) ?? 'Cliente');
+        $totalActual = $puntoModel->totalPuntos($cedula);
+
+        if ($totalActual <= 0) {
+            flashMensaje('error', 'Este cliente no tiene puntos acumulados para descontar.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        // No permitir dejar el saldo en negativo
+        $puntosADescontar = min($puntos, $totalActual);
+
+        $ok = $puntoModel->descontarPuntos($cedula, $nombreFinal, $puntosADescontar, $empleadoId, $mesa);
+
+        flashMensaje(
+            $ok ? 'success' : 'error',
+            $ok ? "Se descontaron {$puntosADescontar} puntos a {$nombreFinal}." : 'No se pudieron descontar los puntos.'
+        );
+        $this->redirigir('/ventas/mesa/' . $mesa);
+    }
+
+    /**
+     * Redime (canjea) una recompensa del catálogo por los puntos de un
+     * cliente, desde la vista de una mesa.
+     * POST /puntos/mesa/redimir
+     *
+     * @return void
+     */
+    public function mesaRedimir(): void
+    {
+        requerirAutenticacion();
+
+        $mesa = $this->post('mesa', 10);
+
+        if (!validarTokenCSRF($_POST['csrf_token'] ?? '', 'venta')) {
+            flashMensaje('error', 'Token inválido. Intenta de nuevo.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        $cedula = preg_replace('/[^0-9]/', '', $_POST['cedula'] ?? '');
+        $nombre = $this->post('nombre', 80);
+        $recompensaId = $this->entero('recompensa_id', 'post');
+        $empleadoId = $_SESSION['empleado_id'] ?? null;
+
+        if (empty($cedula) || $recompensaId <= 0) {
+            flashMensaje('error', 'Debes indicar la cédula del cliente y seleccionar una recompensa.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        require_once BASE_PATH . '/app/models/ConfiguracionPuntosModel.php';
+        $configModel = new ConfiguracionPuntosModel();
+        $recompensa = $configModel->obtenerRecompensaPorId($recompensaId);
+
+        if (!$recompensa || !$recompensa['activo']) {
+            flashMensaje('error', 'La recompensa seleccionada no está disponible.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        $puntoModel = new PuntosModel();
+        $nombreFinal = $nombre !== '' ? $nombre : ($puntoModel->obtenerNombrePorCedula($cedula) ?? 'Cliente');
+        $totalActual = $puntoModel->totalPuntos($cedula);
+        $puntosRequeridos = (int) $recompensa['puntos_requeridos'];
+
+        if ($totalActual < $puntosRequeridos) {
+            flashMensaje('error', "El cliente solo tiene {$totalActual} puntos y la recompensa \"{$recompensa['nombre']}\" requiere {$puntosRequeridos}.");
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        $ok = $puntoModel->redimirPuntos($cedula, $nombreFinal, $puntosRequeridos, $recompensaId, $empleadoId, $mesa);
+
+        flashMensaje(
+            $ok ? 'success' : 'error',
+            $ok ? "Se canjeó \"{$recompensa['nombre']}\" por {$puntosRequeridos} puntos." : 'No se pudo redimir la recompensa.'
+        );
+        $this->redirigir('/ventas/mesa/' . $mesa);
+    }
+
+    /**
      * Formulario público de inscripción al club de fidelización.
      * GET  /puntos/registro  -> muestra el formulario
      * POST /puntos/registro  -> procesa la inscripción

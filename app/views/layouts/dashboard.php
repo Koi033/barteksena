@@ -105,6 +105,16 @@
                     </a>
                 </li>
 
+                <!-- Configuración de Puntos (Solo Dueño) -->
+                <?php if ($rolUsuario === 'dueno'): ?>
+                    <li>
+                        <a href="<?= BASE_URL ?>/configuracion-puntos"
+                            class="<?= str_contains($_SERVER['REQUEST_URI'], '/configuracion-puntos') ? 'active' : '' ?>">
+                            <i class="fas fa-sliders-h" aria-hidden="true"></i> Configuración de Puntos
+                        </a>
+                    </li>
+                <?php endif; ?>
+
                 <!-- Horarios (Permitido para ambos) -->
                 <li>
                     <a href="<?= BASE_URL ?>/horarios"

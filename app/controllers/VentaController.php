@@ -177,6 +177,11 @@ class VentaController extends BaseController
         $inventarioModel = new InventarioModel();
         $inventario = $inventarioModel->obtenerTodos(); // Asegúrate de tener este método en tu modelo de inventario
 
+        // 2.1 Recompensas activas del club de fidelización, para el panel de puntos
+        require_once BASE_PATH . '/app/models/ConfiguracionPuntosModel.php';
+        $configPuntosModel = new ConfiguracionPuntosModel();
+        $recompensasPuntos = $configPuntosModel->obtenerRecompensas(true);
+
         // 3. Renderizar la vista de detalle
         $this->render('mesas/mesa_detalle', [
             'titulo'        => 'Mesa ' . $numeroMesa . ' - Bartek',
@@ -184,6 +189,7 @@ class VentaController extends BaseController
             'venta'         => $venta,
             'detallesVenta' => $detallesVenta,
             'inventario'    => $inventario,
+            'recompensasPuntos' => $recompensasPuntos,
             'tokenCSRF'     => generarTokenCSRF('venta'),
             'flash'         => obtenerFlash(),
         ]);
@@ -315,6 +321,11 @@ class VentaController extends BaseController
         $inventarioModel = new InventarioModel();
         $inventario = $inventarioModel->obtenerTodos();
 
+        // 2.1 Recompensas activas del club de fidelización, para el panel de puntos
+        require_once BASE_PATH . '/app/models/ConfiguracionPuntosModel.php';
+        $configPuntosModel = new ConfiguracionPuntosModel();
+        $recompensasPuntos = $configPuntosModel->obtenerRecompensas(true);
+
         // 3. Renderizar la vista
         $this->render('mesas/mesa_detalle', [
             'titulo'        => 'Mesa ' . $numeroMesa . ' - Bartek',
@@ -322,6 +333,7 @@ class VentaController extends BaseController
             'venta'         => $venta,
             'detallesVenta' => $detallesVenta,
             'inventario'    => $inventario,
+            'recompensasPuntos' => $recompensasPuntos,
             'tokenCSRF'     => generarTokenCSRF('venta'),
             'flash'         => obtenerFlash(),
         ]);

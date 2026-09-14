@@ -109,6 +109,93 @@
             </div>
         </form>
     </div>
+
+    <!-- Columna: Puntos de Fidelización del Cliente -->
+    <div class="cuenta-panel puntos-panel">
+        <h3><i class="fas fa-coins" aria-hidden="true"></i> Puntos del Cliente</h3>
+
+        <div class="form-group">
+            <label for="puntosCedula">Cédula del Cliente</label>
+            <input type="text" id="puntosCedula" placeholder="Ej. 1098765432" inputmode="numeric">
+        </div>
+
+        <div class="form-group">
+            <label for="puntosNombre">Nombre del Cliente</label>
+            <input type="text" id="puntosNombre" placeholder="Se autocompleta si ya existe">
+        </div>
+
+        <button type="button" id="btnBuscarCliente" class="btn btn-secondary btn-sm">
+            <i class="fas fa-search"></i> Buscar Cliente
+        </button>
+
+        <p id="puntosInfoCliente" class="puntos-panel-info">
+            Escribe la cédula del cliente y presiona "Buscar" para ver sus puntos.
+        </p>
+
+        <hr>
+
+        <div class="form-group">
+            <label for="puntosCantidad">Cantidad de Puntos</label>
+            <input type="number" id="puntosCantidad" min="1" value="1">
+        </div>
+
+        <div class="acciones-cuenta puntos-panel-acciones">
+            <button type="button" id="btnAgregarPuntos" class="btn btn-success btn-sm">
+                <i class="fas fa-plus"></i> Agregar
+            </button>
+            <button type="button" id="btnDescontarPuntos" class="btn btn-danger btn-sm">
+                <i class="fas fa-minus"></i> Descontar
+            </button>
+        </div>
+
+        <?php if (!empty($recompensasPuntos)): ?>
+            <hr>
+            <div class="form-group">
+                <label for="puntosRecompensa">Canjear Recompensa</label>
+                <select id="puntosRecompensa">
+                    <option value="">— Selecciona una recompensa —</option>
+                    <?php foreach ($recompensasPuntos as $rec): ?>
+                        <option value="<?= (int)$rec['id'] ?>">
+                            <?= htmlspecialchars($rec['nombre'], ENT_QUOTES, 'UTF-8') ?>
+                            (<?= (int)$rec['puntos_requeridos'] ?> pts)
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <button type="button" id="btnRedimirPuntos" class="btn btn-guardar-cuenta btn-sm" style="width:100%;">
+                <i class="fas fa-gift"></i> Redimir Recompensa
+            </button>
+        <?php else: ?>
+            <hr>
+            <p class="puntos-panel-info">
+                Aún no hay recompensas configuradas. El administrador puede crearlas desde
+                <strong>Configuración de Puntos</strong>.
+            </p>
+        <?php endif; ?>
+
+        <!-- Formularios reales que envían la acción (POST + flash, igual al resto del sitio) -->
+        <form id="formAgregarPuntos" method="POST" action="<?= BASE_URL ?>/puntos/mesa/agregar" style="display:none;">
+            <input type="hidden" name="csrf_token" value="<?= $tokenCSRF ?>">
+            <input type="hidden" name="mesa" value="<?= htmlspecialchars((string)$numeroMesa, ENT_QUOTES, 'UTF-8') ?>">
+            <input type="hidden" name="cedula">
+            <input type="hidden" name="nombre">
+            <input type="hidden" name="puntos">
+        </form>
+        <form id="formDescontarPuntos" method="POST" action="<?= BASE_URL ?>/puntos/mesa/descontar" style="display:none;">
+            <input type="hidden" name="csrf_token" value="<?= $tokenCSRF ?>">
+            <input type="hidden" name="mesa" value="<?= htmlspecialchars((string)$numeroMesa, ENT_QUOTES, 'UTF-8') ?>">
+            <input type="hidden" name="cedula">
+            <input type="hidden" name="nombre">
+            <input type="hidden" name="puntos">
+        </form>
+        <form id="formRedimirPuntos" method="POST" action="<?= BASE_URL ?>/puntos/mesa/redimir" style="display:none;">
+            <input type="hidden" name="csrf_token" value="<?= $tokenCSRF ?>">
+            <input type="hidden" name="mesa" value="<?= htmlspecialchars((string)$numeroMesa, ENT_QUOTES, 'UTF-8') ?>">
+            <input type="hidden" name="cedula">
+            <input type="hidden" name="nombre">
+            <input type="hidden" name="recompensa_id">
+        </form>
+    </div>
 </div>
 
 <!-- Modal: Selección de método de pago -->
@@ -299,4 +386,120 @@
         formCuentaMesa.action = "<?= BASE_URL ?>/ventas/cerrar-cuenta";
         formCuentaMesa.submit();
     });
+
+    // ---- Panel de Puntos del Cliente ----
+    (function () {
+        const BASE_URL_JS   = "<?= BASE_URL ?>";
+        const inputCedula   = document.getElementById('puntosCedula');
+        const inputNombre   = document.getElementById('puntosNombre');
+        const inputCantidad = document.getElementById('puntosCantidad');
+        const infoCliente   = document.getElementById('puntosInfoCliente');
+        const selectRecompensa = document.getElementById('puntosRecompensa');
+
+        let totalPuntosActual = null;
+
+        function cedulaLimpia() {
+            return (inputCedula.value || '').replace(/[^0-9]/g, '');
+        }
+
+        function buscarCliente() {
+            const cedula = cedulaLimpia();
+            if (!cedula) {
+                infoCliente.textContent = 'Escribe una cédula válida.';
+                return;
+            }
+
+            infoCliente.textContent = 'Buscando...';
+
+            fetch(`${BASE_URL_JS}/puntos/mesa/consultar?cedula=${encodeURIComponent(cedula)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        infoCliente.textContent = data.mensaje || 'No se pudo consultar al cliente.';
+                        totalPuntosActual = null;
+                        return;
+                    }
+
+                    totalPuntosActual = data.total;
+
+                    if (data.existe) {
+                        inputNombre.value = data.nombre || '';
+                        infoCliente.textContent = `${data.nombre || 'Cliente'} tiene ${data.total} puntos acumulados.`;
+                    } else {
+                        infoCliente.textContent = 'Cliente nuevo: no tiene puntos registrados aún. Escribe su nombre para abonarle puntos.';
+                    }
+                })
+                .catch(() => {
+                    infoCliente.textContent = 'Ocurrió un error consultando al cliente.';
+                });
+        }
+
+        document.getElementById('btnBuscarCliente').addEventListener('click', buscarCliente);
+
+        function llenarYEnviar(formId, extra) {
+            const form = document.getElementById(formId);
+            form.querySelector('[name="cedula"]').value = cedulaLimpia();
+            form.querySelector('[name="nombre"]').value = inputNombre.value.trim();
+            Object.entries(extra).forEach(([campo, valor]) => {
+                const input = form.querySelector(`[name="${campo}"]`);
+                if (input) input.value = valor;
+            });
+            form.submit();
+        }
+
+        document.getElementById('btnAgregarPuntos').addEventListener('click', function () {
+            const cedula = cedulaLimpia();
+            const nombre = inputNombre.value.trim();
+            const puntos = parseInt(inputCantidad.value, 10) || 0;
+
+            if (!cedula || !nombre) {
+                alert('Debes indicar la cédula y el nombre del cliente.');
+                return;
+            }
+            if (puntos <= 0) {
+                alert('Ingresa una cantidad de puntos válida.');
+                return;
+            }
+
+            llenarYEnviar('formAgregarPuntos', { puntos });
+        });
+
+        document.getElementById('btnDescontarPuntos').addEventListener('click', function () {
+            const cedula = cedulaLimpia();
+            const puntos = parseInt(inputCantidad.value, 10) || 0;
+
+            if (!cedula) {
+                alert('Debes indicar la cédula del cliente.');
+                return;
+            }
+            if (puntos <= 0) {
+                alert('Ingresa una cantidad de puntos válida.');
+                return;
+            }
+            if (!confirm(`¿Descontar ${puntos} puntos a este cliente?`)) return;
+
+            llenarYEnviar('formDescontarPuntos', { puntos });
+        });
+
+        if (selectRecompensa) {
+            document.getElementById('btnRedimirPuntos').addEventListener('click', function () {
+                const cedula = cedulaLimpia();
+                const recompensaId = selectRecompensa.value;
+
+                if (!cedula) {
+                    alert('Debes indicar la cédula del cliente.');
+                    return;
+                }
+                if (!recompensaId) {
+                    alert('Selecciona una recompensa para canjear.');
+                    return;
+                }
+
+                const textoRecompensa = selectRecompensa.options[selectRecompensa.selectedIndex].text;
+                if (!confirm(`¿Canjear "${textoRecompensa.trim()}" para este cliente?`)) return;
+
+                llenarYEnviar('formRedimirPuntos', { recompensa_id: recompensaId });
+            });
+        }
+    })();
 </script>
