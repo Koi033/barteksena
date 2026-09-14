@@ -100,9 +100,30 @@
             </div>
 
             <div class="form-group">
-                <label for="hFecha">Fecha *</label>
-                <input type="date" id="hFecha" name="fecha" required
+                <label for="hFechaInicio">Fecha Inicio *</label>
+                <input type="date" id="hFechaInicio" name="fecha_inicio" required
                        min="<?= date('Y-m-d') ?>">
+            </div>
+
+            <div class="form-group">
+                <label for="hFechaFin">Fecha Fin *</label>
+                <input type="date" id="hFechaFin" name="fecha_fin" required
+                       min="<?= date('Y-m-d') ?>">
+            </div>
+
+            <div class="form-group">
+                <label>Días de la Semana *</label>
+                <div class="dias-semana-checks">
+                    <?php
+                        $diasSemana = [1 => 'Lun', 2 => 'Mar', 3 => 'Mié', 4 => 'Jue', 5 => 'Vie', 6 => 'Sáb', 7 => 'Dom'];
+                        foreach ($diasSemana as $numDia => $etiquetaDia):
+                    ?>
+                        <label class="dia-check">
+                            <input type="checkbox" name="dias[]" value="<?= $numDia ?>">
+                            <?= $etiquetaDia ?>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
             </div>
 
             <div class="form-group">
@@ -130,38 +151,67 @@
         <?php if (empty($pendientes)): ?>
             <p class="text-muted">No hay horarios pendientes.</p>
         <?php else: ?>
-            <?php foreach ($pendientes as $p): ?>
-            <div class="schedule-item">
-                <div class="schedule-info">
-                    <div class="schedule-employee">
-                        <?= htmlspecialchars($p['nombre_completo'], ENT_QUOTES, 'UTF-8') ?>
-                    </div>
-                    <div class="schedule-time">
-                        <?= htmlspecialchars($p['fecha'],       ENT_QUOTES, 'UTF-8') ?>
-                        (<?= htmlspecialchars($p['hora_inicio'], ENT_QUOTES, 'UTF-8') ?>
-                        — <?= htmlspecialchars($p['hora_fin'],   ENT_QUOTES, 'UTF-8') ?>)
+            <form method="POST" action="<?= BASE_URL ?>/horarios/cambiarEstadoMasivo" id="formPendientes">
+                <input type="hidden" name="csrf_token"
+                       value="<?= htmlspecialchars($tokenCSRF, ENT_QUOTES, 'UTF-8') ?>">
+
+                <div class="pending-bulk-bar">
+                    <label class="dia-check">
+                        <input type="checkbox" id="chkTodosPendientes">
+                        Seleccionar todos (<?= count($pendientes) ?>)
+                    </label>
+                    <div class="pending-bulk-actions">
+                        <button type="submit" name="estado" value="aprobado"
+                                class="btn-action btn-approve"
+                                onclick="return confirmarMasivo('aprobar');">
+                            <i class="fas fa-check-double" aria-hidden="true"></i> Aprobar seleccionados
+                        </button>
+                        <button type="submit" name="estado" value="rechazado"
+                                class="btn-action btn-reject"
+                                onclick="return confirmarMasivo('rechazar');">
+                            <i class="fas fa-times" aria-hidden="true"></i> Rechazar seleccionados
+                        </button>
                     </div>
                 </div>
-                <div class="schedule-actions">
-                    <!-- Aprobar -->
-                    <form method="POST" action="<?= BASE_URL ?>/horarios/cambiarEstado" style="display:inline">
-                        <input type="hidden" name="csrf_token"
-                               value="<?= htmlspecialchars($tokenCSRF, ENT_QUOTES, 'UTF-8') ?>">
-                        <input type="hidden" name="id"     value="<?= (int)$p['id'] ?>">
-                        <input type="hidden" name="estado" value="aprobado">
-                        <button type="submit" class="btn-action btn-approve"><i class="fas fa-check" aria-hidden="true"></i> Aprobar</button>
-                    </form>
-                    <!-- Rechazar -->
-                    <form method="POST" action="<?= BASE_URL ?>/horarios/cambiarEstado" style="display:inline">
-                        <input type="hidden" name="csrf_token"
-                               value="<?= htmlspecialchars($tokenCSRF, ENT_QUOTES, 'UTF-8') ?>">
-                        <input type="hidden" name="id"     value="<?= (int)$p['id'] ?>">
-                        <input type="hidden" name="estado" value="rechazado">
-                        <button type="submit" class="btn-action btn-reject"><i class="fas fa-times" aria-hidden="true"></i> Rechazar</button>
-                    </form>
+
+                <?php foreach ($pendientes as $p): ?>
+                <div class="schedule-item">
+                    <label class="schedule-check">
+                        <input type="checkbox" name="ids[]" value="<?= (int) $p['id'] ?>" class="chk-pendiente">
+                    </label>
+                    <div class="schedule-info">
+                        <div class="schedule-employee">
+                            <?= htmlspecialchars($p['nombre_completo'], ENT_QUOTES, 'UTF-8') ?>
+                        </div>
+                        <div class="schedule-time">
+                            <?= htmlspecialchars($p['fecha'],       ENT_QUOTES, 'UTF-8') ?>
+                            (<?= htmlspecialchars($p['hora_inicio'], ENT_QUOTES, 'UTF-8') ?>
+                            — <?= htmlspecialchars($p['hora_fin'],   ENT_QUOTES, 'UTF-8') ?>)
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </form>
+
+            <script>
+                (function () {
+                    var chkTodos = document.getElementById('chkTodosPendientes');
+                    var chks     = document.querySelectorAll('.chk-pendiente');
+                    if (!chkTodos) return;
+                    chkTodos.addEventListener('change', function () {
+                        chks.forEach(function (c) { c.checked = chkTodos.checked; });
+                    });
+                })();
+
+                function confirmarMasivo(accion) {
+                    var marcados = document.querySelectorAll('.chk-pendiente:checked').length;
+                    if (marcados === 0) {
+                        alert('Selecciona al menos un horario.');
+                        return false;
+                    }
+                    return confirm('¿Seguro que deseas ' + accion + ' ' + marcados + ' horario(s)?');
+                }
+            </script>
         <?php endif; ?>
     </div>
 

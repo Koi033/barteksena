@@ -11,6 +11,9 @@ class VentaController extends BaseController
 {
     private VentaModel $modelo;
 
+    /** Métodos de pago aceptados al cerrar una cuenta. */
+    private const METODOS_PAGO_VALIDOS = ['efectivo', 'tarjeta_credito', 'nequi_daviplata', 'bre_b'];
+
     public function __construct()
     {
         $this->modelo = new VentaModel();
@@ -73,7 +76,37 @@ class VentaController extends BaseController
     }
 
     /**
-     * Cierra una venta activa.
+     * Devuelve en JSON los productos (detalle) de una venta específica.
+     * GET /ventas/detalle/{id}
+     *
+     * @param string|int $id
+     * @return void
+     */
+    public function detalle($id): void
+    {
+        requerirAutenticacion();
+
+        $id = (int) $id;
+        header('Content-Type: application/json; charset=utf-8');
+
+        if ($id <= 0) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'mensaje' => 'ID de venta inválido.']);
+            return;
+        }
+
+        $detalles = $this->modelo->obtenerDetallesVenta($id);
+
+        echo json_encode([
+            'success'   => true,
+            'ventaId'   => $id,
+            'detalles'  => $detalles,
+        ]);
+    }
+
+    /**
+     * Cierra una venta activa (cierre manual sin registrar método de pago,
+     * usado desde el listado general de ventas).
      * POST /ventas/cerrar
      *
      * @return void
@@ -91,5 +124,236 @@ class VentaController extends BaseController
         $this->modelo->cerrar($id);
         flashMensaje('success', 'Venta cerrada exitosamente.');
         $this->redirigir('/ventas');
+    }
+    /**
+     * Lista todas las mesas del bar, indicando cuáles están ocupadas.
+     * GET /ventas/mesas
+     *
+     * @return void
+     */
+    public function mesas(): void
+    {
+        requerirAutenticacion();
+
+        $mesasOcupadas = $this->modelo->obtenerMesasOcupadas(); // ej. ['1', '5']
+
+        $mesas = [];
+        for ($i = 1; $i <= TOTAL_MESAS; $i++) {
+            $mesas[] = [
+                'numero'  => $i,
+                'ocupada' => in_array((string)$i, $mesasOcupadas, true),
+            ];
+        }
+
+        $this->render('mesas/dashboard_mesas', [
+            'titulo'        => 'Mesas - Bartek',
+            'totalMesas'    => TOTAL_MESAS,
+            'mesasOcupadas' => $mesasOcupadas,
+        ]);
+    }
+
+    /**
+     * Muestra la vista de detalle de una mesa específica con el inventario y cuenta actual.
+     * GET /ventas/mesa/{numero}
+     *
+     * @param string|int $numeroMesa
+     * @return void
+     */
+    public function mesaDetalle($numeroMesa): void
+    {
+        requerirAutenticacion();
+        
+        // 1. Buscar si la mesa ya tiene una venta abierta
+        $venta = $this->modelo->obtenerVentaAbiertaPorMesa($numeroMesa);
+        $detallesVenta = [];
+
+        if ($venta) {
+            // Si existe, obtener los productos que ya se le han agregado a la cuenta
+            $detallesVenta = $this->modelo->obtenerDetallesVenta($venta['id']);
+        }
+
+        // 2. Obtener todo el inventario activo para mostrarlo en la tabla de la izquierda
+        require_once BASE_PATH . '/app/models/InventarioModel.php';
+        $inventarioModel = new InventarioModel();
+        $inventario = $inventarioModel->obtenerTodos(); // Asegúrate de tener este método en tu modelo de inventario
+
+        // 2.1 Recompensas activas del club de fidelización, para el panel de puntos
+        require_once BASE_PATH . '/app/models/ConfiguracionPuntosModel.php';
+        $configPuntosModel = new ConfiguracionPuntosModel();
+        $recompensasPuntos = $configPuntosModel->obtenerRecompensas(true);
+
+        // 3. Renderizar la vista de detalle
+        $this->render('mesas/mesa_detalle', [
+            'titulo'        => 'Mesa ' . $numeroMesa . ' - Bartek',
+            'numeroMesa'    => $numeroMesa,
+            'venta'         => $venta,
+            'detallesVenta' => $detallesVenta,
+            'inventario'    => $inventario,
+            'recompensasPuntos' => $recompensasPuntos,
+            'tokenCSRF'     => generarTokenCSRF('venta'),
+            'flash'         => obtenerFlash(),
+        ]);
+    }
+
+    /**
+     * Guarda o actualiza los productos agregados a una mesa.
+     * POST /ventas/guardar-detalle
+     *
+     * @return void
+     */
+    public function guardarDetalle(): void
+    {
+        requerirAutenticacion();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirigir('/ventas/mesas');
+            return;
+        }
+
+        $mesa = $this->post('mesa', 2);
+        $ventaId = $this->entero('venta_id', 'post');
+        $productos = $_POST['productos'] ?? []; // Array con [inventario_id => ['cantidad' => X]]
+
+        // Si no existe una venta abierta para esta mesa, la creamos primero
+        if (!$ventaId) {
+            // Obtenemos el ID del empleado logueado si aplica
+            $empleadoId = $_SESSION['empleado_id'] ?? null; 
+            
+            $ventaId = $this->modelo->crear([
+                'mesa'        => $mesa,
+                'empleado_id' => $empleadoId,
+                'estado'      => 'abierto'
+            ]);
+        }
+
+        if ($ventaId) {
+            try {
+                // Sincronizar o guardar los ítems en detalle_ventas y recalcular el total
+                $this->modelo->actualizarDetallesVenta($ventaId, $productos);
+                flashMensaje('success', 'Cuenta de la mesa actualizada correctamente.');
+            } catch (\Exception $e) {
+                // Ej: stock insuficiente para alguno de los productos solicitados
+                flashMensaje('error', $e->getMessage());
+            }
+        } else {
+            flashMensaje('error', 'No se pudo abrir o actualizar la venta.');
+        }
+
+        $this->redirigir('/ventas/mesa/' . $mesa);
+    }
+
+    /**
+     * Guarda los productos actuales de la mesa, registra el método de pago
+     * y cierra la venta, dejando la mesa disponible nuevamente.
+     * POST /ventas/cerrar-cuenta
+     *
+     * @return void
+     */
+    public function cerrarCuenta(): void
+    {
+        requerirAutenticacion();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirigir('/ventas/mesas');
+            return;
+        }
+        if (!validarTokenCSRF($_POST['csrf_token'] ?? '', 'venta')) {
+            flashMensaje('error', 'Token inválido.');
+            $this->redirigir('/ventas/mesas');
+            return;
+        }
+
+        $mesa = $this->post('mesa', 2);
+        $ventaId = $this->entero('venta_id', 'post');
+        $productos = $_POST['productos'] ?? [];
+
+        // Validar el método de pago enviado desde el modal de la vista
+        $metodoPago = $this->post('metodo_pago', 30);
+        if (!in_array($metodoPago, self::METODOS_PAGO_VALIDOS, true)) {
+            flashMensaje('error', 'Debes seleccionar un método de pago válido para cerrar la cuenta.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        // Si no existe una venta abierta para esta mesa, la creamos primero
+        if (!$ventaId) {
+            $empleadoId = $_SESSION['empleado_id'] ?? null;
+
+            $ventaId = $this->modelo->crear([
+                'mesa'        => $mesa,
+                'empleado_id' => $empleadoId,
+                'estado'      => 'abierto'
+            ]);
+        }
+
+        if (!$ventaId) {
+            flashMensaje('error', 'No se pudo cerrar la venta.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        try {
+            // Guardar los productos actuales antes de cerrar, para que la cuenta final sea correcta
+            $this->modelo->actualizarDetallesVenta($ventaId, $productos);
+            $this->modelo->cerrar($ventaId, $metodoPago);
+            flashMensaje('success', 'Venta cerrada (' . $this->etiquetaMetodoPago($metodoPago) . '). La mesa quedó disponible.');
+        } catch (\Exception $e) {
+            // Ej: stock insuficiente para alguno de los productos solicitados
+            flashMensaje('error', $e->getMessage());
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
+        $this->redirigir('/ventas/mesas');
+    }
+    public function mesa($numeroMesa): void
+    {
+        requerirAutenticacion();
+        
+        // 1. Buscar si la mesa ya tiene una venta abierta
+        $venta = $this->modelo->obtenerVentaAbiertaPorMesa($numeroMesa);
+        $detallesVenta = [];
+
+        if ($venta) {
+            $detallesVenta = $this->modelo->obtenerDetallesVenta($venta['id']);
+        }
+
+        // 2. Obtener todo el inventario activo
+        require_once BASE_PATH . '/app/models/InventarioModel.php';
+        $inventarioModel = new InventarioModel();
+        $inventario = $inventarioModel->obtenerTodos();
+
+        // 2.1 Recompensas activas del club de fidelización, para el panel de puntos
+        require_once BASE_PATH . '/app/models/ConfiguracionPuntosModel.php';
+        $configPuntosModel = new ConfiguracionPuntosModel();
+        $recompensasPuntos = $configPuntosModel->obtenerRecompensas(true);
+
+        // 3. Renderizar la vista
+        $this->render('mesas/mesa_detalle', [
+            'titulo'        => 'Mesa ' . $numeroMesa . ' - Bartek',
+            'numeroMesa'    => $numeroMesa,
+            'venta'         => $venta,
+            'detallesVenta' => $detallesVenta,
+            'inventario'    => $inventario,
+            'recompensasPuntos' => $recompensasPuntos,
+            'tokenCSRF'     => generarTokenCSRF('venta'),
+            'flash'         => obtenerFlash(),
+        ]);
+    }
+
+    /**
+     * Traduce el código interno del método de pago a un texto legible.
+     *
+     * @param string $metodoPago
+     * @return string
+     */
+    private function etiquetaMetodoPago(string $metodoPago): string
+    {
+        $etiquetas = [
+            'efectivo'         => 'Efectivo',
+            'tarjeta_credito'  => 'Tarjeta de Crédito',
+            'nequi_daviplata'  => 'Nequi/Daviplata',
+            'bre_b'            => 'Bre-B',
+        ];
+
+        return $etiquetas[$metodoPago] ?? $metodoPago;
     }
 }

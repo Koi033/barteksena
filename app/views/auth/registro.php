@@ -8,7 +8,7 @@
         <div class="form-content">
             <h1>Crear Cuenta</h1>
 
-            <form method="POST" action="<?= BASE_URL ?>/registro" novalidate>
+            <form id="formRegistro" method="POST" action="<?= BASE_URL ?>/registro" novalidate>
                 <input type="hidden" name="csrf_token"
                        value="<?= htmlspecialchars($tokenCSRF, ENT_QUOTES, 'UTF-8') ?>">
 

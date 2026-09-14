@@ -212,3 +212,31 @@ footer {
 .redes a:hover {
     text-decoration: underline;
 }
+
+/* ── Scrollbar global (tema oscuro, fina y discreta) ───────────────── */
+/* Soporta WebKit (Chrome, Edge, Safari) y Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120,120,120,0.6) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(120,120,120,0.45);
+    border-radius: 10px;
+    border: 2px solid transparent; /* espacio para efecto de clip */
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(230,126,34,0.9); /* acento al pasar */
+}
+

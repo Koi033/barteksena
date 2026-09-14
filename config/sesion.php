@@ -125,6 +125,28 @@ function validarTokenCSRF(string $token, string $formulario = 'default'): bool
 }
 
 /**
+ * Verifica que el usuario autenticado tenga uno de los roles permitidos.
+ * Si no está autenticado, redirige al login (401). Si está autenticado
+ * pero su rol no está en la lista, muestra 403 (acceso denegado).
+ * Debe llamarse DESPUÉS de requerirAutenticacion() dentro del controlador.
+ *
+ * @param  string ...$rolesPermitidos Roles aceptados (ej: 'dueno')
+ * @return void
+ */
+function requerirRol(string ...$rolesPermitidos): void
+{
+    requerirAutenticacion();
+
+    $rolActual = $_SESSION['usuario_rol'] ?? '';
+
+    if (!in_array($rolActual, $rolesPermitidos, true)) {
+        http_response_code(403);
+        (new BaseController())->accesoDenegado();
+        exit;
+    }
+}
+
+/**
  * Guarda un mensaje flash en sesión para mostrarlo en la próxima carga.
  *
  * @param  string $tipo    'success' | 'error' | 'warning' | 'info'

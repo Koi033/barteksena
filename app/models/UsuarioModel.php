@@ -19,7 +19,7 @@ class UsuarioModel extends BaseModel
      */
     public function buscarPorUsuario(string $usuario): array|false
     {
-        $sql = 'SELECT id, nombre, apellido, email, usuario, contrasena, rol, activo
+        $sql = 'SELECT id, nombre, apellido, email, usuario, contrasena, rol, activo, foto
                 FROM usuarios
                 WHERE usuario = :usuario
                 LIMIT 1';
@@ -34,7 +34,7 @@ class UsuarioModel extends BaseModel
      */
     public function buscarPorEmail(string $email): array|false
     {
-        $sql = 'SELECT id, nombre, apellido, email, usuario, rol, activo
+        $sql = 'SELECT id, nombre, apellido, email, usuario, rol, activo, foto
                 FROM usuarios
                 WHERE email = :email
                 LIMIT 1';
@@ -59,6 +59,22 @@ class UsuarioModel extends BaseModel
             ':usuario'    => $datos['usuario'],
             ':contrasena' => $datos['contrasena'],
             ':rol'        => $datos['rol'],
+        ]);
+    }
+
+    /**
+     * Actualiza la foto de perfil de un usuario.
+     *
+     * @param  int    $userId ID del usuario
+     * @param  string $foto   Nombre o ruta del archivo de la foto
+     * @return bool
+     */
+    public function actualizarFoto(int $userId, string $foto): bool
+    {
+        $sql = 'UPDATE usuarios SET foto = :foto WHERE id = :id';
+        return $this->ejecutar($sql, [
+            ':foto' => $foto,
+            ':id'   => $userId,
         ]);
     }
 
@@ -96,9 +112,9 @@ class UsuarioModel extends BaseModel
      * IMPORTANTE: Antes de ejecutar esto asegúrate de tener las columnas
      * en tu tabla usuarios:
      *   ALTER TABLE usuarios
-     *     ADD COLUMN token_reset       VARCHAR(64)  NULL,
+     *     ADD COLUMN token_reset      VARCHAR(64)  NULL,
      *     ADD COLUMN token_expira      INT          NULL,
-     *     ADD COLUMN solicitud_reset   TINYINT(1)   NOT NULL DEFAULT 0;
+     *     ADD COLUMN solicitud_reset  TINYINT(1)   NOT NULL DEFAULT 0;
      *
      * @param  int    $userId    ID del usuario
      * @param  string $token     Token aleatorio (hex de 32 bytes)

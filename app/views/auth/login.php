@@ -8,7 +8,7 @@
         <div class="form-content">
             <h1>Inicia Sesión</h1>
 
-            <form method="POST" action="<?= BASE_URL ?>/login" novalidate>
+            <form id="formLogin" method="POST" action="<?= BASE_URL ?>/login" novalidate>
                 <!-- Token CSRF oculto: previene ataques de falsificación de solicitudes -->
                 <input type="hidden" name="csrf_token"
                        value="<?= htmlspecialchars($tokenCSRF, ENT_QUOTES, 'UTF-8') ?>">

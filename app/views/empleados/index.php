@@ -1,4 +1,5 @@
-<?php /* app/views/empleados/index.php - Lista de empleados con DataTable */ ?>
+<?/* app/views/empleados/index.php - Lista de empleados con DataTable */?>
+<?php  $tokenEliminar = generarTokenCSRF('eliminar_emp');?>
 
 <div class="page-header">
     <h1 class="page-title"><i class="fas fa-users" aria-hidden="true"></i> Gestión de Empleados</h1>
@@ -9,35 +10,13 @@
 <div class="action-buttons">
     <a href="<?= BASE_URL ?>/empleados/crear" class="btn-primary">+ Agregar Empleado</a>
 </div>
-
-<!-- Barra de búsqueda y filtros (server-side simplificado) -->
-<form method="GET" action="<?= BASE_URL ?>/empleados" class="controls-section">
-    <input type="text" name="busqueda" class="search-bar"
-           placeholder="Buscar por nombre, puesto o email..."
-           value="<?= htmlspecialchars($busqueda, ENT_QUOTES, 'UTF-8') ?>">
-
-    <select name="departamento" class="filter-dropdown">
-        <option value="">Todos los departamentos</option>
-        <?php foreach ($departamentos as $d): ?>
-            <option value="<?= htmlspecialchars($d['departamento'], ENT_QUOTES, 'UTF-8') ?>"
-                <?= $deptoFiltro === $d['departamento'] ? 'selected' : '' ?>>
-                <?= htmlspecialchars($d['departamento'], ENT_QUOTES, 'UTF-8') ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-
-    <button type="submit" class="btn-filter"><i class="fas fa-search" aria-hidden="true"></i> Buscar</button>
-    <a href="<?= BASE_URL ?>/empleados" class="btn-secondary"><i class="fas fa-times" aria-hidden="true"></i> Limpiar</a>
-</form>
-
 <!-- Tabla con DataTables -->
 <div class="table-section">
-    <table class="bartek-datatable" id="tablaEmpleados">
+    <table class="bartek-datatable dt-buttons" id="tablaEmpleados">
         <thead>
             <tr>
                 <th>Nombre Completo</th>
                 <th>Puesto</th>
-                <th>Departamento</th>
                 <th>Email</th>
                 <th>Teléfono</th>
                 <th>Acciones</th>
@@ -57,8 +36,7 @@
                         <?= htmlspecialchars($emp['nombre_completo'], ENT_QUOTES, 'UTF-8') ?>
                     </td>
                     <td><?= htmlspecialchars($emp['puesto'],         ENT_QUOTES, 'UTF-8') ?></td>
-                    <td><?= htmlspecialchars($emp['departamento'],   ENT_QUOTES, 'UTF-8') ?></td>
-                    <td class="email-cell">
+                    <td>
                         <?= htmlspecialchars($emp['email'],          ENT_QUOTES, 'UTF-8') ?>
                     </td>
                     <td><?= htmlspecialchars($emp['telefono'] ?? '—', ENT_QUOTES, 'UTF-8') ?></td>
@@ -72,7 +50,7 @@
                               style="display:inline"
                               onsubmit="return confirm('¿Eliminar a <?= htmlspecialchars(addslashes($emp['nombre_completo']), ENT_QUOTES, 'UTF-8') ?>?')">
                             <input type="hidden" name="csrf_token"
-                                   value="<?= htmlspecialchars(generarTokenCSRF('eliminar_emp'), ENT_QUOTES, 'UTF-8') ?>">
+                                  value="<?= htmlspecialchars($tokenEliminar, ENT_QUOTES, 'UTF-8') ?>">
                             <input type="hidden" name="id" value="<?= (int)$emp['id'] ?>">
                             <button type="submit" class="action-btn delete-btn" title="Eliminar"><i class="fas fa-trash" aria-hidden="true"></i></button>
                         </form>

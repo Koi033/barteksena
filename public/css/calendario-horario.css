@@ -1,0 +1,158 @@
+/* ==========================================================================
+   Calendario "Mi Horario" (vista empleado)
+   Agregar a tu hoja de estilos general (ej. public/css/style.css)
+   ========================================================================== */
+
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.calendar-table thead th {
+    text-align: center;
+    padding: 0.6rem 0.4rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    color: #f97316;          /* naranja Bartek */
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.calendar-table td {
+    vertical-align: top;
+    height: 5.5rem;
+    padding: 0.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.calendar-empty {
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.calendar-day {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    transition: background 0.15s ease;
+}
+
+.calendar-day-active {
+    background: rgba(249, 115, 22, 0.08);
+    border: 1px solid rgba(249, 115, 22, 0.25);
+}
+
+.calendar-day-number {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 0.3rem;
+}
+
+.calendar-day-active .calendar-day-number {
+    color: #f97316;
+}
+
+.calendar-shift {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    padding: 0.3rem 0.4rem;
+    margin-bottom: 0.25rem;
+}
+
+.calendar-shift-time {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+}
+
+.calendar-shift .status-badge {
+    align-self: flex-start;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+}
+
+/* Selector de días de la semana en "Crear Nuevo Horario" (asignación masiva) */
+.dias-semana-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.dia-check {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.dia-check:has(input:checked) {
+    border-color: #f97316;
+    color: #f97316;
+    background: rgba(249, 115, 22, 0.08);
+}
+
+.dia-check input {
+    accent-color: #f97316;
+}
+
+/* Barra y checkboxes de "Pendientes de Aprobación" (aprobación masiva) */
+.pending-bulk-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+}
+
+.pending-bulk-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.schedule-check {
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem 0 0;
+    cursor: pointer;
+}
+
+.schedule-check input {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: #f97316;
+    cursor: pointer;
+}
+
+/* Responsive: en pantallas chicas, apilar los días como lista en vez de grilla */
+@media (max-width: 640px) {
+    .calendar-table thead {
+        display: none;
+    }
+    .calendar-table, .calendar-table tbody, .calendar-table tr, .calendar-table td {
+        display: block;
+        width: 100% !important;
+        height: auto;
+    }
+    .calendar-empty {
+        display: none;
+    }
+    .calendar-day {
+        margin-bottom: 0.5rem;
+    }
+}

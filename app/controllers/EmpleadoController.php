@@ -7,6 +7,7 @@
  * @package Bartek\Controllers
  */
 require_once BASE_PATH . '/app/controllers/BaseController.php';
+require_once BASE_PATH . '/config/sesion.php';
 
 class EmpleadoController extends BaseController
 {
@@ -73,7 +74,7 @@ class EmpleadoController extends BaseController
      *
      * @return void
      */
-    public function guardar(): void
+public function guardar(): void
     {
         requerirAutenticacion();
 
@@ -87,8 +88,18 @@ class EmpleadoController extends BaseController
             return;
         }
 
-        $datos = $this->extraerDatosFormulario();
-        $errores = $this->validarDatos($datos);
+        // Extraer datos del empleado
+        $datosEmpleado = $this->extraerDatosFormulario();
+        
+        // Extraer credenciales para la cuenta de usuario
+        $usuarioRaw = $this->post('usuario', 60);
+        $passRaw    = $_POST['contrasena'] ?? '';
+
+        $errores = $this->validarDatos($datosEmpleado);
+
+        // Validaciones adicionales para la cuenta
+        if (empty($usuarioRaw)) $errores[] = 'El nombre de usuario es obligatorio para el acceso.';
+        if (strlen($passRaw) < 8) $errores[] = 'La contraseña debe tener mínimo 8 caracteres.';
 
         if (!empty($errores)) {
             foreach ($errores as $e) flashMensaje('error', $e);
@@ -96,12 +107,28 @@ class EmpleadoController extends BaseController
             return;
         }
 
-        $id = $this->modelo->crear($datos);
+        // Preparar datos del usuario a partir del nombre y apellido
+        // ingresados en el formulario (evita partir "nombre_completo" a ciegas,
+        // lo cual fallaba con nombres compuestos como "Ana María").
+        $datosUsuario = [
+            'nombre'     => $datosEmpleado['nombre'],
+            'apellido'   => $datosEmpleado['apellido'],
+            'email'      => $datosEmpleado['email'],
+            'telefono'   => $datosEmpleado['telefono'],
+            'usuario'    => $usuarioRaw,
+            // Aplicar hash seguro como se hace en el AuthController
+            'contrasena' => password_hash($passRaw, PASSWORD_BCRYPT, ['cost' => 12]), 
+        ];
+
+        // Usar el nuevo método transaccional
+        $id = $this->modelo->crearConCuenta($datosEmpleado, $datosUsuario);
+        
         if ($id > 0) {
-            flashMensaje('success', 'Empleado agregado exitosamente.');
+            flashMensaje('success', 'Empleado y cuenta de acceso creados exitosamente.');
         } else {
-            flashMensaje('error', 'Error al guardar el empleado.');
+            flashMensaje('error', 'Error al crear el empleado. Es posible que el nombre de usuario o correo ya existan.');
         }
+        
         $this->redirigir('/empleados');
     }
 
@@ -198,15 +225,22 @@ class EmpleadoController extends BaseController
 
     /**
      * Extrae y sanea los campos del formulario de empleado.
+     * El formulario pide nombre y apellido por separado; aquí se combinan
+     * en "nombre_completo" para persistirlos como lo espera la tabla `empleados`.
      *
      * @return array Datos saneados
      */
     private function extraerDatosFormulario(): array
     {
+        $nombre   = $this->post('nombre', 75);
+        $apellido = $this->post('apellido', 75);
+
         return [
-            'nombre_completo' => $this->post('nombre_completo', 150),
+            'nombre'          => $nombre,
+            'apellido'        => $apellido,
+            'nombre_completo' => trim($nombre . ' ' . $apellido),
             'puesto'          => $this->post('puesto', 80),
-            'departamento'    => $this->post('departamento', 80),
+            'departamento'    => $this->post('departamento', 80) ?: 'General',
             'email'           => filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL) ?: '',
             'telefono'        => $this->post('telefono', 20),
         ];
@@ -221,7 +255,8 @@ class EmpleadoController extends BaseController
     private function validarDatos(array $datos): array
     {
         $errores = [];
-        if (empty($datos['nombre_completo'])) $errores[] = 'El nombre completo es obligatorio.';
+        if (empty($datos['nombre']))          $errores[] = 'El nombre es obligatorio.';
+        if (empty($datos['apellido']))        $errores[] = 'El apellido es obligatorio.';
         if (empty($datos['puesto']))          $errores[] = 'El puesto es obligatorio.';
         if (empty($datos['departamento']))    $errores[] = 'El departamento es obligatorio.';
         if (empty($datos['email']))           $errores[] = 'El correo electrónico no es válido.';

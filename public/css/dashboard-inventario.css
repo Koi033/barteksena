@@ -1,0 +1,12 @@
+/* ============================================================
+   css/dashboard-inventario.css — Bartek · Módulo Inventario
+   ============================================================
+   Por ahora vacío: los estilos de alerta de stock (.stock-alert-box,
+   .stock-low, etc.) se movieron a dashboard-base.css porque se usan
+   en más de una vista (dashboard principal + inventario).
+
+   Deja este archivo aquí para cuando agregues estilos que sean
+   EXCLUSIVOS de la vista de inventario (ej: algo que solo aparezca
+   en /inventario y en ninguna otra parte del panel). Se seguirá
+   cargando automáticamente ahí gracias a BaseController::render().
+   ============================================================ */

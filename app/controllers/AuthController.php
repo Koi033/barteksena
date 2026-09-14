@@ -8,18 +8,23 @@
  */
 
 require_once BASE_PATH . '/app/controllers/BaseController.php';
+require_once BASE_PATH . '/app/models/EmpleadoModel.php';
 
 class AuthController extends BaseController
 {
     /** @var UsuarioModel Modelo de usuarios */
     private UsuarioModel $usuarioModel;
 
+    /** @var EmpleadoModel Modelo de empleados */
+    private EmpleadoModel $empleadoModel;
+
     /**
      * Constructor: instancia el modelo de usuarios.
      */
     public function __construct()
     {
-        $this->usuarioModel = new UsuarioModel();
+        $this->usuarioModel  = new UsuarioModel();
+        $this->empleadoModel = new EmpleadoModel();
     }
 
     // ── Página principal pública ──────────────────────────────────────────────
@@ -38,6 +43,26 @@ class AuthController extends BaseController
         $this->render('public/inicio', ['titulo' => 'Bartek - Inicio'], 'public');
     }
 
+    /**
+     * Vista pública del menú digital para clientes vía Código QR.
+     * GET /menu/publico (o la ruta libre que configures)
+     *
+     * @return void
+     */
+    public function publico(): void
+    {
+        // NO lleva requerirAutenticacion() para que sea libre para los clientes
+        
+        // Obtenemos las categorías y los productos/licores activos directamente de la BD
+        $categorias = $this->modelo->obtenerCategorias();
+        $licores = $this->modelo->obtenerLicoresDisponibles(); // Método que trae los licores con stock > 0
+
+        $this->render('menu/publico', [
+            'titulo'     => 'Carta Digital - Bartek',
+            'categorias' => $categorias,
+            'licores'    => $licores,
+        ], false); // El 'false' al final indica que no use la plantilla de administración general, sino un diseño limpio para celulares
+    }
     /**
      * Muestra la página "Nosotros".
      *
@@ -140,6 +165,17 @@ class AuthController extends BaseController
         $_SESSION['usuario_rol']    = $user['rol'];
         $_SESSION['usuario_login']  = $user['usuario'];
 
+        // 8. Buscar el empleado vinculado a esta cuenta (si existe) para
+        //    poder registrar quién realiza cada venta.
+        $empleado = $this->empleadoModel->buscarPorUsuarioId((int) $user['id']);
+        if ($empleado) {
+            $_SESSION['empleado_id']     = (int) $empleado['id'];
+            $_SESSION['empleado_nombre'] = $empleado['nombre_completo'];
+        } else {
+            $_SESSION['empleado_id']     = null;
+            $_SESSION['empleado_nombre'] = null;
+        }
+        $_SESSION['usuario_foto']   = $user['foto'] ?? '';
         $this->redirigir('/dashboard');
     }
 
@@ -164,10 +200,12 @@ class AuthController extends BaseController
 
         $tokenCSRF = generarTokenCSRF('registro');
         $flash     = obtenerFlash();
+        $old       = $this->obtenerInputAntiguo('registro'); // Rellena campos si vino de un error
         $this->render('auth/registro', [
             'titulo'    => 'Crear Cuenta',
             'tokenCSRF' => $tokenCSRF,
             'flash'     => $flash,
+            'old'       => $old,
         ], 'auth');
     }
 
@@ -224,6 +262,7 @@ class AuthController extends BaseController
             foreach ($errores as $err) {
                 flashMensaje('error', $err);
             }
+            $this->guardarInputAntiguo('registro', $_POST);
             $this->redirigir('/registro');
             return;
         }
@@ -231,11 +270,13 @@ class AuthController extends BaseController
         // Verificar unicidad
         if ($this->usuarioModel->existeUsuario($usuario)) {
             flashMensaje('error', 'El nombre de usuario ya está en uso.');
+            $this->guardarInputAntiguo('registro', $_POST);
             $this->redirigir('/registro');
             return;
         }
         if ($this->usuarioModel->existeEmail($email)) {
             flashMensaje('error', 'El correo ya está registrado.');
+            $this->guardarInputAntiguo('registro', $_POST);
             $this->redirigir('/registro');
             return;
         }

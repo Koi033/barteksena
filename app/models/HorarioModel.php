@@ -34,14 +34,14 @@ class HorarioModel extends BaseModel
 
     /** Horarios pendientes de aprobación. */
     public function obtenerPendientes(): array
-    {
-        $sql = 'SELECT h.id, e.nombre_completo, h.fecha, h.hora_inicio, h.hora_fin
-                FROM horarios h
-                INNER JOIN empleados e ON e.id = h.empleado_id
-                WHERE h.estado = "pendiente"
-                ORDER BY h.fecha ASC';
-        return $this->consultarTodos($sql);
-    }
+{
+    $sql = "SELECT h.id, e.nombre_completo, h.fecha, h.hora_inicio, h.hora_fin
+            FROM horarios h
+            INNER JOIN empleados e ON e.id = h.empleado_id
+            WHERE h.estado = 'pendiente'
+            ORDER BY h.fecha ASC";
+    return $this->consultarTodos($sql);
+}
 
     /** Crea un nuevo horario. */
     public function crear(array $datos): int
@@ -78,6 +78,31 @@ class HorarioModel extends BaseModel
     public function eliminar(int $id): int
     {
         return $this->ejecutar('DELETE FROM horarios WHERE id = :id', [':id' => $id]);
+    }
+
+    /**
+     * Horarios de un empleado específico dentro de un mes y año.
+     * Usada por la vista de solo lectura del empleado.
+     *
+     * @param  int $empleadoId
+     * @param  int $mes  1-12
+     * @param  int $anio
+     * @return array
+     */
+    public function obtenerPorEmpleadoYMes(int $empleadoId, int $mes, int $anio): array
+    {
+        $sql = 'SELECT id, fecha, hora_inicio, hora_fin, estado
+                FROM horarios
+                WHERE empleado_id = :emp
+                  AND MONTH(fecha) = :mes
+                  AND YEAR(fecha)  = :anio
+                ORDER BY fecha ASC, hora_inicio ASC';
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':emp',  $empleadoId, PDO::PARAM_INT);
+        $stmt->bindValue(':mes',  $mes,        PDO::PARAM_INT);
+        $stmt->bindValue(':anio', $anio,       PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 
     /** Total de horarios para paginación. */

@@ -8,9 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/18f357a62d.js" crossorigin="anonymous"></script>
-    <!-- Estilos desde carpeta CSS separada -->
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/style.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/public.css">
+    <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/public/images/favicon.jfif">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/errors.css">
 </head>
 <body class="layout-public">
 
@@ -26,6 +27,7 @@
                 <li><a href="<?= BASE_URL ?>/nosotros">Nosotros</a></li>
                 <li><a href="<?= BASE_URL ?>/servicios">Servicios</a></li>
                 <li><a href="<?= BASE_URL ?>/contacto">Contacto</a></li>
+                <li><a href="<?= BASE_URL ?>/puntos/registro">Acumula Puntos</a></li>
                 <?php if (estaAutenticado()): ?>
                     <li><a href="<?= BASE_URL ?>/dashboard" class="btn-nav-accent">Panel</a></li>
                     <li><a href="<?= BASE_URL ?>/logout">Salir</a></li>
@@ -53,11 +55,10 @@
     <?= $contenido ?>
 
     <footer class="footer-public">
-        <p>© 2026 Bartek · Grupo 2 SENA ADSO Ficha 3171693</p>
+        <p>© 2026 Bartek</p>
         <div class="redes">
-            <a href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a>
-            <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
-            <a href="https://www.whatsapp.com/" target="_blank" rel="noopener">WhatsApp</a>
+            <a href="https://www.facebook.com/share/1B9g2TnVrB/" target="_blank" rel="noopener">Facebook</a>
+            <a href="https://www.instagram.com/bartek.bar_?igsh=MTc0amM2OTQ0ZDVqaA==" target="_blank" rel="noopener">Instagram</a>
         </div>
     </footer>
 

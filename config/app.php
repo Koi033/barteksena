@@ -11,12 +11,14 @@ define('APP_ENV',     getenv('APP_ENV')  ?: 'development');
 define('APP_NAME',    'Bartek');
 define('APP_VERSION', '1.0.0');
 
-// ── Ruta base URL ─────────────────────────────────────────────────────────────
-// BASE_URL = subcarpeta donde está el proyecto en el servidor.
-// Ejemplos:
-//   XAMPP en htdocs/bartek  → '/bartek'
-//   Servidor en raíz        → ''  (cadena vacía)
-define('BASE_URL', '/bartek');
+// ── Ruta base URL ────────────────────────────────────────────────────────────
+$carpetaBase = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+$carpetaBase = rtrim($carpetaBase, '/');
+// Evita que quede como '/.' cuando el proyecto está en la raíz del dominio
+if ($carpetaBase === '/' || $carpetaBase === '.') {
+    $carpetaBase = '';
+}
+define('BASE_URL', $carpetaBase);
 
 // ── BASE_PATH ─────────────────────────────────────────────────────────────────
 // Se define en index.php como __DIR__ antes de cargar este archivo.
@@ -48,3 +50,4 @@ if (APP_ENV === 'development') {
     ini_set('display_errors', 0);
     error_reporting(0);
 }
+define('TOTAL_MESAS', 10); // Cambia este número según la cantidad real de mesas del bar

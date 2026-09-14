@@ -44,6 +44,15 @@ $(function () {
             config.info      = false;
         }
 
+        // Habilitar botones de exportación si la tabla tiene la clase correspondiente
+        if ($tabla.hasClass('dt-buttons') || $tabla.hasClass('bartek-datatable-buttons')) {
+            config.dom = 'Bfrtip';
+            config.buttons = [
+                { extend: 'excel', titleAttr: 'Excel' },
+                { extend: 'pdf',  titleAttr: 'PDF' },
+            ];
+        }
+
         $tabla.DataTable(config);
     });
 

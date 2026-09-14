@@ -7,9 +7,7 @@
 
 <!-- Abrir nueva venta -->
 <div class="action-buttons">
-    <button class="btn-primary" onclick="document.getElementById('modalNuevaVenta').style.display='flex'">
-        <i class="fas fa-plus" aria-hidden="true"></i> Abrir Nueva Mesa / Venta
-    </button>
+ 
     <button class="btn-secondary" onclick="window.print()"><i class="fas fa-print" aria-hidden="true"></i> Generar Reporte</button>
 </div>
 
@@ -28,7 +26,7 @@
 </div>
 
 <!-- Grid: Top bebidas + Tabla transacciones -->
-<div class="content-grid">
+<div class="content-grid content-grid-full">
     <!-- Top bebidas -->
     <div class="top-products">
         <h2><i class="fas fa-cocktail" aria-hidden="true"></i> Bebidas Más Vendidas</h2>
@@ -49,6 +47,16 @@
     </div>
 </div>
 
+<?php
+// Etiquetas e iconos legibles para el método de pago registrado al cerrar la cuenta
+$etiquetasMetodoPago = [
+    'efectivo'        => ['texto' => 'Efectivo',            'icono' => 'fa-money-bill-wave'],
+    'tarjeta_credito'  => ['texto' => 'Tarjeta de Crédito',  'icono' => 'fa-credit-card'],
+    'nequi_daviplata'  => ['texto' => 'Nequi/Daviplata',     'icono' => 'fa-mobile-alt'],
+    'bre_b'            => ['texto' => 'Bre-B',               'icono' => 'fa-bolt'],
+];
+?>
+
 <!-- Tabla de transacciones con DataTable -->
 <div class="transactions">
     <h2>Transacciones Recientes</h2>
@@ -62,12 +70,13 @@
                     <th>Empleado</th>
                     <th>Total</th>
                     <th>Estado</th>
+                    <th>Método de Pago</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($ventas)): ?>
-                    <tr><td colspan="7" class="text-center text-muted">Sin transacciones.</td></tr>
+                    <tr><td colspan="8" class="text-center text-muted">Sin transacciones.</td></tr>
                 <?php else: ?>
                     <?php foreach ($ventas as $v): ?>
                     <tr>
@@ -94,7 +103,22 @@
                                 <?= $etiquetas[$est] ?? ucfirst($est) ?>
                             </span>
                         </td>
+                        <td>
+                            <?php $metodoPago = $v['metodo_pago'] ?? null; ?>
+                            <?php if ($metodoPago && isset($etiquetasMetodoPago[$metodoPago])): ?>
+                                <span class="metodo-pago-badge">
+                                    <i class="fas <?= $etiquetasMetodoPago[$metodoPago]['icono'] ?>" aria-hidden="true"></i>
+                                    <?= htmlspecialchars($etiquetasMetodoPago[$metodoPago]['texto'], ENT_QUOTES, 'UTF-8') ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="text-muted">—</span>
+                            <?php endif; ?>
+                        </td>
                         <td class="actions-cell">
+                            <button type="button" class="action-btn view-btn" title="Ver detalle"
+                                    onclick="verDetalleVenta(<?= (int)$v['id'] ?>)">
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                            </button>
                             <?php if ($v['estado'] === 'abierto'): ?>
                             <form method="POST" action="<?= BASE_URL ?>/ventas/cerrar"
                                   style="display:inline"
@@ -102,7 +126,6 @@
                                 <input type="hidden" name="csrf_token"
                                        value="<?= htmlspecialchars($tokenCSRF, ENT_QUOTES, 'UTF-8') ?>">
                                 <input type="hidden" name="id" value="<?= (int)$v['id'] ?>">
-                                <button type="submit" class="action-btn edit-btn" title="Cerrar venta">✔</button>
                             </form>
                             <?php endif; ?>
                         </td>
@@ -133,31 +156,101 @@
     </div>
 </div>
 
-<!-- Modal: Nueva Venta -->
-<div id="modalNuevaVenta" class="modal-overlay" style="display:none">
-    <div class="modal-box">
-        <h2><i class="fas fa-shopping-cart" aria-hidden="true"></i> Abrir Nueva Venta</h2>
-        <form method="POST" action="<?= BASE_URL ?>/ventas/guardar">
-            <input type="hidden" name="csrf_token"
-                   value="<?= htmlspecialchars($tokenCSRF, ENT_QUOTES, 'UTF-8') ?>">
-
-            <div class="form-group">
-                <label for="mvMesa">Mesa o Cliente</label>
-                <input type="text" id="mvMesa" name="mesa"
-                       placeholder="Ej: Mesa 5 / Cliente A" maxlength="30" required>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn-primary">Abrir Venta</button>
-                <button type="button" class="btn-secondary"
-                        onclick="document.getElementById('modalNuevaVenta').style.display='none'">
-                    Cancelar
-                </button>
-            </div>
-        </form>
+<!-- Modal: Detalle de venta -->
+<div class="modal-overlay" id="modalDetalleVenta" style="display:none;">
+    <div class="modal-box modal-detalle">
+        <div class="modal-detalle-header">
+            <h3><i class="fas fa-receipt" aria-hidden="true"></i> Detalle de la Venta <span id="modalVentaId"></span></h3>
+            <button type="button" class="modal-close" onclick="cerrarModalDetalle()" aria-label="Cerrar">&times;</button>
+        </div>
+        <table class="modal-detalle-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unit.</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody id="modalDetalleBody">
+                <tr><td colspan="4" class="text-center text-muted">Cargando...</td></tr>
+            </tbody>
+        </table>
+        <div class="modal-detalle-total">Total: <strong>$<span id="modalTotalVenta">0.00</span></strong></div>
     </div>
 </div>
 
-    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/06/25/20/20260625200158-LXETZX3T.js" defer></script>
-    
+<style>
+    .metodo-pago-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        color: #333;
+        background: #f2f2f2;
+        border-radius: 999px;
+        padding: 4px 10px;
+        white-space: nowrap;
+    }
+    .metodo-pago-badge i {
+        color: #2e7d32;
+    }
+</style>
+
+<script>
+const VENTAS_BASE_URL = '<?= BASE_URL ?>';
+
+function abrirModalDetalle() {
+    document.getElementById('modalDetalleVenta').style.display = 'flex';
+}
+
+function cerrarModalDetalle() {
+    document.getElementById('modalDetalleVenta').style.display = 'none';
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str ?? '';
+    return div.innerHTML;
+}
+
+async function verDetalleVenta(id) {
+    document.getElementById('modalVentaId').textContent = '#BAR' + String(id).padStart(3, '0');
+    const tbody = document.getElementById('modalDetalleBody');
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Cargando...</td></tr>';
+    document.getElementById('modalTotalVenta').textContent = '0.00';
+    abrirModalDetalle();
+
+    try {
+        const resp = await fetch(`${VENTAS_BASE_URL}/ventas/detalle/${id}`);
+        const data = await resp.json();
+
+        if (!data.success || !Array.isArray(data.detalles) || data.detalles.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Sin productos registrados.</td></tr>';
+            return;
+        }
+
+        let total = 0;
+        tbody.innerHTML = data.detalles.map(d => {
+            const cantidad = parseInt(d.cantidad, 10) || 0;
+            const precio = parseFloat(d.precio_unitario) || 0;
+            const subtotal = parseFloat(d.subtotal) || 0;
+            total += subtotal;
+            return `<tr>
+                <td>${escapeHtml(d.nombre)}</td>
+                <td>${cantidad}</td>
+                <td>$${precio.toFixed(2)}</td>
+                <td>$${subtotal.toFixed(2)}</td>
+            </tr>`;
+        }).join('');
+
+        document.getElementById('modalTotalVenta').textContent = total.toFixed(2);
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Error al cargar el detalle.</td></tr>';
+    }
+}
+
+document.getElementById('modalDetalleVenta').addEventListener('click', function (e) {
+    if (e.target === this) cerrarModalDetalle();
+});
+</script>
