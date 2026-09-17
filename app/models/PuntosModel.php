@@ -24,7 +24,14 @@ class PuntosModel extends BaseModel
     }
     public function obtenerTodosLosRegistros()
     {
-        $sql = "SELECT * FROM historial_puntos ORDER BY id DESC";
+        // Se une con recompensas_puntos para poder mostrar, en el historial,
+        // el nombre real de la recompensa canjeada (antes se "adivinaba" el
+        // premio según un umbral fijo de puntos, sin relación con lo que el
+        // cliente realmente canjeó).
+        $sql = "SELECT h.*, r.nombre AS recompensa_nombre, r.descripcion AS recompensa_descripcion
+                FROM historial_puntos h
+                LEFT JOIN recompensas_puntos r ON r.id = h.recompensa_id
+                ORDER BY h.id DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -60,7 +67,11 @@ class PuntosModel extends BaseModel
   // Método de búsqueda por cédula o nombre corregido
     public function buscarPorCedulaONombre($termino)
     {
-        $sql = "SELECT * FROM historial_puntos WHERE cedula_cliente LIKE :cedula OR nombre LIKE :nombre ORDER BY id DESC";
+        $sql = "SELECT h.*, r.nombre AS recompensa_nombre, r.descripcion AS recompensa_descripcion
+                FROM historial_puntos h
+                LEFT JOIN recompensas_puntos r ON r.id = h.recompensa_id
+                WHERE h.cedula_cliente LIKE :cedula OR h.nombre LIKE :nombre
+                ORDER BY h.id DESC";
         $stmt = $this->db->prepare($sql);
         
         $busqueda = "%" . $termino . "%";
@@ -251,6 +262,38 @@ class PuntosModel extends BaseModel
             ':empleado_id'   => $empleadoId,
             ':mesa'          => $mesa,
             ':recompensa_id' => $recompensaId,
+        ]);
+    }
+
+    /**
+     * Obtiene las recompensas canjeadas (puntos) asociadas a una mesa dentro
+     * de un rango de fechas. Se usa desde el detalle de una venta para poder
+     * mostrar las recompensas que el cliente redimió mientras esa mesa
+     * estuvo abierta: canjear una recompensa NO genera ninguna fila en
+     * detalle_ventas (el club de fidelización es independiente del
+     * inventario), por lo que hasta ahora esas cuentas se veían sin detalle
+     * en el listado de Ventas.
+     *
+     * @param  string      $mesa
+     * @param  string      $desde  Fecha/hora de apertura de la venta (creado_en)
+     * @param  string|null $hasta  Fecha/hora de cierre de la venta (cerrado_en); null = hasta ahora
+     * @return array
+     */
+    public function obtenerRecompensasPorMesaYRango(string $mesa, string $desde, ?string $hasta = null): array
+    {
+        $sql = "SELECT h.id, h.cantidad_puntos, h.fecha, r.nombre AS recompensa_nombre
+                FROM historial_puntos h
+                INNER JOIN recompensas_puntos r ON r.id = h.recompensa_id
+                WHERE h.tipo = 'canjeado'
+                  AND h.mesa = :mesa
+                  AND h.fecha >= :desde
+                  AND h.fecha <= :hasta
+                ORDER BY h.fecha ASC";
+
+        return $this->consultarTodos($sql, [
+            ':mesa'  => $mesa,
+            ':desde' => $desde,
+            ':hasta' => $hasta ?? date('Y-m-d H:i:s'),
         ]);
     }
 }

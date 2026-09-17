@@ -30,7 +30,7 @@
                             <?php $agotado = (int)$item['stock_actual'] <= 0; ?>
                             <tr<?= $agotado ? ' class="fila-agotada"' : '' ?>>
                                 <td><?= htmlspecialchars($item['nombre'], ENT_QUOTES, 'UTF-8') ?></td>
-                                <td>$<?= number_format($item['precio_unitario'], 2) ?></td>
+                                <td>$<?= number_format($item['precio_unitario'], 0, ',', '.') ?></td>
                                 <td><?= $item['stock_actual'] ?></td>
                                 <td>
                                     <?php if ($agotado): ?>
@@ -83,7 +83,7 @@
                                 <tr>
                                     <td><?= htmlspecialchars($det['nombre'], ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><input type="number" name="productos[<?= $det['inventario_id'] ?>][cantidad]" value="<?= $det['cantidad'] ?>" min="1" max="<?= $maxDisponible ?>" class="input-cant" data-precio="<?= $det['precio_unitario'] ?>" data-max="<?= $maxDisponible ?>"></td>
-                                    <td class="subtotal-item">$<?= number_format($det['subtotal'], 2) ?></td>
+                                    <td class="subtotal-item"><?= number_format($det['subtotal'], 0, ',', '.') === '0' ? '$0' : '$' . number_format($det['subtotal'], 0, ',', '.') ?></td>
                                     <td><button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash"></i></button></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -238,6 +238,18 @@
 
 <!-- Script de Interactividad -->
 <script>
+    /**
+     * Formatea un valor en pesos colombianos SIN decimales (los precios del
+     * bar siempre son montos enteros), usando punto como separador de miles,
+     * igual que el resto del sitio (ver public/publico.php). Antes el total
+     * se recalculaba parseando el texto YA formateado con dos decimales de
+     * cada fila, lo que terminaba mostrando "el total" con decimales.
+     */
+    function formatCOP(valor) {
+        const entero = Math.round(valor || 0);
+        return '$' + entero.toLocaleString('es-CO');
+    }
+
     document.addEventListener('click', function(e) {
         if (e.target.closest('.add-item')) {
             const btn = e.target.closest('.add-item');
@@ -275,7 +287,7 @@
                 newRow.innerHTML = `
                     <td>${nombre}</td>
                     <td><input type="number" name="productos[${id}][cantidad]" value="1" min="1" max="${stockDisponible}" class="input-cant" data-precio="${precio}" data-max="${stockDisponible}"></td>
-                    <td class="subtotal-item">$${precio.toFixed(2)}</td>
+                    <td class="subtotal-item">${formatCOP(precio)}</td>
                     <td><button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash"></i></button></td>
                 `;
                 tbody.appendChild(newRow);
@@ -308,18 +320,25 @@
     function actualizarSubtotal(row, precio) {
         const cant = parseInt(row.querySelector('.input-cant').value) || 0;
         const subtotal = cant * precio;
-        row.querySelector('.subtotal-item').textContent = `$${subtotal.toFixed(2)}`;
+        row.querySelector('.subtotal-item').textContent = formatCOP(subtotal);
     }
 
     function calcularTotalGeneral() {
+        // Se recalcula desde los datos numéricos originales (cantidad y
+        // data-precio de cada fila) en vez de volver a "parsear" el texto ya
+        // formateado del subtotal: eso es lo que hacía que el total terminara
+        // mostrando decimales (y arrastrando errores de redondeo) en vez de
+        // un valor entero en pesos.
         let total = 0;
         document.querySelectorAll('#tablaCuenta tbody tr').forEach(row => {
-            const subtotalText = row.querySelector('.subtotal-item').textContent.replace('$', '');
-            total += parseFloat(subtotalText) || 0;
+            const input = row.querySelector('.input-cant');
+            if (!input) return;
+            const cantidad = parseInt(input.value, 10) || 0;
+            const precio = parseFloat(input.dataset.precio) || 0;
+            total += cantidad * precio;
         });
-        document.getElementById('granTotal').textContent = `$${total.toFixed(2)}`;
+        document.getElementById('granTotal').textContent = formatCOP(total);
     }
-
     calcularTotalGeneral();
 
     // ---- Modal de método de pago ----

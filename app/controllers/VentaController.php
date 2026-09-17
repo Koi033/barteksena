@@ -97,6 +97,31 @@ class VentaController extends BaseController
 
         $detalles = $this->modelo->obtenerDetallesVenta($id);
 
+        // Las recompensas del club de fidelización canjeadas mientras la mesa
+        // estuvo abierta no generan ninguna fila en detalle_ventas (el canje
+        // de puntos es independiente del inventario), así que hasta ahora el
+        // modal de detalle de la venta se veía vacío cuando la cuenta solo
+        // incluía una recompensa. Se agregan aquí como líneas informativas.
+        $venta = $this->modelo->buscarPorId($id);
+        if ($venta && !empty($venta['mesa'])) {
+            require_once BASE_PATH . '/app/models/PuntosModel.php';
+            $puntosModel = new PuntosModel();
+            $recompensas = $puntosModel->obtenerRecompensasPorMesaYRango(
+                $venta['mesa'],
+                $venta['creado_en'],
+                $venta['cerrado_en']
+            );
+
+            foreach ($recompensas as $rec) {
+                $detalles[] = [
+                    'nombre'          => 'Recompensa: ' . $rec['recompensa_nombre'],
+                    'cantidad'        => 1,
+                    'precio_unitario' => 0,
+                    'subtotal'        => 0,
+                ];
+            }
+        }
+
         echo json_encode([
             'success'   => true,
             'ventaId'   => $id,

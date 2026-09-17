@@ -116,12 +116,18 @@
                     <?php if (!empty($registros)): ?>
                         <?php foreach ($registros as $row): ?>
                             <?php
-                                // Lógica de beneficios según los puntos acumulados
-                                $puntosCliente = $row['cantidad_puntos'];
-                                if ($puntosCliente >= 40) {
-                                    $premio = '<span class="bg-purple-500/20 text-purple-300 border-purple-500/30 border px-3 py-1 rounded-full text-xs font-bold animate-pulse inline-flex items-center"><i class="fas fa-wine-bottle mr-1.5"></i> Rebaja Whisky</span>';
-                                } elseif ($puntosCliente >= 20) {
-                                    $premio = '<span class="bg-amber-500/20 text-amber-300 border-amber-500/30 border px-3 py-1 rounded-full text-xs font-bold inline-flex items-center"><i class="fas fa-beer-mug-empty mr-1.5"></i> Rebaja de cerveza</span>';
+                                // Muestra la recompensa realmente canjeada (join con
+                                // recompensas_puntos vía recompensa_id). Antes se
+                                // "adivinaba" el premio según un umbral fijo de puntos,
+                                // lo cual no reflejaba la recompensa que el cliente
+                                // canjeó de verdad.
+                                if (strtolower($row['tipo']) === 'canjeado' && !empty($row['recompensa_nombre'])) {
+                                    $premio = '<span class="bg-purple-500/20 text-purple-300 border-purple-500/30 border px-3 py-1 rounded-full text-xs font-bold inline-flex items-center" title="'
+                                        . htmlspecialchars($row['recompensa_descripcion'] ?? '', ENT_QUOTES, 'UTF-8') . '">'
+                                        . '<i class="fas fa-gift mr-1.5"></i> ' . htmlspecialchars($row['recompensa_nombre'], ENT_QUOTES, 'UTF-8') . '</span>';
+                                } elseif (strtolower($row['tipo']) === 'canjeado') {
+                                    // Registros antiguos sin recompensa_id asociado
+                                    $premio = '<span class="bg-purple-500/20 text-purple-300 border-purple-500/30 border px-3 py-1 rounded-full text-xs font-bold inline-flex items-center"><i class="fas fa-gift mr-1.5"></i> Recompensa canjeada</span>';
                                 } else {
                                     $premio = '<span class="text-gray-500 text-xs italic">Acumulando...</span>';
                                 }

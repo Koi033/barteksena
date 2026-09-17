@@ -39,6 +39,19 @@ class VentaModel extends BaseModel
         return (int)($res['total'] ?? 0);
     }
 
+    /**
+     * Busca una venta por su ID (incluye mesa, creado_en y cerrado_en),
+     * usado para poder ubicar las recompensas de fidelización canjeadas
+     * mientras esa mesa estuvo abierta.
+     *
+     * @param  int $id
+     * @return array|false
+     */
+    public function buscarPorId(int $id): array|false
+    {
+        return $this->consultarUno('SELECT * FROM ventas WHERE id = :id LIMIT 1', [':id' => $id]);
+    }
+
     /** Suma de ventas del día actual. */
     public function totalHoy(): float
     {
