@@ -683,44 +683,52 @@
         width: 100%;
         min-height: auto;
         height: auto;
-        position: static;
-        padding: 1rem;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.5rem;
+        position: relative; /* ya no sticky en móvil */
+        padding: 0.8rem 1rem;
+        flex-direction: column;
+        align-items: stretch;
+        overflow: visible;
     }
 
-    .sidebar-brand { margin-bottom: 0; border: none; padding: 0; }
+    .sidebar-brand { margin-bottom: 0; border: none; padding: 0; width: 100%; }
 
-    .sidebar nav { width: 100%; }
+    /* Oculto por defecto: se muestra solo al abrir el menú con #sidebarToggle */
+    .sidebar nav,
+    .sidebar-footer {
+        display: none;
+        width: 100%;
+    }
+
+    .sidebar.sidebar-collapsed nav,
+    .sidebar.sidebar-collapsed .sidebar-footer {
+        display: block;
+        margin-top: 1rem;
+    }
 
     .sidebar-menu {
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
         gap: 0.4rem;
     }
 
-    .sidebar-menu li { flex: 1; min-width: 110px; }
+    .sidebar-menu li { width: 100%; }
 
     .sidebar-menu a {
-        font-size: 0.78rem;
-        padding: 0.5rem 0.6rem;
-        text-align: center;
+        font-size: 0.85rem;
+        padding: 0.7rem 1rem;
+        text-align: left;
     }
 
     .sidebar-footer {
-        width: 100%;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
+        gap: 0.6rem;
         border-top: 1px solid #333;
-        padding-top: 0.6rem;
+        padding-top: 0.8rem;
         margin-top: 0.5rem;
     }
 
-    .btn-logout { width: auto; padding: 0.45rem 0.9rem; }
+    .btn-logout { width: 100%; padding: 0.6rem 0.9rem; }
 
     .main-content { padding: 1rem 1.2rem; }
 
@@ -743,9 +751,72 @@
     .form-grid  { grid-template-columns: 1fr; }
 
     .actions-cell { flex-direction: row; flex-wrap: wrap; }
+
+    .modal-box { padding: 1.2rem; max-width: 92vw; }
 }
 
 @media (max-width: 480px) {
     .sales-summary { grid-template-columns: 1fr; }
     .page-title { font-size: 1.4rem; }
+}
+/* ── Tablas como tarjetas en mobile (activar con clase .dt-cards-mobile) ── */
+@media (max-width: 700px) {
+    .dt-cards-mobile,
+    .dt-cards-mobile thead,
+    .dt-cards-mobile tbody,
+    .dt-cards-mobile th,
+    .dt-cards-mobile td,
+    .dt-cards-mobile tr {
+        display: block;
+    }
+
+    .dt-cards-mobile { min-width: 0; width: 100%; }
+
+    .dt-cards-mobile thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .dt-cards-mobile tbody tr {
+        background: #202224;
+        border: 1px solid #333;
+        border-radius: 10px;
+        margin-bottom: 0.9rem;
+        padding: 0.4rem 0.9rem;
+    }
+
+    .dt-cards-mobile tbody tr:hover {
+        background: #202224;
+    }
+
+    .dt-cards-mobile td {
+        border-bottom: 1px solid #2f3133;
+        padding: 0.6rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        text-align: right;
+    }
+
+    .dt-cards-mobile td:last-child {
+        border-bottom: none;
+    }
+
+    .dt-cards-mobile td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 0.4px;
+        color: #999;
+        text-align: left;
+        padding-right: 1rem;
+        flex-shrink: 0;
+    }
+
+    .dt-cards-mobile .actions-cell {
+        justify-content: flex-end;
+    }
 }

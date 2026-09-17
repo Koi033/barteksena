@@ -11,7 +11,7 @@
     <div class="calendar-section">
         <h2>Horarios Registrados</h2>
         <div class="table-section">
-            <table class="bartek-datatable" id="tablaHorarios">
+          <table class="bartek-datatable dt-cards-mobile" id="tablaHorarios">
                 <thead>
                     <tr>
                         <th>Empleado</th>
@@ -34,17 +34,17 @@
                                 'rechazado' => 'status-cancelled',
                             ][$h['estado']] ?? 'status-pending';
                         ?>
-                        <tr>
-                            <td><?= htmlspecialchars($h['nombre_completo'], ENT_QUOTES, 'UTF-8') ?></td>
-                            <td><?= htmlspecialchars($h['fecha'],           ENT_QUOTES, 'UTF-8') ?></td>
-                            <td><?= htmlspecialchars($h['hora_inicio'],     ENT_QUOTES, 'UTF-8') ?></td>
-                            <td><?= htmlspecialchars($h['hora_fin'],        ENT_QUOTES, 'UTF-8') ?></td>
-                            <td>
-                                <span class="status-badge <?= $estadoClase ?>">
-                                    <?= ucfirst(htmlspecialchars($h['estado'], ENT_QUOTES, 'UTF-8')) ?>
-                                </span>
-                            </td>
-                            <td class="actions-cell">
+                     <tr>
+    <td data-label="Empleado"><?= htmlspecialchars($h['nombre_completo'], ENT_QUOTES, 'UTF-8') ?></td>
+    <td data-label="Fecha"><?= htmlspecialchars($h['fecha'],           ENT_QUOTES, 'UTF-8') ?></td>
+    <td data-label="Inicio"><?= htmlspecialchars($h['hora_inicio'],     ENT_QUOTES, 'UTF-8') ?></td>
+    <td data-label="Fin"><?= htmlspecialchars($h['hora_fin'],        ENT_QUOTES, 'UTF-8') ?></td>
+    <td data-label="Estado">
+        <span class="status-badge <?= $estadoClase ?>">
+            <?= ucfirst(htmlspecialchars($h['estado'], ENT_QUOTES, 'UTF-8')) ?>
+        </span>
+    </td>
+    <td class="actions-cell" data-label="Acciones">
                                 <!-- Eliminar horario -->
                                 <form method="POST" action="<?= BASE_URL ?>/horarios/eliminar"
                                       style="display:inline"

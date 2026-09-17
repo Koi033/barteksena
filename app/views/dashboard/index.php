@@ -55,7 +55,7 @@
 
     <?php $tokenCSRF = generarTokenCSRF('eliminar_notif'); ?>
     <div class="table-section">
-        <table class="bartek-datatable" id="tablaNotificaciones">
+        <table class="bartek-datatable dt-cards-mobile" id="tablaNotificaciones">
             <thead>
                 <tr>
                     <th>Tipo</th>

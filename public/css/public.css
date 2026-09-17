@@ -279,6 +279,10 @@
     .carrusel-track img {
         height: 220px;
     }
+
+    .beneficios {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Estilos públicos para contacto y páginas tipo formulario */

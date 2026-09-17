@@ -42,7 +42,7 @@
 
 <!-- DataTable de inventario -->
 <div class="table-section">
-    <table class="bartek-datatable" id="tablaInventario">
+    <table class="bartek-datatable dt-cards-mobile" id="tablaInventario">
         <thead>
             <tr>
                 <th>Código</th>
@@ -69,15 +69,15 @@
                         $stockClase = $b['stock_actual'] <= 2 ? 'stock-low' : 'stock-medium';
                     }
                 ?>
-                <tr>
-                    <td class="id-cell"><?= htmlspecialchars($b['codigo'],        ENT_QUOTES, 'UTF-8') ?></td>
-                    <td><?= htmlspecialchars($b['nombre'],                         ENT_QUOTES, 'UTF-8') ?></td>
-                    <td><span class="category-badge"><?= htmlspecialchars($b['categoria'], ENT_QUOTES, 'UTF-8') ?></span></td>
-                    <td class="<?= $stockClase ?>"><?= (int)$b['stock_actual'] ?></td>
-                    <td><?= (int)$b['stock_minimo'] ?></td>
-                    <td class="price-cell">$<?= number_format((float)$b['precio_unitario'], 2) ?></td>
-                    <td><?= htmlspecialchars($b['actualizado_en'], ENT_QUOTES, 'UTF-8') ?></td>
-                    <td class="actions-cell">
+            <tr>
+    <td class="id-cell" data-label="Código"><?= htmlspecialchars($b['codigo'],        ENT_QUOTES, 'UTF-8') ?></td>
+    <td data-label="Bebida"><?= htmlspecialchars($b['nombre'],                         ENT_QUOTES, 'UTF-8') ?></td>
+    <td data-label="Categoría"><span class="category-badge"><?= htmlspecialchars($b['categoria'], ENT_QUOTES, 'UTF-8') ?></span></td>
+    <td class="<?= $stockClase ?>" data-label="Stock Actual"><?= (int)$b['stock_actual'] ?></td>
+    <td data-label="Stock Mínimo"><?= (int)$b['stock_minimo'] ?></td>
+    <td class="price-cell" data-label="Precio"><?= '$'.number_format((float)$b['precio_unitario'], 2) ?></td>
+    <td data-label="Actualizado"><?= htmlspecialchars($b['actualizado_en'], ENT_QUOTES, 'UTF-8') ?></td>
+    <td class="actions-cell" data-label="Acciones">
                         <a href="<?= BASE_URL ?>/inventario/editar/<?= (int)$b['id'] ?>"
                            class="action-btn edit-btn" title="Editar"><i class="fas fa-edit" aria-hidden="true"></i></a>
 

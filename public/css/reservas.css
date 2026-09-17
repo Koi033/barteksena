@@ -12,6 +12,20 @@
 .card-body {
     padding: 0;
 }
+
+@media (max-width: 768px) {
+    .card.card-dark {
+        width: 100%;
+        margin: 1rem 0 0;
+        padding: 1rem;
+    }
+
+    .card-body,
+    .table-responsive {
+        width: 100%;
+        min-width: 0;
+    }
+}
 .badge-mesa {
     display: inline-block;
     padding: 0.35rem 0.75rem;

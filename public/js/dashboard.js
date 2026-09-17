@@ -37,6 +37,20 @@ $(function () {
 
         let config = Object.assign({}, dtConfig);
 
+        if ($tabla.hasClass('dt-cards-mobile')) {
+            config.responsive = false;
+
+            $tabla.find('thead th').each(function (indice) {
+                const etiqueta = $(this).text().trim();
+                $tabla.find('tbody tr').each(function () {
+                    const $celda = $(this).children('td').eq(indice);
+                    if ($celda.length && !$celda.attr('data-label')) {
+                        $celda.attr('data-label', etiqueta);
+                    }
+                });
+            });
+        }
+
         // Tablas con paginación server-side no necesitan paginación de DT
         if ($tabla.hasClass('dt-server-side')) {
             config.paging    = false;

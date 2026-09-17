@@ -66,7 +66,7 @@
 <!-- ── Tab: Tabla de bebidas (DataTable) ───────────────────────────── -->
 <div id="tab-tabla" class="tab-content" style="display:none">
     <div class="table-section">
-        <table class="bartek-datatable" id="tablaMenu">
+        <table class="bartek-datatable dt-cards-mobile" id="tablaMenu">
             <thead>
                 <tr>
                     <th>Categoría</th>

@@ -14,7 +14,7 @@
             </div>
         <?php else: ?>
             <div class="table-responsive">
-                <table class="bartek-datatable bartek-datatable-buttons" id="tablaReservas">
+                <table class="bartek-datatable bartek-datatable-buttons dt-cards-mobile" id="tablaReservas">
                     <thead>
                         <tr>
                             <th>ID</th>

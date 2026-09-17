@@ -51,7 +51,7 @@
 <div class="transactions">
     <h2>Transacciones Recientes</h2>
     <div class="table-section">
-        <table class="bartek-datatable" id="tablaVentas">
+        <table class="bartek-datatable dt-cards-mobile" id="tablaVentas">
             <thead>
                 <tr>
                     <th>ID Venta</th>
