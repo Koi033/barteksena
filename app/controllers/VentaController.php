@@ -11,6 +11,9 @@ class VentaController extends BaseController
 {
     private VentaModel $modelo;
 
+    /** Métodos de pago aceptados al cerrar una cuenta. */
+    private const METODOS_PAGO_VALIDOS = ['efectivo', 'tarjeta_credito', 'nequi_daviplata', 'bre_b'];
+
     public function __construct()
     {
         $this->modelo = new VentaModel();
@@ -94,6 +97,31 @@ class VentaController extends BaseController
 
         $detalles = $this->modelo->obtenerDetallesVenta($id);
 
+        // Las recompensas del club de fidelización canjeadas mientras la mesa
+        // estuvo abierta no generan ninguna fila en detalle_ventas (el canje
+        // de puntos es independiente del inventario), así que hasta ahora el
+        // modal de detalle de la venta se veía vacío cuando la cuenta solo
+        // incluía una recompensa. Se agregan aquí como líneas informativas.
+        $venta = $this->modelo->buscarPorId($id);
+        if ($venta && !empty($venta['mesa'])) {
+            require_once BASE_PATH . '/app/models/PuntosModel.php';
+            $puntosModel = new PuntosModel();
+            $recompensas = $puntosModel->obtenerRecompensasPorMesaYRango(
+                $venta['mesa'],
+                $venta['creado_en'],
+                $venta['cerrado_en']
+            );
+
+            foreach ($recompensas as $rec) {
+                $detalles[] = [
+                    'nombre'          => 'Recompensa: ' . $rec['recompensa_nombre'],
+                    'cantidad'        => 1,
+                    'precio_unitario' => 0,
+                    'subtotal'        => 0,
+                ];
+            }
+        }
+
         echo json_encode([
             'success'   => true,
             'ventaId'   => $id,
@@ -102,7 +130,8 @@ class VentaController extends BaseController
     }
 
     /**
-     * Cierra una venta activa.
+     * Cierra una venta activa (cierre manual sin registrar método de pago,
+     * usado desde el listado general de ventas).
      * POST /ventas/cerrar
      *
      * @return void
@@ -173,6 +202,11 @@ class VentaController extends BaseController
         $inventarioModel = new InventarioModel();
         $inventario = $inventarioModel->obtenerTodos(); // Asegúrate de tener este método en tu modelo de inventario
 
+        // 2.1 Recompensas activas del club de fidelización, para el panel de puntos
+        require_once BASE_PATH . '/app/models/ConfiguracionPuntosModel.php';
+        $configPuntosModel = new ConfiguracionPuntosModel();
+        $recompensasPuntos = $configPuntosModel->obtenerRecompensas(true);
+
         // 3. Renderizar la vista de detalle
         $this->render('mesas/mesa_detalle', [
             'titulo'        => 'Mesa ' . $numeroMesa . ' - Bartek',
@@ -180,6 +214,7 @@ class VentaController extends BaseController
             'venta'         => $venta,
             'detallesVenta' => $detallesVenta,
             'inventario'    => $inventario,
+            'recompensasPuntos' => $recompensasPuntos,
             'tokenCSRF'     => generarTokenCSRF('venta'),
             'flash'         => obtenerFlash(),
         ]);
@@ -232,8 +267,8 @@ class VentaController extends BaseController
     }
 
     /**
-     * Guarda los productos actuales de la mesa y cierra la venta,
-     * dejando la mesa disponible nuevamente.
+     * Guarda los productos actuales de la mesa, registra el método de pago
+     * y cierra la venta, dejando la mesa disponible nuevamente.
      * POST /ventas/cerrar-cuenta
      *
      * @return void
@@ -255,6 +290,14 @@ class VentaController extends BaseController
         $ventaId = $this->entero('venta_id', 'post');
         $productos = $_POST['productos'] ?? [];
 
+        // Validar el método de pago enviado desde el modal de la vista
+        $metodoPago = $this->post('metodo_pago', 30);
+        if (!in_array($metodoPago, self::METODOS_PAGO_VALIDOS, true)) {
+            flashMensaje('error', 'Debes seleccionar un método de pago válido para cerrar la cuenta.');
+            $this->redirigir('/ventas/mesa/' . $mesa);
+            return;
+        }
+
         // Si no existe una venta abierta para esta mesa, la creamos primero
         if (!$ventaId) {
             $empleadoId = $_SESSION['empleado_id'] ?? null;
@@ -275,8 +318,8 @@ class VentaController extends BaseController
         try {
             // Guardar los productos actuales antes de cerrar, para que la cuenta final sea correcta
             $this->modelo->actualizarDetallesVenta($ventaId, $productos);
-            $this->modelo->cerrar($ventaId);
-            flashMensaje('success', 'Venta cerrada. La mesa quedó disponible.');
+            $this->modelo->cerrar($ventaId, $metodoPago);
+            flashMensaje('success', 'Venta cerrada (' . $this->etiquetaMetodoPago($metodoPago) . '). La mesa quedó disponible.');
         } catch (\Exception $e) {
             // Ej: stock insuficiente para alguno de los productos solicitados
             flashMensaje('error', $e->getMessage());
@@ -303,6 +346,11 @@ class VentaController extends BaseController
         $inventarioModel = new InventarioModel();
         $inventario = $inventarioModel->obtenerTodos();
 
+        // 2.1 Recompensas activas del club de fidelización, para el panel de puntos
+        require_once BASE_PATH . '/app/models/ConfiguracionPuntosModel.php';
+        $configPuntosModel = new ConfiguracionPuntosModel();
+        $recompensasPuntos = $configPuntosModel->obtenerRecompensas(true);
+
         // 3. Renderizar la vista
         $this->render('mesas/mesa_detalle', [
             'titulo'        => 'Mesa ' . $numeroMesa . ' - Bartek',
@@ -310,8 +358,27 @@ class VentaController extends BaseController
             'venta'         => $venta,
             'detallesVenta' => $detallesVenta,
             'inventario'    => $inventario,
+            'recompensasPuntos' => $recompensasPuntos,
             'tokenCSRF'     => generarTokenCSRF('venta'),
             'flash'         => obtenerFlash(),
         ]);
+    }
+
+    /**
+     * Traduce el código interno del método de pago a un texto legible.
+     *
+     * @param string $metodoPago
+     * @return string
+     */
+    private function etiquetaMetodoPago(string $metodoPago): string
+    {
+        $etiquetas = [
+            'efectivo'         => 'Efectivo',
+            'tarjeta_credito'  => 'Tarjeta de Crédito',
+            'nequi_daviplata'  => 'Nequi/Daviplata',
+            'bre_b'            => 'Bre-B',
+        ];
+
+        return $etiquetas[$metodoPago] ?? $metodoPago;
     }
 }

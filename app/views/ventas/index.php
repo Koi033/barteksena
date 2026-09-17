@@ -47,6 +47,16 @@
     </div>
 </div>
 
+<?php
+// Etiquetas e iconos legibles para el método de pago registrado al cerrar la cuenta
+$etiquetasMetodoPago = [
+    'efectivo'        => ['texto' => 'Efectivo',            'icono' => 'fa-money-bill-wave'],
+    'tarjeta_credito'  => ['texto' => 'Tarjeta de Crédito',  'icono' => 'fa-credit-card'],
+    'nequi_daviplata'  => ['texto' => 'Nequi/Daviplata',     'icono' => 'fa-mobile-alt'],
+    'bre_b'            => ['texto' => 'Bre-B',               'icono' => 'fa-bolt'],
+];
+?>
+
 <!-- Tabla de transacciones con DataTable -->
 <div class="transactions">
     <h2>Transacciones Recientes</h2>
@@ -60,12 +70,13 @@
                     <th>Empleado</th>
                     <th>Total</th>
                     <th>Estado</th>
+                    <th>Método de Pago</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($ventas)): ?>
-                    <tr><td colspan="7" class="text-center text-muted">Sin transacciones.</td></tr>
+                    <tr><td colspan="8" class="text-center text-muted">Sin transacciones.</td></tr>
                 <?php else: ?>
                     <?php foreach ($ventas as $v): ?>
                     <tr>
@@ -91,6 +102,17 @@
                             <span class="status-badge <?= $clases[$est] ?? '' ?>">
                                 <?= $etiquetas[$est] ?? ucfirst($est) ?>
                             </span>
+                        </td>
+                        <td>
+                            <?php $metodoPago = $v['metodo_pago'] ?? null; ?>
+                            <?php if ($metodoPago && isset($etiquetasMetodoPago[$metodoPago])): ?>
+                                <span class="metodo-pago-badge">
+                                    <i class="fas <?= $etiquetasMetodoPago[$metodoPago]['icono'] ?>" aria-hidden="true"></i>
+                                    <?= htmlspecialchars($etiquetasMetodoPago[$metodoPago]['texto'], ENT_QUOTES, 'UTF-8') ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="text-muted">—</span>
+                            <?php endif; ?>
                         </td>
                         <td class="actions-cell">
                             <button type="button" class="action-btn view-btn" title="Ver detalle"
@@ -158,6 +180,23 @@
     </div>
 </div>
 
+<style>
+    .metodo-pago-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        color: #333;
+        background: #f2f2f2;
+        border-radius: 999px;
+        padding: 4px 10px;
+        white-space: nowrap;
+    }
+    .metodo-pago-badge i {
+        color: #2e7d32;
+    }
+</style>
+
 <script>
 const VENTAS_BASE_URL = '<?= BASE_URL ?>';
 
@@ -215,4 +254,3 @@ document.getElementById('modalDetalleVenta').addEventListener('click', function 
     if (e.target === this) cerrarModalDetalle();
 });
 </script>
-

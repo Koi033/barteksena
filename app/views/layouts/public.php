@@ -27,6 +27,7 @@
                 <li><a href="<?= BASE_URL ?>/nosotros">Nosotros</a></li>
                 <li><a href="<?= BASE_URL ?>/servicios">Servicios</a></li>
                 <li><a href="<?= BASE_URL ?>/contacto">Contacto</a></li>
+                <li><a href="<?= BASE_URL ?>/puntos/registro">Acumula Puntos</a></li>
                 <?php if (estaAutenticado()): ?>
                     <li><a href="<?= BASE_URL ?>/dashboard" class="btn-nav-accent">Panel</a></li>
                     <li><a href="<?= BASE_URL ?>/logout">Salir</a></li>

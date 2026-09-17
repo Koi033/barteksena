@@ -19,7 +19,7 @@ class VentaModel extends BaseModel
     public function obtenerTodos(int $pagina = 1, int $porPagina = ITEMS_POR_PAGINA): array
     {
         $offset = ($pagina - 1) * $porPagina;
-        $sql    = "SELECT v.id, v.mesa, v.total, v.estado, v.creado_en,
+        $sql    = "SELECT v.id, v.mesa, v.total, v.estado, v.metodo_pago, v.creado_en,
                   COALESCE(e.nombre_completo, 'Sin asignar') AS empleado
            FROM ventas v
            LEFT JOIN empleados e ON e.id = v.empleado_id
@@ -37,6 +37,19 @@ class VentaModel extends BaseModel
     {
         $res = $this->consultarUno('SELECT COUNT(*) AS total FROM ventas');
         return (int)($res['total'] ?? 0);
+    }
+
+    /**
+     * Busca una venta por su ID (incluye mesa, creado_en y cerrado_en),
+     * usado para poder ubicar las recompensas de fidelización canjeadas
+     * mientras esa mesa estuvo abierta.
+     *
+     * @param  int $id
+     * @return array|false
+     */
+    public function buscarPorId(int $id): array|false
+    {
+        return $this->consultarUno('SELECT * FROM ventas WHERE id = :id LIMIT 1', [':id' => $id]);
     }
 
     /** Suma de ventas del día actual. */
@@ -72,11 +85,23 @@ class VentaModel extends BaseModel
         ]);
     }
 
-    /** Cierra una venta activa. */
-    public function cerrar(int $id): int
+    /**
+     * Cierra una venta activa y registra opcionalmente el método de pago
+     * utilizado (efectivo, tarjeta_credito, nequi_daviplata, bre_b).
+     *
+     * @param int         $id
+     * @param string|null $metodoPago
+     * @return int
+     */
+    public function cerrar(int $id, ?string $metodoPago = null): int
     {
-        $sql = "UPDATE ventas SET estado = 'cerrado', cerrado_en = NOW() WHERE id = :id";
-        return $this->ejecutar($sql, [':id' => $id]);
+        $sql = "UPDATE ventas
+                SET estado = 'cerrado', metodo_pago = :metodo_pago, cerrado_en = NOW()
+                WHERE id = :id";
+        return $this->ejecutar($sql, [
+            ':id'          => $id,
+            ':metodo_pago' => $metodoPago,
+        ]);
     }
 
     /** Top 5 bebidas más vendidas. */

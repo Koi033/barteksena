@@ -36,6 +36,7 @@ require_once BASE_PATH . '/app/models/MenuModel.php';
 require_once BASE_PATH . '/app/models/NotificacionModel.php';
 require_once BASE_PATH . '/app/models/ContactoModel.php';
 require_once BASE_PATH . '/app/models/PuntosModel.php';
+require_once BASE_PATH . '/app/models/ConfiguracionPuntosModel.php';
 
 // ── Controladores ─────────────────────────────────────────────────────────────
 require_once BASE_PATH . '/app/controllers/AuthController.php';
@@ -51,6 +52,7 @@ require_once BASE_PATH . '/app/controllers/PerfilController.php';
 require_once BASE_PATH . '/app/controllers/ReporteController.php';
 require_once BASE_PATH . '/app/controllers/PasswordController.php';
 require_once BASE_PATH . '/app/controllers/PuntosController.php';
+require_once BASE_PATH . '/app/controllers/ConfiguracionPuntosController.php';
 
 // ── Sesión ────────────────────────────────────────────────────────────────────
 iniciarSesion();
@@ -100,6 +102,20 @@ $rutas = [
     'puntos/actualizar' => ['PuntosController', 'actualizar'],
     'puntos/eliminar'   => ['PuntosController', 'eliminar'],
     'puntos/editar'     => ['PuntosController', 'editar'],
+    // Registro público: cualquier cliente puede inscribirse sin iniciar sesión
+    'puntos/registro'   => ['PuntosController', 'registroPublico'],
+
+    // Puntos desde la vista de mesas (agregar, descontar, redimir)
+    'puntos/mesa/consultar'  => ['PuntosController', 'consultarCliente'],
+    'puntos/mesa/agregar'    => ['PuntosController', 'mesaAgregar'],
+    'puntos/mesa/descontar'  => ['PuntosController', 'mesaDescontar'],
+    'puntos/mesa/redimir'    => ['PuntosController', 'mesaRedimir'],
+
+    // Configuración del sistema de puntos (solo administrador/dueño)
+    'configuracion-puntos'                    => ['ConfiguracionPuntosController', 'index'],
+    'configuracion-puntos/guardar'             => ['ConfiguracionPuntosController', 'guardar'],
+    'configuracion-puntos/recompensa/guardar'  => ['ConfiguracionPuntosController', 'guardarRecompensa'],
+    'configuracion-puntos/recompensa/eliminar' => ['ConfiguracionPuntosController', 'eliminarRecompensa'],
     'error/400'    => ['BaseController', 'solicitudIncorrecta'],
     'error/401'    => ['BaseController', 'noAutenticado'],
     'error/403'    => ['BaseController', 'accesoDenegado'],
@@ -129,10 +145,6 @@ if (array_key_exists($rutaCompleta, $rutas)) {
     $metodo = 'eliminar';
 }
 
-// TODO: verificar el método correcto para servir el menú público standalone
-// (public/publico.php). Antes vivía como ['MenuController'] sin método,
-// lo cual generaba un error. Ajusta 'metodoReal' al nombre real en
-// MenuController, o cambia este bloque para incluir publico.php directamente.
 if ($rutaCompleta === 'menu-publico') {
     require BASE_PATH . '/public/publico.php';
     exit;

@@ -42,6 +42,12 @@
         <h3>Agenda de personal</h3>
         <p>Organiza turnos, horarios y asistencia del equipo desde una sola plataforma.</p>
     </a>
+
+    <!-- Tarjeta de Club de Fidelización: registro público, sin necesidad de iniciar sesión -->
+    <a class="beneficio-item" href="<?= BASE_URL ?>/puntos/registro" aria-label="Club de Fidelización">
+        <h3><i class="fa-solid fa-coins" aria-hidden="true"></i> Club de Fidelización</h3>
+        <p>¿Eres cliente? Regístrate gratis y empieza a acumular puntos con tu consumo, sin crear una cuenta.</p>
+    </a>
 </div>
 
   

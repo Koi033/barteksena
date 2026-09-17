@@ -85,7 +85,7 @@
                               style="display:inline"
                               onsubmit="return confirm('¿Eliminar esta bebida?')">
                             <input type="hidden" name="csrf_token"
-                                   value="<?= htmlspecialchars(generarTokenCSRF('eliminar_inv'), ENT_QUOTES, 'UTF-8') ?>">
+                                   value="<?= htmlspecialchars($tokenCSRF, ENT_QUOTES, 'UTF-8') ?>">
                             <input type="hidden" name="id" value="<?= (int)$b['id'] ?>">
                             <button type="submit" class="action-btn delete-btn" title="Eliminar"><i class="fas fa-trash" aria-hidden="true"></i></button>
                         </form>
