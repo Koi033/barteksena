@@ -24,7 +24,14 @@ class PuntosModel extends BaseModel
     }
     public function obtenerTodosLosRegistros()
     {
-        $sql = "SELECT * FROM historial_puntos ORDER BY id DESC";
+        // Se une con recompensas_puntos para poder mostrar, en el historial,
+        // el nombre real de la recompensa canjeada (antes se "adivinaba" el
+        // premio según un umbral fijo de puntos, sin relación con lo que el
+        // cliente realmente canjeó).
+        $sql = "SELECT h.*, r.nombre AS recompensa_nombre, r.descripcion AS recompensa_descripcion
+                FROM historial_puntos h
+                LEFT JOIN recompensas_puntos r ON r.id = h.recompensa_id
+                ORDER BY h.id DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -60,7 +67,11 @@ class PuntosModel extends BaseModel
   // Método de búsqueda por cédula o nombre corregido
     public function buscarPorCedulaONombre($termino)
     {
-        $sql = "SELECT * FROM historial_puntos WHERE cedula_cliente LIKE :cedula OR nombre LIKE :nombre ORDER BY id DESC";
+        $sql = "SELECT h.*, r.nombre AS recompensa_nombre, r.descripcion AS recompensa_descripcion
+                FROM historial_puntos h
+                LEFT JOIN recompensas_puntos r ON r.id = h.recompensa_id
+                WHERE h.cedula_cliente LIKE :cedula OR h.nombre LIKE :nombre
+                ORDER BY h.id DESC";
         $stmt = $this->db->prepare($sql);
         
         $busqueda = "%" . $termino . "%";
@@ -135,7 +146,7 @@ class PuntosModel extends BaseModel
     public function totalPuntos(string $cedula): int
     {
         $sql = "SELECT COALESCE(SUM(
-                    CASE WHEN tipo IN ('canjeado', 'cancelado') THEN -cantidad_puntos ELSE cantidad_puntos END
+                    CASE WHEN tipo IN ('canjeado', 'cancelado', 'descontado') THEN -cantidad_puntos ELSE cantidad_puntos END
                 ), 0) AS total
                 FROM historial_puntos
                 WHERE cedula_cliente = :cedula";
@@ -143,4 +154,146 @@ class PuntosModel extends BaseModel
         $stmt->execute([':cedula' => $cedula]);
         return (int) $stmt->fetchColumn();
     }
-}   
+
+    /**
+     * Busca el nombre más reciente con el que quedó registrado un cliente,
+     * a partir de su cédula. Útil para autocompletar el nombre en la vista
+     * de mesas cuando el mesero solo digita la cédula.
+     *
+     * @param  string $cedula
+     * @return string|null
+     */
+    public function obtenerNombrePorCedula(string $cedula): ?string
+    {
+        $sql = "SELECT nombre FROM historial_puntos
+                WHERE cedula_cliente = :cedula
+                ORDER BY id DESC LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':cedula' => $cedula]);
+        $nombre = $stmt->fetchColumn();
+        return $nombre !== false ? $nombre : null;
+    }
+
+    /**
+     * Registra un abono ("ganado") de puntos para un cliente desde la vista
+     * de mesas, dejando trazabilidad de qué empleado lo hizo y desde qué mesa.
+     *
+     * @param  string   $cedula
+     * @param  string   $nombre
+     * @param  int      $puntos
+     * @param  int|null $empleadoId
+     * @param  string|null $mesa
+     * @return bool
+     */
+    public function agregarPuntos(string $cedula, string $nombre, int $puntos, ?int $empleadoId = null, ?string $mesa = null): bool
+    {
+        $sql = "INSERT INTO historial_puntos (nombre, cedula_cliente, cantidad_puntos, tipo, empleado_id, mesa)
+                VALUES (:nombre, :cedula, :puntos, 'ganado', :empleado_id, :mesa)";
+
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':nombre'      => $nombre,
+            ':cedula'      => $cedula,
+            ':puntos'      => $puntos,
+            ':empleado_id' => $empleadoId,
+            ':mesa'        => $mesa,
+        ]);
+    }
+
+    /**
+     * Descuenta puntos de un cliente (ej: corrección de un abono mal hecho,
+     * penalización, etc.). Se registra con tipo 'descontado', que
+     * totalPuntos() ya interpreta como una resta.
+     *
+     * @param  string   $cedula
+     * @param  string   $nombre
+     * @param  int      $puntos
+     * @param  int|null $empleadoId
+     * @param  string|null $mesa
+     * @return bool
+     */
+    public function descontarPuntos(string $cedula, string $nombre, int $puntos, ?int $empleadoId = null, ?string $mesa = null): bool
+    {
+        $sql = "INSERT INTO historial_puntos (nombre, cedula_cliente, cantidad_puntos, tipo, empleado_id, mesa)
+                VALUES (:nombre, :cedula, :puntos, 'descontado', :empleado_id, :mesa)";
+
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':nombre'      => $nombre,
+            ':cedula'      => $cedula,
+            ':puntos'      => $puntos,
+            ':empleado_id' => $empleadoId,
+            ':mesa'        => $mesa,
+        ]);
+    }
+
+    /**
+     * Redime (canjea) una recompensa del catálogo a cambio de los puntos
+     * que esta requiera. No valida aquí si el cliente tiene puntos
+     * suficientes: eso lo hace el controlador antes de llamar a este método,
+     * usando totalPuntos(), para poder mostrar un mensaje de error claro.
+     *
+     * @param  string   $cedula
+     * @param  string   $nombre
+     * @param  int      $puntosRequeridos
+     * @param  int      $recompensaId
+     * @param  int|null $empleadoId
+     * @param  string|null $mesa
+     * @return bool
+     */
+    public function redimirPuntos(
+        string $cedula,
+        string $nombre,
+        int $puntosRequeridos,
+        int $recompensaId,
+        ?int $empleadoId = null,
+        ?string $mesa = null
+    ): bool {
+        $sql = "INSERT INTO historial_puntos
+                    (nombre, cedula_cliente, cantidad_puntos, tipo, empleado_id, mesa, recompensa_id)
+                VALUES
+                    (:nombre, :cedula, :puntos, 'canjeado', :empleado_id, :mesa, :recompensa_id)";
+
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':nombre'        => $nombre,
+            ':cedula'        => $cedula,
+            ':puntos'        => $puntosRequeridos,
+            ':empleado_id'   => $empleadoId,
+            ':mesa'          => $mesa,
+            ':recompensa_id' => $recompensaId,
+        ]);
+    }
+
+    /**
+     * Obtiene las recompensas canjeadas (puntos) asociadas a una mesa dentro
+     * de un rango de fechas. Se usa desde el detalle de una venta para poder
+     * mostrar las recompensas que el cliente redimió mientras esa mesa
+     * estuvo abierta: canjear una recompensa NO genera ninguna fila en
+     * detalle_ventas (el club de fidelización es independiente del
+     * inventario), por lo que hasta ahora esas cuentas se veían sin detalle
+     * en el listado de Ventas.
+     *
+     * @param  string      $mesa
+     * @param  string      $desde  Fecha/hora de apertura de la venta (creado_en)
+     * @param  string|null $hasta  Fecha/hora de cierre de la venta (cerrado_en); null = hasta ahora
+     * @return array
+     */
+    public function obtenerRecompensasPorMesaYRango(string $mesa, string $desde, ?string $hasta = null): array
+    {
+        $sql = "SELECT h.id, h.cantidad_puntos, h.fecha, r.nombre AS recompensa_nombre
+                FROM historial_puntos h
+                INNER JOIN recompensas_puntos r ON r.id = h.recompensa_id
+                WHERE h.tipo = 'canjeado'
+                  AND h.mesa = :mesa
+                  AND h.fecha >= :desde
+                  AND h.fecha <= :hasta
+                ORDER BY h.fecha ASC";
+
+        return $this->consultarTodos($sql, [
+            ':mesa'  => $mesa,
+            ':desde' => $desde,
+            ':hasta' => $hasta ?? date('Y-m-d H:i:s'),
+        ]);
+    }
+}

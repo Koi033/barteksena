@@ -30,6 +30,20 @@
                            value="<?= htmlspecialchars($old['cedula'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
                 </div>
 
+                <div class="campo-grupo campo-checkbox">
+                    <label class="checkbox-label" for="rpAceptaPolitica">
+                        <input type="checkbox" id="rpAceptaPolitica" name="acepta_politica" value="1"
+                               <?= !empty($old['acepta_politica']) ? 'checked' : '' ?> required>
+                        <span>
+                            He leído y acepto la
+                            <a href="<?= BASE_URL ?>/puntos/politica-datos" target="_blank" rel="noopener">
+                                Política de Tratamiento de Datos Personales
+                            </a>
+                            del Club de Fidelización.
+                        </span>
+                    </label>
+                </div>
+
                 <button type="submit" class="btn-form">
                     <i class="fa-solid fa-star" aria-hidden="true"></i> Unirme al Club
                 </button>
@@ -41,3 +55,33 @@
         </div>
     </div>
 </section>
+
+<style>
+    .campo-checkbox {
+        margin: 4px 0 18px;
+    }
+    .checkbox-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        cursor: pointer;
+        font-size: 0.88rem;
+        line-height: 1.45;
+    }
+    .checkbox-label input[type="checkbox"] {
+        margin-top: 3px;
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        accent-color: #E67E22;
+        cursor: pointer;
+    }
+    .checkbox-label a {
+        color: #E67E22;
+        font-weight: 600;
+        text-decoration: underline;
+    }
+    .checkbox-label a:hover {
+        color: #d35400;
+    }
+</style>
