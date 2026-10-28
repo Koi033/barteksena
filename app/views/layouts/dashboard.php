@@ -24,7 +24,7 @@
     <?php
     $rutaCssModulo = BASE_PATH . '/public/css/dashboard-' . ($cssModulo ?? '') . '.css';
     if (!empty($cssModulo) && file_exists($rutaCssModulo)):
-        ?>
+    ?>
         <link rel="stylesheet"
             href="<?= BASE_URL ?>/public/css/dashboard-<?= htmlspecialchars($cssModulo, ENT_QUOTES, 'UTF-8') ?>.css">
     <?php endif; ?>
@@ -179,6 +179,30 @@
 
         <?= $contenido ?>
     </main>
+    <?php
+    // Mapea el módulo actual a la sección del manual
+    $mapaAyuda = [
+        'dashboard' => 'inicio',
+        'empleados' => 'empleados',
+        'inventario' => 'inventario',
+        'ventas' => 'ventas',
+        'reservas' => 'reservas',
+        'puntos' => 'puntos',
+        'configuracion-puntos' => 'puntos',
+        'horarios' => 'horarios',
+        'reportes' => 'reportes',
+        'perfil' => 'perfil',
+    ];
+    $rutaActual = trim(str_replace(BASE_URL, '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)), '/');
+    $moduloActual = explode('/', $rutaActual)[0];
+    $anclaAyuda = $mapaAyuda[$moduloActual] ?? 'inicio';
+    ?>
+    <?php if ($moduloActual !== 'ayuda'): ?>
+        <a href="<?= BASE_URL ?>/ayuda#<?= $anclaAyuda ?>" class="help-fab"
+            title="Ayuda" aria-label="Abrir ayuda">
+            <i class="fas fa-question" aria-hidden="true"></i>
+        </a>
+    <?php endif; ?>
 
     <!-- ── Scripts ─────────────────────────────────────────────── -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

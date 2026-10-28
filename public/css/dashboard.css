@@ -57,7 +57,9 @@
     transition: color 0.2s;
 }
 
-.sidebar-toggle-btn:hover { color: #E67E22; }
+.sidebar-toggle-btn:hover {
+    color: #E67E22;
+}
 
 .sidebar-menu {
     list-style: none;
@@ -204,6 +206,7 @@
     background-color: #0066ff;
     color: #fff;
 }
+
 .btn-primary:hover {
     background-color: #0051cc;
     box-shadow: 0 5px 15px rgba(0, 102, 255, 0.3);
@@ -215,6 +218,7 @@
     background-color: #555;
     color: #fff;
 }
+
 .btn-secondary:hover {
     background-color: #666;
     text-decoration: none;
@@ -226,6 +230,7 @@
     border: 1px solid #aaa;
     color: #aaa;
 }
+
 .btn-filter:hover {
     background-color: #E67E22;
     border-color: #E67E22;
@@ -260,7 +265,9 @@
     font-size: 0.88rem;
 }
 
-.search-bar::placeholder { color: #666; }
+.search-bar::placeholder {
+    color: #666;
+}
 
 .search-bar:focus {
     outline: none;
@@ -377,9 +384,20 @@
     margin: 0.2rem;
 }
 
-.stock-low    { color: #e74c3c; font-weight: 700; }
-.stock-medium { color: #f39c12; font-weight: 700; }
-.stock-ok     { color: #28a745; font-weight: 700; }
+.stock-low {
+    color: #e74c3c;
+    font-weight: 700;
+}
+
+.stock-medium {
+    color: #f39c12;
+    font-weight: 700;
+}
+
+.stock-ok {
+    color: #28a745;
+    font-weight: 700;
+}
 
 /* ── Tablas genéricas ────────────────────────────────────────────── */
 .table-section {
@@ -440,10 +458,24 @@
 }
 
 .id-cell,
-.employee-name { color: #fff; font-weight: 700; }
-.transaction-id { color: #E67E22; font-weight: 700; }
-.email-cell { color: #7fb3ff; }
-.price-cell { color: #E67E22; font-weight: 700; }
+.employee-name {
+    color: #fff;
+    font-weight: 700;
+}
+
+.transaction-id {
+    color: #E67E22;
+    font-weight: 700;
+}
+
+.email-cell {
+    color: #7fb3ff;
+}
+
+.price-cell {
+    color: #E67E22;
+    font-weight: 700;
+}
 
 .category-badge {
     display: inline-block;
@@ -464,9 +496,20 @@
     font-weight: 700;
 }
 
-.status-completed { background: #28a745; color: #fff; }
-.status-pending   { background: #f39c12; color: #fff; }
-.status-cancelled { background: #e74c3c; color: #fff; }
+.status-completed {
+    background: #28a745;
+    color: #fff;
+}
+
+.status-pending {
+    background: #f39c12;
+    color: #fff;
+}
+
+.status-cancelled {
+    background: #e74c3c;
+    color: #fff;
+}
 
 /* ── Botones de acción en tablas ─────────────────────────────────── */
 .actions-cell {
@@ -491,12 +534,33 @@
     padding: 0;
 }
 
-.edit-btn   { color: #0066ff; }
-.edit-btn:hover   { background-color: #0066ff; color: #fff; }
-.delete-btn { color: #dc3545; }
-.delete-btn:hover { background-color: #dc3545; color: #fff; }
-.view-btn   { color: #fff; margin-right: 6px; }
-.view-btn:hover   { background-color: #E67E22; color: #fff; }
+.edit-btn {
+    color: #0066ff;
+}
+
+.edit-btn:hover {
+    background-color: #0066ff;
+    color: #fff;
+}
+
+.delete-btn {
+    color: #dc3545;
+}
+
+.delete-btn:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.view-btn {
+    color: #fff;
+    margin-right: 6px;
+}
+
+.view-btn:hover {
+    background-color: #E67E22;
+    color: #fff;
+}
 
 /* ── Paginación ──────────────────────────────────────────────────── */
 .pagination-section {
@@ -509,7 +573,9 @@
     gap: 0.8rem;
 }
 
-.pagination-info { font-size: 0.82rem; }
+.pagination-info {
+    font-size: 0.82rem;
+}
 
 .pagination-controls {
     display: flex;
@@ -640,16 +706,26 @@
     padding: 2rem;
     width: 100%;
     max-width: 480px;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
     animation: modalEntra 0.2s ease;
 }
 
 @keyframes modalEntra {
-    from { opacity: 0; transform: scale(0.95) translateY(-10px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
-.modal-box h2 { color: #E67E22; margin-bottom: 1.5rem; }
+.modal-box h2 {
+    color: #E67E22;
+    margin-bottom: 1.5rem;
+}
 
 .modal-close {
     -webkit-appearance: none;
@@ -667,7 +743,9 @@
     transition: color 0.2s;
 }
 
-.modal-close:hover { color: #fff; }
+.modal-close:hover {
+    color: #fff;
+}
 
 /* ── Responsive base (layout, sidebar, botones, tablas, forms) ────── */
 @media (max-width: 1024px) {
@@ -677,20 +755,28 @@
 }
 
 @media (max-width: 768px) {
-    .layout-dashboard { flex-direction: column; }
+    .layout-dashboard {
+        flex-direction: column;
+    }
 
     .sidebar {
         width: 100%;
         min-height: auto;
         height: auto;
-        position: relative; /* ya no sticky en móvil */
+        position: relative;
+        /* ya no sticky en móvil */
         padding: 0.8rem 1rem;
         flex-direction: column;
         align-items: stretch;
         overflow: visible;
     }
 
-    .sidebar-brand { margin-bottom: 0; border: none; padding: 0; width: 100%; }
+    .sidebar-brand {
+        margin-bottom: 0;
+        border: none;
+        padding: 0;
+        width: 100%;
+    }
 
     /* Oculto por defecto: se muestra solo al abrir el menú con #sidebarToggle */
     .sidebar nav,
@@ -711,7 +797,9 @@
         gap: 0.4rem;
     }
 
-    .sidebar-menu li { width: 100%; }
+    .sidebar-menu li {
+        width: 100%;
+    }
 
     .sidebar-menu a {
         font-size: 0.85rem;
@@ -728,39 +816,79 @@
         margin-top: 0.5rem;
     }
 
-    .btn-logout { width: 100%; padding: 0.6rem 0.9rem; }
+    .btn-logout {
+        width: 100%;
+        padding: 0.6rem 0.9rem;
+    }
 
-    .main-content { padding: 1rem 1.2rem; }
+    .main-content {
+        padding: 1rem 1.2rem;
+    }
 
     .action-buttons,
-    .form-actions { flex-direction: column; }
+    .form-actions {
+        flex-direction: column;
+    }
 
     .btn-primary,
-    .btn-secondary { width: 100%; justify-content: center; }
+    .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
 
-    .controls-section { flex-direction: column; }
-    .search-bar, .filter-dropdown { width: 100%; }
+    .controls-section {
+        flex-direction: column;
+    }
 
-    .sales-summary { grid-template-columns: 1fr 1fr; }
+    .search-bar,
+    .filter-dropdown {
+        width: 100%;
+    }
 
-    .content-grid { grid-template-columns: 1fr; }
+    .sales-summary {
+        grid-template-columns: 1fr 1fr;
+    }
 
-    .pagination-section { flex-direction: column; }
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
 
-    .form-card  { padding: 1.2rem; }
-    .form-grid  { grid-template-columns: 1fr; }
+    .pagination-section {
+        flex-direction: column;
+    }
 
-    .actions-cell { flex-direction: row; flex-wrap: wrap; }
+    .form-card {
+        padding: 1.2rem;
+    }
 
-    .modal-box { padding: 1.2rem; max-width: 92vw; }
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .actions-cell {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .modal-box {
+        padding: 1.2rem;
+        max-width: 92vw;
+    }
 }
 
 @media (max-width: 480px) {
-    .sales-summary { grid-template-columns: 1fr; }
-    .page-title { font-size: 1.4rem; }
+    .sales-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .page-title {
+        font-size: 1.4rem;
+    }
 }
+
 /* ── Tablas como tarjetas en mobile (activar con clase .dt-cards-mobile) ── */
 @media (max-width: 700px) {
+
     .dt-cards-mobile,
     .dt-cards-mobile thead,
     .dt-cards-mobile tbody,
@@ -770,7 +898,10 @@
         display: block;
     }
 
-    .dt-cards-mobile { min-width: 0; width: 100%; }
+    .dt-cards-mobile {
+        min-width: 0;
+        width: 100%;
+    }
 
     .dt-cards-mobile thead tr {
         position: absolute;
@@ -819,4 +950,127 @@
     .dt-cards-mobile .actions-cell {
         justify-content: flex-end;
     }
+}
+
+/* ── Botón flotante de ayuda ── */
+.help-fab {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #E67E22;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    box-shadow: 0 6px 18px rgba(230, 126, 34, 0.45);
+    z-index: 900;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.help-fab:hover {
+    background: #d35400;
+    transform: scale(1.08);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* ── Manual de usuario ── */
+.ayuda-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-width: 800px;
+}
+
+.ayuda-item {
+    background: #1a1c1e;
+    border-radius: 10px;
+    border-left: 4px solid #E67E22;
+}
+
+.ayuda-item summary {
+    padding: 1rem 1.3rem;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 700;
+    list-style: none;
+}
+
+.ayuda-item summary i {
+    color: #E67E22;
+    margin-right: 0.5rem;
+}
+
+.ayuda-item[open] summary {
+    border-bottom: 1px solid #333;
+}
+
+.ayuda-contenido {
+    padding: 1rem 1.3rem;
+    color: #ccc;
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.ayuda-contenido ol {
+    padding-left: 1.2rem;
+}
+
+/* ── Submódulos dentro de "Módulos" ── */
+.ayuda-subitem {
+    background: #232527;
+    border: 1px solid #2f3133;
+    border-radius: 8px;
+    margin-top: 0.6rem;
+}
+
+.ayuda-subitem summary {
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ayuda-subitem summary::-webkit-details-marker {
+    display: none;
+}
+
+.ayuda-subitem summary i {
+    color: #E67E22;
+    margin-right: 0.5rem;
+}
+
+.ayuda-subitem summary:hover {
+    color: #E67E22;
+}
+
+.ayuda-subitem[open] {
+    border-color: rgba(230, 126, 34, 0.5);
+}
+
+.ayuda-subitem[open] summary {
+    border-bottom: 1px solid #2f3133;
+}
+
+.ayuda-subitem summary::after {
+    content: '\f078';
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 0.7rem;
+    color: #E67E22;
+    transition: transform 0.2s;
+}
+
+.ayuda-subitem[open] summary::after {
+    transform: rotate(180deg);
 }

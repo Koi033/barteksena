@@ -53,6 +53,7 @@ require_once BASE_PATH . '/app/controllers/ReporteController.php';
 require_once BASE_PATH . '/app/controllers/PasswordController.php';
 require_once BASE_PATH . '/app/controllers/PuntosController.php';
 require_once BASE_PATH . '/app/controllers/ConfiguracionPuntosController.php';
+require_once BASE_PATH . '/app/controllers/AyudaController.php';
 
 // ── Sesión ────────────────────────────────────────────────────────────────────
 iniciarSesion();
@@ -93,6 +94,7 @@ $rutas = [
     'perfil'       => ['PerfilController',     $accion],
     'recuperar'    => ['PasswordController',   'recuperar'],
     'restablecer'  => ['PasswordController',   'restablecer'],
+    'ayuda' => ['AyudaController', 'index'],
 
     // Rutas de puntos (coincidencia por ruta completa, ver abajo)
     'puntos'            => ['PuntosController', 'index'],
