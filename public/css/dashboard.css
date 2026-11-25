@@ -984,7 +984,8 @@
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
-    max-width: 800px;
+    width: 100%;
+    max-width: none;
 }
 
 .ayuda-item {
@@ -1073,4 +1074,17 @@
 
 .ayuda-subitem[open] summary::after {
     transform: rotate(180deg);
+}
+
+.ayuda-item summary,
+.ayuda-subitem summary {
+    text-align: left;
+    justify-content: flex-start;
+    gap: 0.6rem;
+}
+
+/* La flecha se va al extremo derecho */
+.ayuda-item summary::after,
+.ayuda-subitem summary::after {
+    margin-left: auto;
 }
